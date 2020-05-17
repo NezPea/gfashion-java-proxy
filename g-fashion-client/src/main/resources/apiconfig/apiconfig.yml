@@ -1,5 +1,5 @@
 api:
-  host: https://www.gfashion2020.tk
+  host: magento2
 token:
   url: /index.php/rest/V1/integration/admin/token
   username: admin
