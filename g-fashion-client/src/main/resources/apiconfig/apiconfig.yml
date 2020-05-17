@@ -1,8 +1,8 @@
 api:
-  host: https://www.gfashion2020.tk
+  host: magento2
 token:
   url: /index.php/rest/V1/integration/admin/token
   username: admin
-  password: 202064_Hh
+  password: magentorocks1
 productdetail:
   url: /index.php/rest/V1/products/
