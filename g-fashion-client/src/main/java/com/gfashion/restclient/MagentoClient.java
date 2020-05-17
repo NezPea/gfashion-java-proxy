@@ -1,17 +1,14 @@
 package com.gfashion.restclient;
 
 import com.gfashion.restclient.utils.PropertiesUtils;
-import com.google.gson.*;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -43,8 +40,9 @@ public class MagentoClient {
         StringBuffer result = new StringBuffer();
         StringBuffer token = new StringBuffer();
         StringBuffer url = new StringBuffer();
-        Map<String ,Object> ProductOut = new HashMap();
+        JSONObject ProductOut = new JSONObject();
         try{
+            // magento产品详细api url
             url.append(PropertiesUtils.getApiConfigYml("api.host") + PropertiesUtils.getApiConfigYml("productdetail.url"));
 
             token.append(getToken());
@@ -58,53 +56,50 @@ public class MagentoClient {
                     new HttpEntity<Object>(headers),
                     String.class);
             result.append(responseEntity.getBody());
-            Gson gson = new Gson();
-            JSONObject ProductObject = gson.fromJson(result.toString(), JSONObject.class);
-//            JsonObject ProductObject = new JsonParser().parse(result.toString()).getAsJsonObject();
 
-//            String description = getStrFromJsonArray("description",
-//                    new Gson().fromJson(ProductObject.getAsString("custom_attributes"),JSONArray.class)
-//                    ,"attribute_code",
-//                    "value");
-            ProductOut.put("name", ProductObject.getAsString("name")); // 产品名称
-            ProductOut.put("price", ProductObject.getAsString("price")); // 优惠价
-            //JSONArray JsonArray = new Gson().fromJson(ProductObject.getAsString("media_gallery_entries"),JSONArray.class);
-            ProductOut.put("images", ProductObject.get("media_gallery_entries"));//new Gson().fromJson(ProductObject.getAsString("media_gallery_entries"),JSONArray.class)); // 媒体图片资料库
-//            JSONArray JsonArray = new Gson().fromJson(ProductObject.getAsString("custom_attributes"),JSONArray.class);
-            ProductOut.put("attribute", ProductObject.get("custom_attributes"));//new Gson().fromJson(ProductObject.getAsString("custom_attributes"),JSONArray.class)); // 产品属性
-            ProductOut.put("description", "");//description
-            JSONArray jsonArray = new Gson().fromJson(ProductObject.getAsString("product_links"),JSONArray.class);//ProductObject.getJSONArray("product_links");
-//            JSONArray jsonArray = ProductObject.get("product_links");
-//            // 循环获取关联产品的名称和图片
-//            for(JsonElement jsonElement : jsonArray){
-//
-//                JsonObject jsonObject = new JsonParser().parse(jsonElement.getAsString()).getAsJsonObject();
-//                HttpHeaders headers1= new HttpHeaders();
-//                headers.setContentType(MediaType.APPLICATION_JSON);
-//                headers.setBearerAuth(token.toString());
-//                ResponseEntity<String> responseEntity1 = rest.exchange(
-//                        url.toString()  + "/" + jsonObject.getAsJsonObject("linked_product_sku").toString(),
-//                        HttpMethod.GET,
-//                        new HttpEntity<Object>(headers1),
-//                        String.class);
-//
-//                JsonObject rtnObj = new JsonParser().parse(responseEntity1.getBody()).getAsJsonObject();
-//                jsonObject.add("name",rtnObj.get("name")); // 产品名称
-//                jsonObject.add("price",rtnObj.get("price")); // 优惠价
-////                jsonObject.add("image", getStrFromJsonArray("image", rtnObj.getJSONArray("media_gallery_entries"),"media_type","file"));
-//            }
-            ProductOut.put("product_links", jsonArray);  // 相关产品信息
-            ProductOut.put("designer_name", ""); // 暂时无该信息
-            ProductOut.put("designer_link", ""); // 暂时无该信息
-            ProductOut.put("brand_name", ""); // 暂时无该信息
-            ProductOut.put("brand_link", ""); // 暂时无该信息
-            ProductOut.put("purchase_number_limit", ""); // 暂时无该信息
-            System.out.println("============"+result.toString());
+//            System.out.println("result==="+result.toString());
+            JSONObject ProductObject = new JSONObject(responseEntity.getBody());
+
+            // 获取描述
+            String description = getStrFromJsonArray("description",
+                    ProductObject.getJSONArray("custom_attributes"),
+                    "attribute_code",
+                    "value");
+            ProductOut.put("name", ProductObject.get("name")); // 产品名称
+            ProductOut.put("price", ProductObject.get("price")); // 优惠价
+            ProductOut.put("images", ProductObject.getJSONArray("media_gallery_entries")); // 媒体图片资料库
+            ProductOut.put("attribute", ProductObject.getJSONArray("custom_attributes")); // 产品属性
+            ProductOut.put("description", description); // 描述
+            ProductOut.put("designer_name", ""); // 设计师名　暂时无该信息
+            ProductOut.put("designer_link", ""); // 设计师链接　暂时无该信息
+            ProductOut.put("brand_name", ""); // 品牌名　暂时无该信息
+            ProductOut.put("brand_link", ""); // 品牌链接　暂时无该信息
+            ProductOut.put("purchase_number_limit", ""); // 每人购买限制数量　暂时无该信息
+
+            JSONArray jsonArray = ProductObject.getJSONArray("product_links"); // 关联产品
+            // 循环获取关联产品的名称和图片
+            for(int i=0;i< jsonArray.length();i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                responseEntity = rest.exchange(
+                        url.toString()  + "/" + jsonObject.getString("linked_product_sku"),
+                        HttpMethod.GET,
+                        new HttpEntity<Object>(headers),
+                        String.class);
+//                System.out.println("result111==="+responseEntity.getBody());
+                JSONObject rtnObj = new JSONObject(responseEntity.getBody());
+                jsonObject.put("name",rtnObj.get("name")); // 产品名称
+                jsonObject.put("price",rtnObj.get("price")); // 优惠价
+                jsonObject.put("image", getStrFromJsonArray("image", rtnObj.getJSONArray("media_gallery_entries"),"media_type","file"));
+            }
+            ProductOut.put("product_links", ProductObject.getJSONArray("product_links"));  // 相关产品信息
+
+
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        return JSONObject.toJSONString(ProductOut);//result.toString();
+        return ProductOut.toString();
     }
 
     /**
@@ -121,7 +116,7 @@ public class MagentoClient {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> request = new HttpEntity<String>(user.toJSONString(), headers);
+        HttpEntity<String> request = new HttpEntity<String>(user.toString(), headers);
         ResponseEntity<String> responseEntity = rest.postForEntity(url.toString(), request, String.class);
 
         token.append(responseEntity.getBody().replace("\"", ""));
@@ -135,15 +130,16 @@ public class MagentoClient {
      * @param JsonArray
      * @return
      */
-//    public static String getStrFromJsonArray(String key_name, JSONArray JsonArray, String array_key, String array_value){
-//        StringBuffer description = new StringBuffer();
-//        for(int i=0;i< JsonArray.size();i++){
-//            JSONObject jsonObject = JsonArray.getJSONObject(i);
-//            if(key_name.equals(jsonObject.getString(array_key))){
-//                description.append(jsonObject.getString(array_value));
-//                break;
-//            }
-//        }
-//        return description.toString();
-//    }
+    public static String getStrFromJsonArray(String key_name, JSONArray JsonArray, String array_key, String array_value){
+        StringBuffer description = new StringBuffer();
+        for(int i=0;i< JsonArray.length();i++){
+            JSONObject jsonObject = JsonArray.getJSONObject(i);
+            if(key_name.equals(jsonObject.getString(array_key))){
+                description.append(jsonObject.getString(array_value));
+                jsonObject.remove(array_key);
+                break;
+            }
+        }
+        return description.toString();
+    }
 }
