@@ -1,1 +1,1 @@
-# gfashion-java-proxy
+# Gfashion
