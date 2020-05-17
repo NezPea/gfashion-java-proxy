@@ -2,10 +2,7 @@ package com.gfashion.api;
 
 import com.gfashion.restclient.MagentoClient;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +21,10 @@ public class GfashionDesignerResource {
     @GetMapping("/countries")
     public List<Object> getCountries() {
         return magentoClient.getCountries();
+    }
+
+    @GetMapping("/productdetail/{sku}")
+    public String getProductdetail(@PathVariable("sku") String sku) {
+        return magentoClient.getProductdetail(sku);
     }
 }
