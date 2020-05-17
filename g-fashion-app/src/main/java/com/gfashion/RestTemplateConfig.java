@@ -15,13 +15,4 @@ public class RestTemplateConfig {
         return new RestTemplate();
     }
 
-    @Bean
-    public CommandLineRunner startup() {
-        return args -> {
-            log.info("**************************************");
-            log.info("    Configuring with RestTemplate");
-            log.info("**************************************");
-        };
-    }
-
 }
