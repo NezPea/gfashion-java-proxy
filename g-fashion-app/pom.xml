@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>g-fashion</artifactId>
+        <groupId>com.gfashion</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>com.gfashion</groupId>
+    <artifactId>g-fashion-app</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <name>g-fashion-app</name>
+
+    <properties>
+        <maven-failsafe-plugin-version>3.0.0-M3</maven-failsafe-plugin-version>
+        <project.testresult.directory>${project.build.directory}/test-results</project.testresult.directory>
+        <junit.itReportFolder>${project.testresult.directory}/integrationTest</junit.itReportFolder>
+    </properties>
+
+    <dependencies>
+        <!-- g-fashion dependencies -->
+        <dependency>
+            <groupId>com.gfashion</groupId>
+            <artifactId>g-fashion-domain</artifactId>
+            <version>${gfashion.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.gfashion</groupId>
+            <artifactId>g-fashion-data</artifactId>
+            <version>${gfashion.version}</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.gfashion</groupId>-->
+<!--            <artifactId>g-fashion-security</artifactId>-->
+<!--            <version>${gfashion.version}</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>com.gfashion</groupId>
+            <artifactId>g-fashion-api</artifactId>
+            <version>${gfashion.version}</version>
+        </dependency>
+
+        <!-- Actuator and DevTools...just because -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>json-path</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>xml-path</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <!-- Force alphabetical order to have a reproducible build -->
+                    <runOrder>alphabetical</runOrder>
+                    <reportsDirectory>${junit.utReportFolder}</reportsDirectory>
+                    <excludes>
+                        <exclude>**/*IT*</exclude>
+                        <exclude>**/*IntTest*</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven-failsafe-plugin-version}</version>
+                <configuration>
+                    <!-- Due to spring-boot repackage, without adding this property test classes are not found
+                         See https://github.com/spring-projects/spring-boot/issues/6254 -->
+                    <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+                    <!-- Force alphabetical order to have a reproducible build -->
+                    <runOrder>alphabetical</runOrder>
+                    <reportsDirectory>${junit.itReportFolder}</reportsDirectory>
+                    <includes>
+                        <include>**/*IT*</include>
+                        <include>**/*IntTest*</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
