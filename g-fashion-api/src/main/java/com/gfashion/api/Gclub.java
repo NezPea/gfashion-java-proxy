@@ -23,14 +23,14 @@ public class Gclub {
     @Autowired
     private MagentoClientAdvanced magentoClientAdvanced;
 
+    @Autowired
+    private Gson gson;
+
     /**
      * 临时代码，将来框架的整体 token 管理方案出来之后，再整合
      * TODO:于项目全局 token 管理机制整合
      */
     private static final String QUERY_STRING = "?searchCriteria[filter_groups][0][filters][0][field]={field}&searchCriteria[filter_groups][0][filters][0][condition_type]={condition_type}&searchCriteria[filter_groups][0][filters][0][value]={value}&searchCriteria[pageSize]={pageSize}";
-
-    @Autowired
-    private final Gson gson;
 
     //搜索条件。magento search api 必填项
     private final Map<String, String> searchCriteria = new HashMap<>();
