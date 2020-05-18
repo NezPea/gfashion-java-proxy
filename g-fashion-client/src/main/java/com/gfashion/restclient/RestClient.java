@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Objects;
+
 @Component
 @AllArgsConstructor
 public class RestClient {
@@ -29,11 +31,10 @@ public class RestClient {
         ResponseEntity<String> responseEntity =
                 this._client.postForEntity(adminUrl, request, String.class);
 
-        String adminToken = responseEntity.getBody().replace("\"", "");
-        return adminToken;
+        return Objects.requireNonNull(responseEntity.getBody()).replace("\"", "");
     }
 
-    private HttpHeaders getDefaultHeaders(MultiValueMap extraHeaders){
+    private HttpHeaders getDefaultHeaders(MultiValueMap<String, String> extraHeaders){
         String adminToken = getAdminToken();
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -44,19 +45,19 @@ public class RestClient {
         return headers;
     }
 
-    public <T> ResponseEntity<T> postForEntity(String relativeUrl, Object entity, Class<T> responseType, MultiValueMap extraHeaders){
+    public <T> ResponseEntity<T> postForEntity(String relativeUrl, Object entity, Class<T> responseType, MultiValueMap<String, String> extraHeaders){
         String url = magentoConfig.getUrl().get("base") + relativeUrl;
         HttpHeaders headers = getDefaultHeaders(extraHeaders);
 
         Gson gson = new Gson();
-        HttpEntity<String> request = new HttpEntity<String>(gson.toJson(entity), headers);
+        HttpEntity<String> request = new HttpEntity<>(gson.toJson(entity), headers);
         return this._client.postForEntity(url, request, responseType);
     }
 
-    public <T> ResponseEntity<T> exchangeGet(String relativeUrl, Class<T> responseType, MultiValueMap extraHeaders){
+    public <T> ResponseEntity<T> exchangeGet(String relativeUrl, Class<T> responseType, MultiValueMap<String, String> extraHeaders){
         String url = magentoConfig.getUrl().get("base") + relativeUrl;
         HttpHeaders headers = getDefaultHeaders(extraHeaders);
-        return this._client.exchange(url, HttpMethod.GET, new HttpEntity<Object>(headers), responseType);
+        return this._client.exchange(url, HttpMethod.GET, new HttpEntity<>(headers), responseType);
     }
 
 }
