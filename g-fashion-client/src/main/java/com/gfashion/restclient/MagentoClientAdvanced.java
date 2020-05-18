@@ -43,17 +43,33 @@ public class MagentoClientAdvanced {
         return this.token;
     }
 
+    /**
+     * 请求 magento api，返回响应体 字符串
+     *
+     * @param url
+     * @param uriVariables
+     * @return
+     * @throws RestClientException
+     */
     public String getForBody(String url, Object... uriVariables) throws RestClientException {
         ResponseEntity<String> responseEntity = this.restTemplate.exchange(SERVER_DOMAIN + url, HttpMethod.GET, new HttpEntity<>(httpHeaders), String.class, uriVariables);
         return responseEntity.getBody();
     }
 
+    /**
+     * 请求 magento api，返回响应体 对象
+     *
+     * @param url
+     * @param uriVariables
+     * @return
+     * @throws RestClientException
+     */
     public ResponseEntity<String> getForEntity(String url, Object... uriVariables) throws RestClientException {
         return this.restTemplate.exchange(SERVER_DOMAIN + url, HttpMethod.GET, new HttpEntity<>(httpHeaders), String.class, uriVariables);
     }
 
     /**
-     * 请求 mangento api，直接返回响应体 字符串内容
+     * 请求 magento api，直接返回响应体 字符串内容
      *
      * @param url
      * @param Params
@@ -77,6 +93,5 @@ public class MagentoClientAdvanced {
      */
     public ResponseEntity<String> postForEntity(String url, Map<String, String> Params, Object... uriVariables) throws RestClientException {
         return this.restTemplate.exchange(SERVER_DOMAIN + url, HttpMethod.POST, new HttpEntity<>(Params, httpHeaders), String.class, uriVariables);
-
     }
 }
