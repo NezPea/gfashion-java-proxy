@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 public class GsonAutoConfiguration {
 
     @Bean
-    public Gson restTemplate() {
+    public Gson Gson() {
         return new Gson();
     }
 
