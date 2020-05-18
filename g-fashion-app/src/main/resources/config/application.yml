@@ -10,18 +10,12 @@
 # http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
 # ===================================================================
 
-logging:
-  level:
-    ROOT: DEBUG
-    com.gfashion: DEBUG
-
 spring:
   profiles:
     active: dev
-    include:
-      - swagger
-      # Uncomment to activate TLS for the dev profile
-      #- tls
+---
+spring:
+  profiles: dev
 server:
   port: 8080
 
@@ -32,3 +26,27 @@ magento:
     customers: customers/
   username: admin
   password: 202064_Hh
+
+logging:
+  level:
+    ROOT: DEBUG
+    com.gfashion: DEBUG
+
+---
+spring:
+  profiles: qa
+server:
+  port: 8080
+
+magento:
+  url:
+    base: https://www.gfashion2020.tk/index.php/rest/V1/
+    token: integration/admin/token
+    customers: customers/
+  username: admin
+  password: 202064_Hh
+
+logging:
+  level:
+    ROOT: DEBUG
+    com.gfashion: DEBUG
