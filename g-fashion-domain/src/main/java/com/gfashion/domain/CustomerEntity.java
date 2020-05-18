@@ -1,6 +1,6 @@
-package com.gfashion.api.bean;
+package com.gfashion.domain;
 
-public class Customer {
+public class CustomerEntity {
 
     private String group_id;
     private String email;

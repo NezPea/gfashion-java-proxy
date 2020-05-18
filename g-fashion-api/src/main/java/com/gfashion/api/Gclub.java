@@ -2,8 +2,8 @@ package com.gfashion.api;
 
 import com.gfashion.api.ResultSet.CmsPageList;
 import com.gfashion.api.ResultSet.UserGroupList;
-import com.gfashion.api.bean.CmsPageContent;
-import com.gfashion.api.bean.Customer;
+import com.gfashion.domain.CmsPageContent;
+import com.gfashion.domain.CustomerEntity;
 import com.gfashion.restclient.MagentoClientAdvanced;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
@@ -23,10 +23,16 @@ public class Gclub {
     @Autowired
     private MagentoClientAdvanced magentoClientAdvanced;
 
+    /**
+     * 临时代码，将来框架的整体 token 管理方案出来之后，再整合
+     * TODO:于项目全局 token 管理机制整合
+     */
     private static final String QUERY_STRING = "?searchCriteria[filter_groups][0][filters][0][field]={field}&searchCriteria[filter_groups][0][filters][0][condition_type]={condition_type}&searchCriteria[filter_groups][0][filters][0][value]={value}&searchCriteria[pageSize]={pageSize}";
 
-    private final Gson gson = new Gson();
+    @Autowired
+    private final Gson gson;
 
+    //搜索条件。magento search api 必填项
     private final Map<String, String> searchCriteria = new HashMap<>();
 
     public Gclub() {
@@ -125,7 +131,7 @@ public class Gclub {
      * @return 会员个人信息
      */
     @GetMapping("/me")
-    public Customer me(@RequestHeader("Authorization") String token) {
+    public CustomerEntity me(@RequestHeader("Authorization") String token) {
 
         this.magentoClientAdvanced.setToken(token.substring(token.indexOf(" ") + 1));
 
@@ -133,7 +139,7 @@ public class Gclub {
 
         //通过 反序列化，去掉不需要返回的字段
         //TODO: 将 group_id 映射为 group_name 而不是直接返回
-        return this.gson.fromJson(body, Customer.class);
+        return this.gson.fromJson(body, CustomerEntity.class);
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.gfashion.api.bean;
+package com.gfashion.domain;
 
 public class CmsPageContent {
 

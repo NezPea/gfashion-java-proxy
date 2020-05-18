@@ -1,6 +1,6 @@
 package com.gfashion.api.ResultSet;
 
-import com.gfashion.api.bean.UserGroup;
+import com.gfashion.domain.UserGroup;
 
 import java.util.List;
 

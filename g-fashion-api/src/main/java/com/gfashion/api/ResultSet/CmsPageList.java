@@ -1,6 +1,6 @@
 package com.gfashion.api.ResultSet;
 
-import com.gfashion.api.bean.CmsPage;
+import com.gfashion.domain.CmsPage;
 
 import java.util.List;
 
