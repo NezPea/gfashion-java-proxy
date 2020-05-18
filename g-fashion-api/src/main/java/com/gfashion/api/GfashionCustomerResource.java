@@ -1,5 +1,6 @@
 package com.gfashion.api;
 
+import com.gfashion.domain.customer.GfCustomer;
 import com.gfashion.restclient.MagentoRestClient;
 import com.gfashion.domain.customer.GfCustomerRegistration;
 
@@ -18,12 +19,12 @@ public class GfashionCustomerResource {
 
 
     @PostMapping("/customer")
-    public GfCustomerRegistration creatCustomer(@RequestBody GfCustomerRegistration customer){
+    public GfCustomer creatCustomer(@RequestBody GfCustomerRegistration customer){
         return this._client.createCustomer(customer);
     }
 
     @GetMapping("/customer/{customerId}")
-    public GfCustomerRegistration getCustomerById(@PathVariable Integer customerId){
+    public GfCustomer getCustomerById(@PathVariable Integer customerId){
         return this._client.getCustomerById(customerId);
     }
 }

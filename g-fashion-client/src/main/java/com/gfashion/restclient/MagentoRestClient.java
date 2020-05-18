@@ -1,11 +1,14 @@
 package com.gfashion.restclient;
 
+import com.gfashion.domain.customer.GfCustomer;
 import com.gfashion.domain.customer.GfCustomerRegistration;
+import com.gfashion.restclient.magento.GfMagentoConverter;
 import com.gfashion.restclient.magento.MagentoCustomer;
-import com.gfashion.restclient.magento.MagentoObjectConverter;
 import com.google.gson.Gson;
+import lombok.AllArgsConstructor;
 import org.json.JSONObject;
 
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -14,64 +17,30 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class MagentoRestClient {
 
-    private final String baseUrl = "https://www.gfashion2020.tk/index.php/rest/V1";
+    @Autowired
+    private RestClient _restClient;
 
     @Autowired
-    private RestTemplate _client;
+    private MegentoConfigProperties magentoConfig;
 
-    @Autowired
-    private MagentoObjectConverter _daoConverter;
+    private GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
+    
+    public GfCustomer createCustomer(GfCustomerRegistration customerRegistration){
+        String createCustomerUrl = magentoConfig.getUrl().get("customers");
 
-    public String getToken(){
-        String adminUrl = baseUrl + "/integration/admin/token";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        JSONObject adminInfo= new JSONObject();
-        adminInfo.put("username","admin" );
-        adminInfo.put("password", "202064_Hh");
-
-        HttpEntity<String> request = new HttpEntity<String>(adminInfo.toString(), headers);
-        ResponseEntity<String> responseEntity =
-                this._client.postForEntity(adminUrl, request, String.class);
-
-        String adminToken = responseEntity.getBody().replace("\"", "");
-        return adminToken;
-    }
-
-    public GfCustomerRegistration createCustomer(GfCustomerRegistration customerRegistration){
-        String adminToken = getToken();
-        String createCustomerUrl = baseUrl + "/customers";
-
-        HttpHeaders headers= new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(adminToken);
+        ResponseEntity<String> responseEntity = this._restClient.postForEntity(createCustomerUrl, customerRegistration, String.class, null);
 
         Gson gson = new Gson();
-        HttpEntity<String> request = new HttpEntity<String>(gson.toJson(customerRegistration), headers);
-        ResponseEntity<String> responseEntity = this._client.postForEntity(createCustomerUrl, request, String.class);
-
-        return this._daoConverter.ConvertDtoToGfCustomerRegistration(gson.fromJson(responseEntity.getBody(), MagentoCustomer.class));
+        return this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntity.getBody(), MagentoCustomer.class));
     }
 
-    public GfCustomerRegistration getCustomerById(Integer customerId){
-        String adminToken = getToken();
-        String getCustomerUrl = baseUrl + "/customers/" + customerId;
+    public GfCustomer getCustomerById(Integer customerId){
+        String getCustomerUrl = magentoConfig.getUrl().get("customers") + customerId;
 
-        HttpHeaders headers= new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(adminToken);
-
-        ResponseEntity<String> responseEntityProduct = this._client.exchange(
-                getCustomerUrl,
-                HttpMethod.GET, new HttpEntity<Object>(headers),
-                String.class);
-        String customer = responseEntityProduct.getBody();
+        ResponseEntity<String> responseEntityProduct = this._restClient.exchangeGet(getCustomerUrl, String.class, null);
 
         Gson gson = new Gson();
-        MagentoCustomer dto = gson.fromJson(customer, MagentoCustomer.class);
-
-        return this._daoConverter.ConvertDtoToGfCustomerRegistration(dto);
+        return this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntityProduct.getBody(), MagentoCustomer.class));
     }
 }
 
