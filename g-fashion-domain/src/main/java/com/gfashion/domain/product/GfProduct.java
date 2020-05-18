@@ -3,7 +3,6 @@ package com.gfashion.domain.product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -15,11 +14,18 @@ public class GfProduct {
     private Integer id;
     private String sku;
     private String name;
+    private Integer attribute_set_id;
     private Integer price;
-    private List <JSONObject> media_gallery_entries; // 媒体图片资源库，包含图片地址
-    private List <JSONObject> custom_attributes; // 自定义属性：可能包含颜色、描述、缩略图、价格
-    private List <JSONObject> product_links; // 关联产品
-    private JSONObject extension_attributes; // 扩展属性
+    private Integer status;
+    private Integer visibility;
+    private String type_id;
+    private String created_at;
+    private String updated_at;
+    private Integer weight;
+    private List <GfProductMediaGalleryEntries> media_gallery_entries; // 媒体图片资源库，包含图片地址
+    private List <GfProductCustomAttributes> custom_attributes; // 自定义属性：可能包含颜色、描述、缩略图、价格
+    private List <GfProductLinks> product_links; // 关联产品
+    private GfProductExtensionAttributes extension_attributes; // 扩展属性
     private String designer_name;
     private String designer_link;
     private String brand_name;
