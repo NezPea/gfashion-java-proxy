@@ -24,3 +24,11 @@ spring:
       #- tls
 server:
   port: 8080
+
+magento:
+  url:
+    base: https://www.gfashion2020.tk/index.php/rest/V1/
+    token: integration/admin/token
+    product: products/
+  username: admin
+  password: 202064_Hh

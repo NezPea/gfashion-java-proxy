@@ -22,9 +22,4 @@ public class GfashionDesignerResource {
     public List<Object> getCountries() {
         return magentoClient.getCountries();
     }
-
-    @GetMapping("/productdetail/{sku}")
-    public String getProductdetail(@PathVariable("sku") String sku) {
-        return magentoClient.getProductdetail(sku);
-    }
 }
