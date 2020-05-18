@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class MagentoCustomerClient {
+public class MagentoRestClient {
 
     @Autowired
     private RestClient _restClient;

@@ -1,7 +1,7 @@
 package com.gfashion.api;
 
 import com.gfashion.domain.customer.GfCustomer;
-import com.gfashion.restclient.MagentoCustomerClient;
+import com.gfashion.restclient.MagentoRestClient;
 import com.gfashion.domain.customer.GfCustomerRegistration;
 
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +12,8 @@ public class GfashionCustomerResource {
     /**
      * REST controller for G-Fashion order page
      */
-    private MagentoCustomerClient _client;
-    GfashionCustomerResource(MagentoCustomerClient client){
+    private MagentoRestClient _client;
+    GfashionCustomerResource(MagentoRestClient client){
         this._client = client;
     }
 
