@@ -1,8 +1,0 @@
-api:
-  host: https://www.gfashion2020.tk
-token:
-  url: /index.php/rest/V1/integration/admin/token
-  username: admin
-  password: 202064_Hh
-productdetail:
-  url: /index.php/rest/V1/products/
