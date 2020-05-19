@@ -1,4 +1,4 @@
-package com.gfashion;
+package com.gfashion.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
