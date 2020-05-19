@@ -24,8 +24,9 @@ public class MagentoProductClient {
     public String getProductdetail(String sku) {
         JSONObject ProductOut = new JSONObject();
         try{
+            HttpHeaders headers = _restClient.getDefaultHeaders(null);
             ResponseEntity<String> responseEntity = _restClient.exchangeGet(
-                    magentoConfig.getUrl().get("product") + sku, String.class, null);
+                    magentoConfig.getUrl().get("product") + sku, String.class, headers);
 
 //            StringBuffer result = new StringBuffer();
 //            result.append(responseEntity.getBody());
@@ -62,7 +63,7 @@ public class MagentoProductClient {
 
                     responseEntity = this._restClient.exchangeGet(
                             magentoConfig.getUrl().get("product") + jsonObject.getString("linked_product_sku"),
-                            String.class, null);
+                            String.class, headers);
 //                    System.out.println("result111==="+responseEntity.getBody());
                     JSONObject rtnObj = new JSONObject(responseEntity.getBody());
                     jsonObject.put("name",rtnObj.has("name")?rtnObj.get("name"):""); // 产品名称
