@@ -22,7 +22,7 @@ public class MagentoClientAdvanced {
      * 临时代码，将来使用全局配置
      * TODO:改为使用项目全局配置
      */
-    private static final String ADMIN_TOKEN = "hx1h9quzac7aie63tbfmdw6jhtr2ji7s";
+    private static final String ADMIN_TOKEN = "0gai3kjv7996vykntyxujpvmpabauawp";
     private static final String SERVER_DOMAIN = "http://192.168.0.101/";
 
     HttpHeaders httpHeaders = new HttpHeaders();
@@ -51,8 +51,13 @@ public class MagentoClientAdvanced {
      * @return
      * @throws RestClientException
      */
-    public String getForBody(String url, Object... uriVariables) throws RestClientException {
+    public String getForBody(String url, Map<String, String> uriVariables) throws RestClientException {
         ResponseEntity<String> responseEntity = this.restTemplate.exchange(SERVER_DOMAIN + url, HttpMethod.GET, new HttpEntity<>(httpHeaders), String.class, uriVariables);
+        return responseEntity.getBody();
+    }
+
+    public String getForBody(String url) throws RestClientException {
+        ResponseEntity<String> responseEntity = this.restTemplate.exchange(SERVER_DOMAIN + url, HttpMethod.GET, new HttpEntity<>(httpHeaders), String.class);
         return responseEntity.getBody();
     }
 
@@ -64,34 +69,11 @@ public class MagentoClientAdvanced {
      * @return
      * @throws RestClientException
      */
-    public ResponseEntity<String> getForEntity(String url, Object... uriVariables) throws RestClientException {
+    public ResponseEntity<String> getForEntity(String url, Map<String, String> uriVariables) throws RestClientException {
         return this.restTemplate.exchange(SERVER_DOMAIN + url, HttpMethod.GET, new HttpEntity<>(httpHeaders), String.class, uriVariables);
     }
 
-    /**
-     * 请求 magento api，直接返回响应体 字符串内容
-     *
-     * @param url
-     * @param Params
-     * @param uriVariables
-     * @return
-     * @throws RestClientException
-     */
-    public String postForObject(String url, Map<String, String> Params, Object... uriVariables) throws RestClientException {
-        ResponseEntity<String> responseEntity = this.restTemplate.exchange(SERVER_DOMAIN + url, HttpMethod.POST, new HttpEntity<>(Params, httpHeaders), String.class, uriVariables);
-        return responseEntity.getBody();
-    }
-
-    /**
-     * 请求 magento api，并返回 响应体对象
-     *
-     * @param url
-     * @param Params
-     * @param uriVariables
-     * @return
-     * @throws RestClientException
-     */
-    public ResponseEntity<String> postForEntity(String url, Map<String, String> Params, Object... uriVariables) throws RestClientException {
-        return this.restTemplate.exchange(SERVER_DOMAIN + url, HttpMethod.POST, new HttpEntity<>(Params, httpHeaders), String.class, uriVariables);
+    public ResponseEntity<String> getForEntity(String url) throws RestClientException {
+        return this.restTemplate.exchange(SERVER_DOMAIN + url, HttpMethod.GET, new HttpEntity<>(httpHeaders), String.class);
     }
 }
