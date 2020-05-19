@@ -2,17 +2,13 @@ package com.gfashion.restclient;
 
 import com.gfashion.domain.customer.GfCustomer;
 import com.gfashion.domain.customer.GfCustomerRegistration;
-import com.gfashion.restclient.magento.GfMagentoConverter;
 import com.gfashion.restclient.magento.MagentoCustomer;
+import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.google.gson.Gson;
-import lombok.AllArgsConstructor;
-import org.json.JSONObject;
-
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 @Component
 public class MagentoCustomerClient {
