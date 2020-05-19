@@ -1,7 +1,11 @@
 package com.gfashion.domain;
 
 public class UserGroup {
+
+    //用户组 内部代码
     private String code;
+
+    //用户组折扣信息
     private String tax_class_name;
 
     public String getCode() {

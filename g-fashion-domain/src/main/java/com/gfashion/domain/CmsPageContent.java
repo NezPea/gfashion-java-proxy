@@ -2,8 +2,10 @@ package com.gfashion.domain;
 
 public class CmsPageContent {
 
+    //文章ID
     private String id;
 
+    //文章正文内容
     private String content;
 
     public String getId() {

@@ -2,7 +2,10 @@ package com.gfashion.domain;
 
 public class CustomerEntity {
 
+    //顾客 所属组 ID
     private String group_id;
+
+    //顾客邮箱
     private String email;
 
     public String getGroup_id() {

@@ -2,15 +2,10 @@ package com.gfashion.domain;
 
 public class CmsPage {
 
+    //文章ID
     private String id;
 
-    //不需要这个链接，而是通过前端 id 获取直接获取文章内容
-    //private String identifier;
-
-    //仅做分类用，不需要返回
-    //private String title;
-
-    //真正的页面标题
+    //文章标题
     private String content_heading;
 
     public String getId() {
