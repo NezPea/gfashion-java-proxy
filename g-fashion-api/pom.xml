@@ -31,6 +31,11 @@
             <artifactId>g-fashion-data</artifactId>
             <version>${gfashion.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.gfashion</groupId>
+            <artifactId>g-fashion-client</artifactId>
+            <version>${gfashion.version}</version>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>com.gfashion</groupId>-->
 <!--            <artifactId>g-fashion-security</artifactId>-->
@@ -41,6 +46,23 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${io.springfox.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${io.springfox.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-bean-validators</artifactId>
+            <version>${io.springfox.version}</version>
         </dependency>
 
         <!-- Test dependencies -->
