@@ -3,13 +3,12 @@ package com.gfashion.api;
 import com.gfashion.domain.product.GfProduct;
 import com.gfashion.domain.product.GfProductSearchResponse;
 import com.gfashion.restclient.MagentoProductClient;
-import com.gfashion.restclient.magento.MagentoSearchCriteria;
-import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
-import org.json.JSONString;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -22,42 +21,36 @@ import java.util.Map;
 @AllArgsConstructor
 @Slf4j
 public class GfashionProductResource {
-    private MagentoProductClient _client;
+    private MagentoProductClient magentoProductClient;
 
 
-    @GetMapping("/product/{skuId}")
+    @GetMapping("/products/{skuId}")
     public GfProduct getProductBySku(@PathVariable String skuId) {
-        return this._client.getProductBySku(skuId);
+        return magentoProductClient.getProductBySku(skuId);
     }
+
     /**
-     * {@code GET  /channelProduct} : get all the channel products with given query string.
+     * {@code GET  /channelProducts} : get all the channel products with given query string.
      *
-     * @param query query string
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of transactions in body.
+     * @param httpServletRequest HttpServletRequest
+     * @return the {@link GfProductSearchResponse} with status {@code 200 (OK)} and the list of transactions in body.
      */
-//    @GetMapping("/channelProduct")
-//    public GfProductSearchResponse searchTrxTransactions(@RequestParam(value = "query") String query) {
-//        return this._client.searchTrxTransactions(query);
-//    }
-
-
-
-    @GetMapping(value="/channelProduct",produces="application/json;charset=utf-8")
-    public GfProductSearchResponse searchTrxTransactions(HttpServletRequest httpServletRequest) {
+    @GetMapping(value = "/channelProducts", produces = "application/json;charset=utf-8")
+    public GfProductSearchResponse searchChannelProducts(HttpServletRequest httpServletRequest) {
 
         Map<String, String[]> map = httpServletRequest.getParameterMap();
-        String queryString ;
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("?");
         for (Map.Entry<String, String[]> entry : map.entrySet()) {
             String k = entry.getKey();
             String v = entry.getValue()[0];
             buf.append(k).append("=").append(v).append("&");
         }
-        queryString = buf.substring(0, buf.length()-1);
-        log.info("info:"+ queryString);
-        return this._client.searchTrxTransactions(queryString);
+
+        String queryString = buf.substring(0, buf.length() - 1);
+        log.info("info:" + queryString);
+        return magentoProductClient.searchProducts(queryString);
     }
 
 

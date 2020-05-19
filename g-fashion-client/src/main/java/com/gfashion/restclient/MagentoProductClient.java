@@ -4,20 +4,13 @@ import com.gfashion.domain.product.GfProduct;
 import com.gfashion.domain.product.GfProductSearchResponse;
 import com.gfashion.restclient.magento.MagentoProduct;
 import com.gfashion.restclient.magento.MagentoProductSearchResponse;
-import com.gfashion.restclient.magento.MagentoSearchCriteria;
-import com.gfashion.restclient.magento.MagentoSearchFilterGroup;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 
 @Component
@@ -42,7 +35,7 @@ public class MagentoProductClient {
     }
 
 
-    public GfProductSearchResponse searchTrxTransactions(String query){
+    public GfProductSearchResponse searchProducts(String query){
         String getProductSearchUrl = magentoConfig.getUrl().get("products") + query;
 
         ResponseEntity<String> responseProductSearch = this._restClient.exchangeGet(getProductSearchUrl, String.class, null);
