@@ -27,7 +27,14 @@
 
 # code style and convention
 
-before checking in (git commit/push) any code, make sure
+## Exception Handling
+
+- Use [`ResponseStatusException`](https://www.baeldung.com/spring-response-status-exception) offered by Spring 5
+- Until we really need a global `@ExceptionHandler` with the `@ControllerAdvice` annotation
+
+## Code Commit Notes
+
+before your code commit, please make sure
 - merge upstream code changes (`develop` and `master` branch)
 - review all issues reported by SonarLint (an intellij plug-in)
 - format your code (IDE default is acceptable at the moment)
