@@ -1,10 +1,12 @@
 package com.gfashion.restclient;
 
-import com.gfashion.domain.Gf4xxResponse;
+import com.gfashion.domain.Gf4xx5xxResponse;
 import com.gfashion.domain.GfResponse;
 import com.gfashion.domain.customer.GfCustomerLogin;
 import com.gfashion.domain.customer.GfCustomerLoginResponse;
 import com.gfashion.domain.customer.GfCustomerRegistration;
+import com.gfashion.domain.customer.GfCustomersPassword;
+import com.gfashion.domain.customer.GfCustomersResetPassword;
 import com.gfashion.restclient.magento.MagentoCustomer;
 import com.gfashion.restclient.magento.MagentoObjectConverter;
 import com.google.gson.Gson;
@@ -86,13 +88,60 @@ public class MagentoRestClient {
         Gson gson = new Gson();
 
         HttpEntity<String> request = new HttpEntity<>(gson.toJson(gfCustomerLogin), headers);
-        ResponseEntity<String> responseEntity = this._client.postForEntity(url, request, String.class);
+        ResponseEntity<String> responseEntity = _client.postForEntity(url, request, String.class);
 
         GfResponse gfResponse;
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             gfResponse = new GfCustomerLoginResponse(responseEntity.getBody().replace("\"", ""));
         } else {
-            gfResponse = gson.fromJson(responseEntity.getBody(), Gf4xxResponse.class);
+            gfResponse = gson.fromJson(responseEntity.getBody(), Gf4xx5xxResponse.class);
+        }
+        gfResponse.setStatusCode(responseEntity.getStatusCodeValue());
+        return gfResponse;
+    }
+
+    private String getCustomerToken() {
+        GfCustomerLogin gfCustomerLogin = new GfCustomerLogin("tonywengg@yahoo.com", "Abc12345");
+        GfCustomerLoginResponse response = (GfCustomerLoginResponse) getCustomerToken(gfCustomerLogin);
+        return response.getToken();
+    }
+
+    public GfResponse putCustomersPassword(GfCustomersPassword gfCustomersPassword) {
+        String url = baseUrl + "/customers/password";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(getCustomerToken());
+
+        Gson gson = new Gson();
+
+        HttpEntity<String> request = new HttpEntity<>(gson.toJson(gfCustomersPassword), headers);
+        ResponseEntity<String> responseEntity = _client.exchange(url, HttpMethod.PUT, request, String.class);
+
+        GfResponse gfResponse;
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            gfResponse = new GfResponse();
+        } else {
+            gfResponse = gson.fromJson(responseEntity.getBody(), Gf4xx5xxResponse.class);
+        }
+        gfResponse.setStatusCode(responseEntity.getStatusCodeValue());
+        return gfResponse;
+    }
+
+    public GfResponse postCustomersResetPassword(GfCustomersResetPassword gfCustomersResetPassword) {
+        String url = baseUrl + "/customers/resetPassword";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Gson gson = new Gson();
+
+        HttpEntity<String> request = new HttpEntity<>(gson.toJson(gfCustomersResetPassword), headers);
+        ResponseEntity<String> responseEntity = _client.postForEntity(url, request, String.class);
+
+        GfResponse gfResponse;
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            gfResponse = new GfResponse();
+        } else {
+            gfResponse = gson.fromJson(responseEntity.getBody(), Gf4xx5xxResponse.class);
         }
         gfResponse.setStatusCode(responseEntity.getStatusCodeValue());
         return gfResponse;
