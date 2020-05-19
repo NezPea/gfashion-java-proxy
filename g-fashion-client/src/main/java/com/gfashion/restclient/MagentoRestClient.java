@@ -11,9 +11,12 @@ import com.gfashion.restclient.magento.MagentoCustomer;
 import com.gfashion.restclient.magento.MagentoObjectConverter;
 import com.google.gson.Gson;
 import org.json.JSONObject;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -100,17 +103,10 @@ public class MagentoRestClient {
         return gfResponse;
     }
 
-    private String getCustomerToken() {
-        GfCustomerLogin gfCustomerLogin = new GfCustomerLogin("tonywengg@yahoo.com", "Abc12345");
-        GfCustomerLoginResponse response = (GfCustomerLoginResponse) getCustomerToken(gfCustomerLogin);
-        return response.getToken();
-    }
-
     public GfResponse putCustomersPassword(GfCustomersPassword gfCustomersPassword) {
         String url = baseUrl + "/customers/password";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(getCustomerToken());
 
         Gson gson = new Gson();
 
