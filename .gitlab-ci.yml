@@ -1,0 +1,31 @@
+stages:
+  - build
+  - package
+
+build:
+  image: maven:ibmjava-alpine
+  stage: build
+  script:
+  - mvn package
+  artifacts:
+    paths:
+    - g-fashion-app/target
+  tags: 
+  - docker
+
+.docker_build_tmpl: &docker_build_tmpl
+  stage: package
+  script:
+  - docker build -f ${DOCKERFILE_PATH} -t 939023048332.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY}:${CI_COMMIT_SHORT_SHA} .
+  - docker push 939023048332.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY}:${CI_COMMIT_SHORT_SHA}
+  - docker rmi 939023048332.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY}:${CI_COMMIT_SHORT_SHA}
+
+package:
+  <<: *docker_build_tmpl
+  variables:
+    REPOSITORY: 'gfashion/magento-java-proxy'
+    DOCKERFILE_PATH: 'docker/Dockerfile'
+  tags: 
+  - docker
+
+
