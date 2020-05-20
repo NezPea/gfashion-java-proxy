@@ -24,6 +24,7 @@ public class GfashionProductResource {
 
     @GetMapping("/products/{skuId}")
     public GfProduct getProductBySku(@PathVariable String skuId) {
+
         return magentoProductClient.getProductBySku(skuId);
     }
 
