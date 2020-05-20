@@ -5,10 +5,7 @@ import com.gfashion.domain.product.GfProductSearchResponse;
 import com.gfashion.restclient.MagentoProductClient;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -18,6 +15,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(path = "/gfashion/v1", produces = {"application/json"})
+@CrossOrigin(origins = "*")
 @AllArgsConstructor
 @Slf4j
 public class GfashionProductResource {
