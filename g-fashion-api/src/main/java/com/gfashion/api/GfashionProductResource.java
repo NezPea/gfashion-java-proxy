@@ -36,16 +36,11 @@ public class GfashionProductResource {
     @GetMapping(value = "/channelProducts", produces = "application/json;charset=utf-8")
     public GfProductSearchResponse searchChannelProducts(HttpServletRequest httpServletRequest) {
 
-        Map<String, String[]> map = httpServletRequest.getParameterMap();
-
         StringBuilder buf = new StringBuilder();
         buf.append("?");
-        for (Map.Entry<String, String[]> entry : map.entrySet()) {
-            String k = entry.getKey();
-            String v = entry.getValue()[0];
-            buf.append(k).append("=").append(v).append("&");
-        }
-
+        httpServletRequest.getParameterMap().forEach((k,v)->{
+            buf.append(k).append("=").append(v[0]).append("&");
+        });
         String queryString = buf.substring(0, buf.length() - 1);
         log.info("info:" + queryString);
         return magentoProductClient.searchProducts(queryString);
