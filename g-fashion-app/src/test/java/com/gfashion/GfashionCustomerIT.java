@@ -9,12 +9,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.hamcrest.Matchers.equalTo;
+
 /**
  * Integration tests for the {@link com.gfashion.domain.GfDesigner} REST controller.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class GfashionExampleIT {
+public class GfashionCustomerIT {
 
 
     @LocalServerPort
@@ -26,10 +28,13 @@ public class GfashionExampleIT {
     }
 
     @Test
-    public void getCountries() throws Exception {
+    public void getCustomerByIdShouldReturnCustomer() throws Exception {
 
-        Response response=RestAssured.get("/gfashion/countries");
+        Response response = RestAssured.get("/gfashion/v1/customers/{customerId}", 4);
         response.then().assertThat().
-                statusCode(200);
+                statusCode(200).
+                body("id", equalTo(4)).
+                body("firstname", equalTo("Allen"));
+        ;
     }
 }

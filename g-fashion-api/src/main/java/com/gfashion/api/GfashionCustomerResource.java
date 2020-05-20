@@ -11,17 +11,18 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping(path = "/gfashion/v1", produces = {"application/json"})
+@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class GfashionCustomerResource {
-    private MagentoCustomerClient _client;
+    private MagentoCustomerClient magentoCustomerClient;
 
-    @PostMapping("/customer")
+    @PostMapping("/customers")
     public GfCustomer creatCustomer(@RequestBody GfCustomerRegistration customer) {
-        return this._client.createCustomer(customer);
+        return magentoCustomerClient.createCustomer(customer);
     }
 
-    @GetMapping("/customer/{customerId}")
+    @GetMapping("/customers/{customerId}")
     public GfCustomer getCustomerById(@PathVariable Integer customerId) {
-        return this._client.getCustomerById(customerId);
+        return magentoCustomerClient.getCustomerById(customerId);
     }
 }
