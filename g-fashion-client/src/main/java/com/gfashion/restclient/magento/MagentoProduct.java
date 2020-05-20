@@ -34,7 +34,7 @@ public class MagentoProduct {
     private String designer_link;
     private String brand_name;
     private String brand_link;
-    private Integer purchase_number_limit; // 每个账号至多购买x件
+    private Integer purchase_number_limit;  // 每个账号至多购买x件
 
     private List<JSONObject> options;
     private List<JSONObject> tier_prices;
