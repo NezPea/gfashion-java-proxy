@@ -20,7 +20,7 @@ public class GfashionHomepageResource {
     @GetMapping("/homepage/")
     public CustomizedHomepage getDefaultCustomizedHomepage(@PathVariable Integer customerId) {
         try {
-            return magentoHomepageClient.getCustomizedHomepage(customerId);
+            return magentoHomepageClient.getDefaultCustomizedHomepage(customerId);
         } catch (CustomerNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer Not Found", e);
         }
