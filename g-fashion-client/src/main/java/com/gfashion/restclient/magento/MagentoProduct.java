@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MagentoProduct {
+
     private Integer id;
     private String sku;
     private String name;
@@ -22,16 +23,11 @@ public class MagentoProduct {
     private String created_at;
     private String updated_at;
     private Integer weight;
-    private List <MagentoProductMediaGalleryEntries> media_gallery_entries; // 媒体图片资源库，包含图片地址
-    private List <MagentoProductCustomAttributes> custom_attributes; // 自定义属性：可能包含颜色、描述、缩略图、价格
-    private List <MagentoProductLinks> product_links; // 关联产品
-    private MagentoProductExtensionAttributes extension_attributes; // 扩展属性
-    private String designer_name;
-    private String designer_link;
-    private String brand_name;
-    private String brand_link;
-    private Integer purchase_number_limit; // 每个账号至多购买x件
-
+    private JSONObject extension_attributes;
+    private List<MagentoProductLink> product_links;
     private List<JSONObject> options;
+    private List<MagentoMediaGalleryEntry> media_gallery_entries;
     private List<JSONObject> tier_prices;
+    private List<JSONObject> custom_attributes;
+
 }
