@@ -5,10 +5,7 @@ import com.gfashion.domain.product.GfProductSearchResponse;
 import com.gfashion.restclient.MagentoProductClient;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -18,6 +15,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping(path = "/gfashion/v1", produces = {"application/json"})
+@CrossOrigin(origins = "*")
 @AllArgsConstructor
 @Slf4j
 public class GfashionProductResource {
@@ -38,16 +36,11 @@ public class GfashionProductResource {
     @GetMapping(value = "/channelProducts", produces = "application/json;charset=utf-8")
     public GfProductSearchResponse searchChannelProducts(HttpServletRequest httpServletRequest) {
 
-        Map<String, String[]> map = httpServletRequest.getParameterMap();
-
         StringBuilder buf = new StringBuilder();
         buf.append("?");
-        for (Map.Entry<String, String[]> entry : map.entrySet()) {
-            String k = entry.getKey();
-            String v = entry.getValue()[0];
-            buf.append(k).append("=").append(v).append("&");
-        }
-
+        httpServletRequest.getParameterMap().forEach((k,v)->{
+            buf.append(k).append("=").append(v[0]).append("&");
+        });
         String queryString = buf.substring(0, buf.length() - 1);
         log.info("info:" + queryString);
         return magentoProductClient.searchProducts(queryString);
