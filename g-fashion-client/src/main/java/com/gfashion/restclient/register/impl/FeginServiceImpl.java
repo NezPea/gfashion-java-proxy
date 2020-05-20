@@ -46,8 +46,13 @@ public class FeginServiceImpl  implements RegisterService {
     @Override
     public String getCustomerToken(User user) {
         Gson gson=new Gson();
-        String str =  gson.toJson(user);;
-        String customerToken= feginRegisterService.getCustomerToken(str);
+        String str =  gson.toJson(user);
+        String customerToken=null;
+        try{
+             customerToken= feginRegisterService.getCustomerToken(str);
+        }catch (Exception ex){
+            return gson.toJson( "get token failed");
+        }
         return customerToken;
     }
 
@@ -162,4 +167,16 @@ public class FeginServiceImpl  implements RegisterService {
         return returnStr;
      }
 
+    @Override
+    public String login(User user) {
+        Gson gson=new Gson();
+        String str =  gson.toJson(user);
+        String customerToken=null;
+        try{
+            customerToken= feginRegisterService.login(str);
+        }catch (Exception ex){
+            return gson.toJson("login failed");
+        }
+        return customerToken;
+    }
 }

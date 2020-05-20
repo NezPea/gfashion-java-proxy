@@ -40,6 +40,13 @@ public class GfashionRegister {
         return token;
     }
 
+    @GetMapping("/login")
+    public String login(@RequestBody User user) {
+        String token = registerService.login(user);
+        System.out.println(token);
+        return token;
+    }
+
     @PostMapping("/customer")
     public String registerCustomer(@RequestBody CustomerEntity customer) throws UnsupportedEncodingException {
         String response=registerService.registerCustomer(customer);

@@ -16,5 +16,6 @@ public interface RegisterService {
     String getAdminToken();
     String getAdminToken(User user);
     String getCustomerToken(User user);
+    String login(User user);
     String registerCustomer(CustomerEntity customer) throws UnsupportedEncodingException;
 }

@@ -23,6 +23,10 @@ public interface FeginRegisterService {
             headers = {"Content-Type=application/json"},consumes = MediaType.APPLICATION_JSON_VALUE)
     String getCustomerToken(@RequestBody String user);
 
+    @RequestMapping(method = RequestMethod.POST, value = "integration/customer/token",
+            headers = {"Content-Type=application/json"},consumes = MediaType.APPLICATION_JSON_VALUE)
+    String login(@RequestBody String user);
+
     @RequestMapping(method = RequestMethod.GET, value = "/customers/1",
             headers =    {"Authorization=Bearer ${adminToken}","Content-Type=application/json"},
 //            headers =    {"Content-Type=application/json"},
