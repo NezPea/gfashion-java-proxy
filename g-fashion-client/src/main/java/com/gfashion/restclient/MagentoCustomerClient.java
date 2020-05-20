@@ -39,7 +39,7 @@ public class MagentoCustomerClient {
                 throw new CustomerCreationException();
             }
             throw new CustomerUnknowException(e.getMessage());
-        }git
+        }
     }
 
     public GfCustomer getCustomerById(Integer customerId) throws CustomerUnknowException, CustomerNotFoundException {
