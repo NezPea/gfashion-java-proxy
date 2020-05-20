@@ -12,14 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MagentoExtensionAttribute {
 
-    private List <Integer> website_ids;
-    private List <JSONObject> category_links;
-    private List <JSONObject> bundle_product_options;
-    private JSONObject stock_item;
-    private List <JSONObject> configurable_product_options;
-    private List <Integer> configurable_product_links;
-    private List <JSONObject> downloadable_product_links;
-    private List <JSONObject> downloadable_product_samples;
-    private List <JSONObject> giftcard_amounts;
+    private List<Integer> website_ids;
+    private List<JSONObject> category_links;
 
 }
