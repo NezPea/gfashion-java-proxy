@@ -1,5 +1,6 @@
 package com.gfashion.api;
 
+import com.gfashion.restclient.MagentoClient;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,4 +18,11 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class GfashionDesignerResource {
+
+    private MagentoClient magentoClient;
+
+    @GetMapping("/countries")
+    public List<Object> getCountries() {
+        return magentoClient.getCountries();
+    }
 }
