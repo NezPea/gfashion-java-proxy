@@ -8,17 +8,20 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MagentoProductClient {
+
+    @Value("${magento.url.products}")
+    private String productsUrl;
+
     @Autowired
     private RestClient _restClient;
 
-    @Autowired
-    private MegentoConfigProperties magentoConfig;
-    private GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
+    private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
 
     /**
      * getProduct
@@ -26,60 +29,59 @@ public class MagentoProductClient {
      * @return
      */
     public String getProductdetail(String sku) {
-        JSONObject ProductOut = new JSONObject();
-        try{
-            ResponseEntity<String> responseEntity = _restClient.exchangeGet(
-                    magentoConfig.getUrl().get("product") + sku, String.class, null);
+        JSONObject productOut = new JSONObject();
+
+        HttpHeaders headers = _restClient.getDefaultHeaders(null);
+        ResponseEntity<String> responseEntity = _restClient.exchangeGet(
+                productsUrl + sku, String.class, headers);
 
 //            StringBuffer result = new StringBuffer();
 //            result.append(responseEntity.getBody());
 //            System.out.println("result==="+result.toString());
 
-            JSONObject ProductObject = new JSONObject(responseEntity.getBody());
+        JSONObject productObject = new JSONObject(responseEntity.getBody());
 
-            // 获取描述
-            String description = "";
-            if(ProductObject.has("custom_attributes")){
-                description = getStrFromJsonArray("description",
-                        ProductObject.getJSONArray("custom_attributes"),
-                        "attribute_code",
-                        "value");
-            }
-
-            ProductOut.put("name", ProductObject.has("name")?ProductObject.get("name"):""); // 产品名称
-            ProductOut.put("price", ProductObject.has("price")?ProductObject.get("price"):""); // 优惠价
-            ProductOut.put("images", ProductObject.has("media_gallery_entries")?ProductObject.getJSONArray("media_gallery_entries"):""); // 媒体图片资料库
-            ProductOut.put("attribute", ProductObject.has("custom_attributes")?ProductObject.getJSONArray("custom_attributes"):""); // 产品属性
-            ProductOut.put("description", description); // 描述
-            ProductOut.put("designer_name", ""); // 设计师名　暂时无该信息
-            ProductOut.put("designer_link", ""); // 设计师链接　暂时无该信息
-            ProductOut.put("brand_name", ""); // 品牌名　暂时无该信息
-            ProductOut.put("brand_link", ""); // 品牌链接　暂时无该信息
-            ProductOut.put("purchase_number_limit", ""); // 每人购买限制数量　暂时无该信息
-
-            JSONArray jsonArray;
-            if(ProductObject.has("product_links")){
-                jsonArray = ProductObject.getJSONArray("product_links"); // 关联产品
-                // 循环获取关联产品的名称和图片
-                for(int i=0;i< jsonArray.length();i++){
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-                    responseEntity = this._restClient.exchangeGet(
-                            magentoConfig.getUrl().get("product") + jsonObject.getString("linked_product_sku"),
-                            String.class, null);
-//                    System.out.println("result111==="+responseEntity.getBody());
-                    JSONObject rtnObj = new JSONObject(responseEntity.getBody());
-                    jsonObject.put("name",rtnObj.has("name")?rtnObj.get("name"):""); // 产品名称
-                    jsonObject.put("price",rtnObj.has("price")?rtnObj.get("price"):""); // 优惠价
-                    jsonObject.put("image", rtnObj.has("media_gallery_entries")?getStrFromJsonArray("image", rtnObj.getJSONArray("media_gallery_entries"),"media_type","file"):"");
-                }
-            }
-            ProductOut.put("product_links", ProductObject.getJSONArray("product_links"));  // 相关产品信息
-
-        }catch (Exception e){
-            e.printStackTrace();
+        // 获取描述
+        String description = "";
+        if(productObject.has("custom_attributes")){
+            description = getStrFromJsonArray("description",
+                    productObject.getJSONArray("custom_attributes"),
+                    "attribute_code",
+                    "value");
         }
-        return ProductOut.toString();
+
+        productOut.put("name", productObject.has("name")?productObject.get("name"):""); // 产品名称
+        productOut.put("price", productObject.has("price")?productObject.get("price"):""); // 优惠价
+        productOut.put("images", productObject.has("media_gallery_entries")?productObject.getJSONArray("media_gallery_entries"):""); // 媒体图片资料库
+        productOut.put("attribute", productObject.has("custom_attributes")?productObject.getJSONArray("custom_attributes"):""); // 产品属性
+        productOut.put("description", description); // 描述
+        productOut.put("designer_name", ""); // 设计师名　暂时无该信息
+        productOut.put("designer_link", ""); // 设计师链接　暂时无该信息
+        productOut.put("brand_name", ""); // 品牌名　暂时无该信息
+        productOut.put("brand_link", ""); // 品牌链接　暂时无该信息
+        productOut.put("purchase_number_limit", ""); // 每人购买限制数量　暂时无该信息
+
+        JSONArray jsonArray = new JSONArray();
+        if(productObject.has("product_links")){
+            jsonArray = productObject.getJSONArray("product_links"); // 关联产品
+            // 循环获取关联产品的名称和图片
+            int jsonArrayLength = jsonArray.length();
+            for(int i=0;i< jsonArrayLength;i++){
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                responseEntity = this._restClient.exchangeGet(
+                        productsUrl + jsonObject.getString("linked_product_sku"),
+                        String.class, headers);
+//                    System.out.println("result111==="+responseEntity.getBody());
+                JSONObject rtnObj = new JSONObject(responseEntity.getBody());
+                jsonObject.put("name",rtnObj.has("name")?rtnObj.get("name"):""); // 产品名称
+                jsonObject.put("price",rtnObj.has("price")?rtnObj.get("price"):""); // 优惠价
+                jsonObject.put("image", rtnObj.has("media_gallery_entries")?getStrFromJsonArray("image", rtnObj.getJSONArray("media_gallery_entries"),"media_type","file"):"");
+            }
+        }
+        productOut.put("product_links", jsonArray);  // 相关产品信息
+
+        return productOut.toString();
     }
 
     /**
@@ -102,24 +104,17 @@ public class MagentoProductClient {
     }
 
     /**
-     * getProduct
-     * @param sku
+     * getProductBySku
+     * @param skuId
      * @return
      */
-    public GfProduct getProduct(String sku){
-        try {
-            ResponseEntity<String> responseEntity = _restClient.exchangeGet(
-                    magentoConfig.getUrl().get("product") + sku,
-                    String.class,
-                    null);
+    public GfProduct getProductBySku(String skuId){
+        ResponseEntity<String> responseEntity = _restClient.exchangeGet(
+                productsUrl + skuId,
+                String.class,
+                null);
 
-            Gson gson = new Gson();
-            return _mapper.convertMagentoProductToGfProduct(gson.fromJson(responseEntity.getBody(), MagentoProduct.class));
-        }catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
+        Gson gson = new Gson();
+        return _mapper.convertMagentoProductToGfProduct(gson.fromJson(responseEntity.getBody(), MagentoProduct.class));
     }
-
-
 }
