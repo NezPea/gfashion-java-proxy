@@ -8,5 +8,7 @@ public class GfashionApp {
 
     public static void main(String[] args) {
         SpringApplication.run(GfashionApp.class, args);
+        System.setProperty("tomcat.util.http.parser.HttpParser.requestTargetAllow","[]");
     }
+
 }

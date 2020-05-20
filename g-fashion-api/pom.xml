@@ -36,11 +36,11 @@
             <artifactId>g-fashion-client</artifactId>
             <version>${gfashion.version}</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>com.gfashion</groupId>-->
-        <!--            <artifactId>g-fashion-security</artifactId>-->
-        <!--            <version>${gfashion.version}</version>-->
-        <!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.gfashion</groupId>-->
+<!--            <artifactId>g-fashion-security</artifactId>-->
+<!--            <version>${gfashion.version}</version>-->
+<!--        </dependency>-->
 
         <!-- Necessary Boot starters -->
         <dependency>

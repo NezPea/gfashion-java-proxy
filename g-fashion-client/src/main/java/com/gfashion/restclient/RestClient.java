@@ -43,14 +43,13 @@ public class RestClient {
         return Objects.requireNonNull(responseEntity.getBody()).replace("\"", "");
     }
 
-    public HttpHeaders getDefaultHeaders(MultiValueMap<String, String> extraHeaders) {
+    private HttpHeaders getDefaultHeaders(MultiValueMap<String, String> extraHeaders) {
+        String adminToken = getAdminToken();
         HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(adminToken);
         if (extraHeaders != null) {
             headers.addAll(extraHeaders);
-        }else {
-            String adminToken = getAdminToken();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setBearerAuth(adminToken);
         }
         return headers;
     }

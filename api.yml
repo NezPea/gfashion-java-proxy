@@ -17,19 +17,23 @@ tags:
     externalDocs:
       description: "Find out more"
       url: "http://swagger.io"
-  - name: "store"
-    description: "Access to GFashion Store orders"
-  - name: "customer"
-    description: "Operations about customer"
   - name: "product"
     description: "Recommended product"
+  - name: "order"
+    description: "Access to GFashion Store orders"
+  - name: "cart"
+    description: "Access to customer's cart"
+  - name: "customer"
+    description: "Operations about customer"
   - name: "designer"
     description: "Recommended desginer"
+  - name: "category"
+    description: "Access to GFashion category"
 schemes:
   - "https"
   - "http"
 paths:
-  /product:
+  /products:
     post:
       tags:
         - "product"
@@ -86,7 +90,7 @@ paths:
         - gfashionstore_auth:
             - "write:products"
             - "read:products"
-  /product/search:
+  /channelProducts/:
     get:
       tags:
         - "product"
@@ -115,7 +119,36 @@ paths:
         - gfashionstore_auth:
             - "write:products"
             - "read:products"
-  /product/{productId}:
+  /products/searchByDesigner/{designerId}:
+    get:
+      tags:
+        - "product"
+      summary: "Searches Products by Designer Id"
+      operationId: "searchProductsByDesigner"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - name: "designerId"
+          in: "path"
+          description: "Designer Id"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Product"
+        "400":
+          description: "Invalid status value"
+      security:
+        - gfashionstore_auth:
+            - "write:products"
+            - "read:products"
+  /products/{productId}:
     get:
       tags:
         - "product"
@@ -207,7 +240,7 @@ paths:
         - gfashionstore_auth:
             - "write:products"
             - "read:products"
-  /product/{productId}/uploadImage:
+  /products/{productId}/uploadImage:
     post:
       tags:
         - "product"
@@ -245,10 +278,10 @@ paths:
             - "write:products"
             - "read:products"
 
-  /store/order:
+  /orders:
     post:
       tags:
-        - "store"
+        - "order"
       summary: "Place an order for a product"
       description: ""
       operationId: "placeOrder"
@@ -269,12 +302,12 @@ paths:
             $ref: "#/definitions/Order"
         "400":
           description: "Invalid Order"
-  /store/order/{orderId}:
+  /orders/{orderId}:
     get:
       tags:
-        - "store"
-      summary: "Find purchase order by ID"
-      description: "For valid response try integer IDs with value >= 1 and <= 10.         Other values will generated exceptions"
+        - "order"
+      summary: "Find purchase order by orderID"
+      description: "For valid response try integer IDs with value >= 1 and <= 10. Other values will generate exceptions"
       operationId: "getOrderById"
       produces:
         - "application/xml"
@@ -299,9 +332,9 @@ paths:
           description: "Order not found"
     delete:
       tags:
-        - "store"
-      summary: "Delete purchase order by ID"
-      description: "For valid response try integer IDs with positive integer value.         Negative or non-integer values will generate API errors"
+        - "order"
+      summary: "Delete purchase order by orderID"
+      description: "For valid response try integer IDs with positive integer value. Negative or non-integer values will generate API errors"
       operationId: "deleteOrder"
       produces:
         - "application/xml"
@@ -319,7 +352,136 @@ paths:
           description: "Invalid ID supplied"
         "404":
           description: "Order not found"
-  /customer:
+  /orders/ordersOfCustomer/{customerId}:
+    get:
+      tags:
+        - "order"
+      summary: "Find purchase orders by customerId"
+      description: "For valid response try integer IDs with value >= 1 and <= 10. Other values will generate exceptions"
+      operationId: "getOrdersByCustomerId"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - name: "customerId"
+          in: "path"
+          description: "ID of customer whose orders needs to be fetched"
+          required: true
+          type: "integer"
+          maximum: 10.0
+          minimum: 1.0
+          format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Order"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Order not found"
+
+  /carts/productsOf/{customerId}:
+    get:
+      tags:
+        - "cart"
+      summary: "Find all products in the shopping cart by customerId"
+      description: "For valid response try integer IDs with value >= 1 and <= 10. Other values will generate exceptions"
+      operationId: "getProductsinCartByCustomerId"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - name: "customerId"
+          in: "path"
+          description: "ID of product that needs to be fetched"
+          required: true
+          type: "integer"
+          maximum: 10.0
+          minimum: 1.0
+          format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Product"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Order not found"
+  /carts/{customerId}/{productId}:
+    post:
+      tags:
+        - "cart"
+      summary: "Add an product to the shopping cart of a customer with customerId"
+      description: "For valid response try integer IDs with value >= 1 and <= 10. Other values will generate exceptions"
+      operationId: "addProducttoCartByCustomerId"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - name: "customerId"
+          in: "path"
+          description: "ID of customer to whose cart the product needs to be added"
+          required: true
+          type: "integer"
+          maximum: 10.0
+          minimum: 1.0
+          format: "int64"
+        - name: "productId"
+          in: "path"
+          description: "ID of product that needs to be added for the customer"
+          required: true
+          type: "integer"
+          maximum: 10.0
+          minimum: 1.0
+          format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Product not found"
+    delete:
+      tags:
+        - "cart"
+      summary: "Delete an product From the shopping cart of a customer with customerId"
+      description: "For valid response try integer IDs with value >= 1 and <= 10. Other values will generate exceptions"
+      operationId: "deleteProducttoCartByCustomerId"
+      produces:
+        - "application/xml"
+        - "application/json"
+      parameters:
+        - name: "customerId"
+          in: "path"
+          description: "ID of customer from whose cart the product needs to be delete"
+          required: true
+          type: "integer"
+          maximum: 10.0
+          minimum: 1.0
+          format: "int64"
+        - name: "productId"
+          in: "path"
+          description: "ID of product that needs to be deleted for the customer"
+          required: true
+          type: "integer"
+          maximum: 10.0
+          minimum: 1.0
+          format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Product not found"
+
+  /customers:
     post:
       tags:
         - "customer"
@@ -335,16 +497,16 @@ paths:
           description: "Created customer object"
           required: true
           schema:
-            $ref: "#/definitions/Customer"
+            $ref: "#/definitions/CustomerRegisration"
       responses:
         default:
           description: "successful operation"
-  /customer/createWithArray:
+  /customers/createWithArray:
     post:
       tags:
         - "customer"
       summary: "Creates list of customers with given input array"
-      description: ""
+      description: "not sure when this api is needed"
       operationId: "createCustomersWithArrayInput"
       produces:
         - "application/xml"
@@ -357,16 +519,16 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/Customer"
+              $ref: "#/definitions/CustomerRegisration"
       responses:
         default:
           description: "successful operation"
-  /customer/createWithList:
+  /customers/createWithList:
     post:
       tags:
         - "customer"
       summary: "Creates list of customers with given input array"
-      description: ""
+      description: "not sure when this api is needed"
       operationId: "createCustomersWithListInput"
       produces:
         - "application/xml"
@@ -379,11 +541,11 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/Customer"
+              $ref: "#/definitions/CustomerRegisration"
       responses:
         default:
           description: "successful operation"
-  /customer/login:
+  /customers/login:
     get:
       tags:
         - "customer"
@@ -394,9 +556,9 @@ paths:
         - "application/xml"
         - "application/json"
       parameters:
-        - name: "username"
+        - name: "customername"
           in: "query"
-          description: "The user name for login"
+          description: "The customer name for login"
           required: true
           type: "string"
         - name: "password"
@@ -419,12 +581,12 @@ paths:
               format: "date-time"
               description: "date in UTC when token expires"
         "400":
-          description: "Invalid username/password supplied"
-  /customer/logout:
+          description: "Invalid customername/password supplied"
+  /customers/logout:
     get:
       tags:
         - "customer"
-      summary: "Logs out current logged in user session"
+      summary: "Logs out current logged in customer session"
       description: ""
       operationId: "logoutCustomer"
       produces:
@@ -434,18 +596,18 @@ paths:
       responses:
         default:
           description: "successful operation"
-  /customer/{username}:
+  /customers/{customerid}:
     get:
       tags:
         - "customer"
-      summary: "Get customer by user name"
+      summary: "Get customer by customer name"
       description: ""
       operationId: "getCustomerByName"
       produces:
         - "application/xml"
         - "application/json"
       parameters:
-        - name: "username"
+        - name: "customerid"
           in: "path"
           description: "The name that needs to be fetched. Use customer1 for testing. "
           required: true
@@ -456,20 +618,20 @@ paths:
           schema:
             $ref: "#/definitions/Customer"
         "400":
-          description: "Invalid username supplied"
+          description: "Invalid customername supplied"
         "404":
           description: "Customer not found"
     put:
       tags:
         - "customer"
-      summary: "Updated customer"
+      summary: "Update customer"
       description: "This can only be done by the logged in customer."
       operationId: "updateCustomer"
       produces:
         - "application/xml"
         - "application/json"
       parameters:
-        - name: "username"
+        - name: "customerid"
           in: "path"
           description: "name that need to be updated"
           required: true
@@ -495,17 +657,18 @@ paths:
         - "application/xml"
         - "application/json"
       parameters:
-        - name: "username"
+        - name: "customerid"
           in: "path"
           description: "The name that needs to be deleted"
           required: true
           type: "string"
       responses:
         "400":
-          description: "Invalid username supplied"
+          description: "Invalid customername supplied"
         "404":
           description: "Customer not found"
-  /designer:
+
+  /designers:
     post:
       tags:
         - "designer"
@@ -562,7 +725,7 @@ paths:
         - gfashionstore_auth:
             - "write:designers"
             - "read:designers"
-  /designer/search:
+  /designers/search:
     get:
       tags:
         - "designer"
@@ -591,7 +754,7 @@ paths:
         - gfashionstore_auth:
             - "write:designers"
             - "read:designers"
-  /designer/{designerId}:
+  /designers/{designerId}:
     get:
       tags:
         - "designer"
@@ -683,7 +846,7 @@ paths:
         - gfashionstore_auth:
             - "write:designers"
             - "read:designers"
-  /designer/{designerId}/uploadImage:
+  /designers/{designerId}/uploadImage:
     post:
       tags:
         - "designer"
@@ -720,6 +883,177 @@ paths:
         - gfashionstore_auth:
             - "write:designers"
             - "read:designers"
+
+  /category/list:
+    get:
+      tags:
+        - "category"
+      summary: "List category "
+      description: "Get category list"
+      operationId: "getAllCategory"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "searchCriteria[filterGroups][0][filters][0][field]"
+          in: "query"
+          description: "Field"
+          required: false
+          type: "string"
+        - name: "searchCriteria[filterGroups][0][filters][0][value]"
+          in: "query"
+          description: "Value"
+          required: false
+          type: "string"
+        - name: "searchCriteria[filterGroups][0][filters][0][conditionType]"
+          in: "query"
+          description: "Condition type"
+          required: false
+          type: "string"
+        - name: "searchCriteria[sortOrders][0][field]"
+          in: "query"
+          description: "Sorting field."
+          required: false
+          type: "string"
+        - name: "searchCriteria[sortOrders][0][direction]"
+          in: "query"
+          description: "Sorting direction."
+          required: false
+          type: "string"
+        - name: "searchCriteria[pageSize]"
+          in: "query"
+          description: "Page size."
+          required: false
+          type: "string"
+        - name: "searchCriteria[currentPage]"
+          in: "query"
+          description: "Current page."
+          required: false
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Category_search_results"
+        "400":
+          description: ""
+        "404":
+          description: "Category not found"
+      security:
+        - api_key: []
+  /category/{categoryId}:
+    get:
+      tags:
+        - "category"
+      summary: "Find category by categoryId"
+      description: "Get info about category by category id"
+      operationId: "getCategoryInfoById"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "categoryId"
+          in: "path"
+          description: "categoryId of CategoryDetail to return"
+          required: true
+          type: "integer"
+          format: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Category"
+        "400":
+          description: "Invalid categoryId supplied"
+        "404":
+          description: "CategoryDetail not found"
+      security:
+        - api_key: []
+
+  /category/{categoryId}/products:
+    get:
+      tags:
+        - "category"
+      summary: "Find Products by categoryId"
+      description: "Get products assigned to category"
+      operationId: "getProductsByCategoryId"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "categoryId"
+          in: "path"
+          description: "categoryId of CategoryDetail to return"
+          required: true
+          type: "integer"
+          format: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Category_products"
+        "400":
+          description: "Invalid categoryId supplied"
+        "404":
+          description: "CategoryDetail not found"
+      security:
+        - api_key: []
+    post:
+      tags:
+        - "category"
+      summary: "Assign a product to the required category"
+      description: "Assign a product to the required category"
+      operationId: "updagteProductsByCategoryId"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "categoryId"
+          in: "path"
+          description: "categoryId of CategoryDetail to return"
+          required: true
+          type: "integer"
+          format: "integer"
+        - name: "catalogCategoryLinkRepositoryV1SavePostBody"
+          in: "body"
+          description: "categoryId of CategoryDetail to return"
+          required: true
+          schema:
+            $ref: "#/definitions/Category_products"
+      responses:
+        "405":
+          description: "Invalid input"
+      security:
+        - gfashionstore_auth:
+            - "write:categories"
+            - "read:categories"
+    delete:
+      tags:
+        - "category"
+      summary: "Assign a product to the required category"
+      description: "Assign a product to the required category"
+      operationId: "updagteProductsByCategoryId1"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "categoryId"
+          in: "path"
+          description: "categoryId of CategoryDetail to return"
+          required: true
+          type: "integer"
+          format: "integer"
+        - name: "catalogCategoryLinkRepositoryV1SavePostBody"
+          in: "body"
+          description: "categoryId of CategoryDetail to return"
+          required: true
+          schema:
+            $ref: "#/definitions/Category_products"
+      responses:
+        "405":
+          description: "Invalid input"
+      security:
+        - gfashionstore_auth:
+            - "write:categories"
+            - "read:categories"
+
 securityDefinitions:
   gfashionstore_auth:
     type: "oauth2"
@@ -730,6 +1064,8 @@ securityDefinitions:
       read:products: "read your products"
       write:designers: "modify designers in your account"
       read:designers: "read your designers"
+      write:categories: "modify categories in your account"
+      read:categories: "read your categories"
   api_key:
     type: "apiKey"
     name: "api_key"
@@ -742,6 +1078,9 @@ definitions:
         type: "integer"
         format: "int64"
       productId:
+        type: "integer"
+        format: "int64"
+      customerId:
         type: "integer"
         format: "int64"
       quantity:
@@ -762,23 +1101,66 @@ definitions:
         default: false
     xml:
       name: "Order"
-  Category:
+
+  Cart:
     type: "object"
     properties:
       id:
         type: "integer"
         format: "int64"
+      productId:
+        type: "integer"
+        format: "int64"
+      customerId:
+        type: "integer"
+        format: "int64"
+      quantity:
+        type: "integer"
+        format: "int32"
+    xml:
+      name: "Cart"
+
+  Category:
+    type: "object"
+    required:
+      - "id"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      parent_id:
+        type: "integer"
+        format: "int64"
       name:
         type: "string"
+      is_active:
+        type: "boolean"
+      position:
+        type: "integer"
+        format: "int64"
+      level:
+        type: "integer"
+        format: "int64"
+      children:
+        type: "string"
+      created_at:
+        type: "string"
+      updated_at:
+        type: "string"
+      path:
+        type: "string"
+      extension_attributes:
+        $ref: "#/definitions/Attribute"
     xml:
       name: "Category"
+
   Customer:
     type: "object"
     properties:
       id:
         type: "integer"
         format: "int64"
-      username:
+      customername:
         type: "string"
       firstName:
         type: "string"
@@ -790,12 +1172,29 @@ definitions:
         type: "string"
       phone:
         type: "string"
-      userStatus:
+      customerStatus:
         type: "integer"
         format: "int32"
         description: "Customer Status"
+
     xml:
       name: "Customer"
+
+  CustomerRegisration:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      customername:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+    xml:
+      name: "Customer"
+
   Designer:
     type: "object"
     required:
@@ -818,6 +1217,7 @@ definitions:
           - "deleted"
     xml:
       name: "Designer"
+
   Product:
     type: "object"
     required:
@@ -827,8 +1227,14 @@ definitions:
       id:
         type: "integer"
         format: "int64"
-      category:
-        $ref: "#/definitions/Category"
+      categories:
+        type: "array"
+        items:
+          $ref: "#/definitions/Category"
+        description: "One product may belong to multiple categories. One category could be Gmall or GFashion."
+      designerId:
+        type: "integer"
+        format: "int64"
       name:
         type: "string"
         example: "glasses"
@@ -848,6 +1254,120 @@ definitions:
           - "sold"
     xml:
       name: "Product"
+  Category_search_results:
+    type: "object"
+    properties:
+      items:
+        type: "array"
+        xml:
+          name: "tag"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Category"
+      search_criteria:
+        $ref: "#/definitions/Search_criteria"
+      total_count:
+        type: "integer"
+        format: "int64"
+    xml:
+      name: "Category_search_results"
+  Search_criteria:
+    type: "object"
+    properties:
+      filter_groups:
+        type: "array"
+        xml:
+          name: "tag"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Filter_group"
+      sort_orders:
+        type: "array"
+        xml:
+          name: "tag"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Sort_order"
+      page_size:
+        type: "integer"
+        format: "int64"
+      current_page:
+        type: "integer"
+        format: "int64"
+    xml:
+      name: "Search_criteria"
+  Filter_group:
+    type: "object"
+    required:
+      - "field"
+      - "value"
+    properties:
+      filters:
+        type: "array"
+        xml:
+          name: "tag"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Filter"
+    xml:
+      name: "Filter_group"
+  Filter:
+    type: "object"
+    required:
+      - "field"
+      - "value"
+    properties:
+      field:
+        type: "string"
+      value:
+        type: "string"
+      condition_type:
+        type: "string"
+    xml:
+      name: "Filter"
+  Sort_order:
+    type: "object"
+    required:
+      - "field"
+      - "direction"
+    properties:
+      field:
+        type: "string"
+      direction:
+        type: "string"
+    xml:
+      name: "Sort_order"
+  Category_products:
+    type: "object"
+    required:
+      - "category_id"
+    properties:
+      category_id:
+        type: "string"
+      extension_attributes:
+        type: "array"
+        xml:
+          name: "tag"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Attribute"
+      position:
+        type: "integer"
+        example: 2
+      sku:
+        type: "string"
+    xml:
+      name: "Category_products"
+  Attribute:
+    type: "object"
+    properties:
+      value:
+        type: "string"
+      attribute_code:
+        type: "string"
+        example: "color"
+    xml:
+      name: "Attribute"
   ApiResponse:
     type: "object"
     properties:
@@ -858,6 +1378,7 @@ definitions:
         type: "string"
       message:
         type: "string"
+
 externalDocs:
   description: "Find out more about Swagger"
   url: "http://swagger.io"
