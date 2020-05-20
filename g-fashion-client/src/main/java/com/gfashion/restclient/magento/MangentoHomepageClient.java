@@ -25,10 +25,10 @@ public class MangentoHomepageClient {
 
         // TODO： Get Data From Real Magento API; Create Corresponding Magento Objects; Change the Mapper
         // get the default CustomerHomePage
-        return getDefaultCustomizedHomepage(customerId);
+        return getDefaultCustomizedHomepage();
     }
 
-    public CustomizedHomepage getDefaultCustomizedHomepage(Integer customerId) throws CustomerNotFoundException {
+    public CustomizedHomepage getDefaultCustomizedHomepage() throws CustomerNotFoundException {
 
         // TODO： Get Data From Real Magento API; Create Corresponding Magento Objects; Change the Mapper
         // mock the default CustomerHomePage

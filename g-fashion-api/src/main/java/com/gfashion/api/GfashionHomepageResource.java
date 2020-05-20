@@ -17,10 +17,10 @@ import org.springframework.web.server.ResponseStatusException;
 public class GfashionHomepageResource {
     private MangentoHomepageClient magentoHomepageClient;
 
-    @GetMapping("/homepage/")
-    public CustomizedHomepage getDefaultCustomizedHomepage(@PathVariable Integer customerId) {
+    @GetMapping("/homepage")
+    public CustomizedHomepage getDefaultCustomizedHomepage() {
         try {
-            return magentoHomepageClient.getDefaultCustomizedHomepage(customerId);
+            return magentoHomepageClient.getDefaultCustomizedHomepage();
         } catch (CustomerNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer Not Found", e);
         }
