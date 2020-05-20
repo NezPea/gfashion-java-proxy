@@ -1,8 +1,5 @@
 package com.gfashion.restclient.magento;
 
-import com.gfashion.domain.product.GfMediaGalleryEntry;
-import com.gfashion.domain.product.GfProductCustomAttribute;
-import com.gfashion.domain.product.GfProductLink;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,6 +34,8 @@ public class MagentoProduct {
     private Integer purchase_number_limit;  // 每个账号至多购买x件
 
     private List<JSONObject> options;
+    private List<MagentoMediaGalleryEntry> media_gallery_entries;
     private List<JSONObject> tier_prices;
+    private List<JSONObject> custom_attributes;
 
 }
