@@ -85,6 +85,9 @@ definitions:
       photoUrl:
         type: "string"
         example: "https://Xxx.xxxxx.xxx/gucci_glass.png"
+      isFeatured:
+        type: "boolean"
+        example: true
 
   HomepageDesigner:
     type: "object"
