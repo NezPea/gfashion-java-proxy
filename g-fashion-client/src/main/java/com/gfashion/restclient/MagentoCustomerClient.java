@@ -26,7 +26,7 @@ public class MagentoCustomerClient {
     private RestClient _restClient;
 
     private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
-    
+
     public GfCustomer createCustomer(GfCustomerRegistration customerRegistration) throws CustomerCreationException, CustomerUnknowException {
 
         try{
@@ -39,9 +39,7 @@ public class MagentoCustomerClient {
                 throw new CustomerCreationException();
             }
             throw new CustomerUnknowException(e.getMessage());
-        }
-
-
+        }git
     }
 
     public GfCustomer getCustomerById(Integer customerId) throws CustomerUnknowException, CustomerNotFoundException {

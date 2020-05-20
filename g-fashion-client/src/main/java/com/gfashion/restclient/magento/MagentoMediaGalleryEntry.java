@@ -16,8 +16,11 @@ public class MagentoMediaGalleryEntry {
     private String media_type;
     private String label;
     private Integer position;
-    private boolean disabled;
-    private List<String> types;
+    private Boolean disabled;
+    private List <String> types;
     private String file;
+    private JSONObject content;
+    private JSONObject extension_attributes;
+
 
 }
