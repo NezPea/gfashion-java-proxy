@@ -9,7 +9,6 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -18,16 +17,16 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class MagentoProductClient {
 
-    @Value("${magento.url.products}")
-    private String productsUrl;
-
     @Autowired
     private RestClient _restClient;
 
-    private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
+    @Autowired
+    private MegentoConfigProperties magentoConfig;
+
+    private GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
 
     public GfProduct getProductBySku(String sku){
-        String getProductUrl = productsUrl + sku;
+        String getProductUrl = magentoConfig.getUrl().get("products") + sku;
 
         ResponseEntity<String> responseEntityProduct = this._restClient.exchangeGet(getProductUrl, String.class, null);
 
@@ -37,7 +36,7 @@ public class MagentoProductClient {
 
 
     public GfProductSearchResponse searchProducts(String query){
-        String getProductSearchUrl = productsUrl + query;
+        String getProductSearchUrl = magentoConfig.getUrl().get("products") + query;
 
         ResponseEntity<String> responseProductSearch = this._restClient.exchangeGet(getProductSearchUrl, String.class, null);
 
