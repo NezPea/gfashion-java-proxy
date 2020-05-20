@@ -127,6 +127,20 @@ public class FeginServiceImpl  implements RegisterService {
 //        if(response.hasBody()) {
 //            System.err.println(response.getBody());
 //        }
+        String firstname = "";
+        String lastname = "";
+        String email = customer.getCustomer().getEmail();
+        if (null == email || email.length() <= 0) {
+            return "email is null";
+        }
+        String[] strs = email.split("@");
+        if (null == strs || strs.length != 2) {
+            return "email is not right format";
+        }
+        firstname = strs[0];
+        lastname = strs[1];
+        customer.getCustomer().setFirstname(firstname);
+        customer.getCustomer().setLastname(lastname);
 
         Gson gson=new Gson();
         String strCustomer=gson.toJson(customer);
