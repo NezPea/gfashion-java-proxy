@@ -21,7 +21,7 @@ public class MagentoCustomerClient {
     private RestClient _restClient;
 
     private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
-    
+
     public GfCustomer createCustomer(GfCustomerRegistration customerRegistration){
         ResponseEntity<String> responseEntity = this._restClient.postForEntity(customersUrl, customerRegistration, String.class, null);
 

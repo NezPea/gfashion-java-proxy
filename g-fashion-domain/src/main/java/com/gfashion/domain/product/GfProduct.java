@@ -23,10 +23,10 @@ public class GfProduct {
     private String created_at;
     private String updated_at;
     private Integer weight;
-    private List <GfProductMediaGalleryEntries> media_gallery_entries; // 媒体图片资源库，包含图片地址
-    private List <GfProductCustomAttributes> custom_attributes; // 自定义属性：可能包含颜色、描述、缩略图、价格
-    private List <GfProductLinks> product_links; // 关联产品
-    private GfProductExtensionAttributes extension_attributes; // 扩展属性
+    private List<GfMediaGalleryEntry> media_gallery_entries;  // 媒体图片资源库，包含图片地址
+    private List<GfProductCustomAttribute> custom_attributes; // 自定义属性：可能包含颜色、描述、缩略图、价格
+    private List<GfProductLink> product_links; // 关联产品
+    private GfMediaGalleryEntry extension_attributes; // 扩展属性
     private String designer_name;
     private String designer_link;
     private String brand_name;
@@ -35,5 +35,6 @@ public class GfProduct {
 
     private List<JSONObject> options;
     private List<JSONObject> tier_prices;
+
 
 }

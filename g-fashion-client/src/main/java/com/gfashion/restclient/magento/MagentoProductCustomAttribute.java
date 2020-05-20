@@ -1,13 +1,14 @@
-package com.gfashion.domain.product;
+package com.gfashion.restclient.magento;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.json.JSONObject;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GfProductCustomAttributes {
+public class MagentoProductCustomAttribute {
     private String attribute_code;
-    private String value;
+    private Object value;
 }
