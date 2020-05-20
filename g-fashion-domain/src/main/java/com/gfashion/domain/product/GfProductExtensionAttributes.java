@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GfProductExtensionAttributes {
+
     private List <Integer> website_ids;
     private List <JSONObject> category_links;
     private List <JSONObject> bundle_product_options;

@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GfProductMediaGalleryEntries {
+
     private Integer id;
     private String media_type;
     private String label;
@@ -20,4 +21,5 @@ public class GfProductMediaGalleryEntries {
     private String file;
     private JSONObject content;
     private JSONObject extension_attributes;
+
 }

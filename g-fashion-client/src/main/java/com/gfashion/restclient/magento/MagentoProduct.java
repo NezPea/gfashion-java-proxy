@@ -1,6 +1,5 @@
 package com.gfashion.restclient.magento;
 
-import com.gfashion.domain.product.GfProductCustomAttributes;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,7 @@ public class MagentoProduct {
     private String sku;
     private String name;
     private Integer attribute_set_id;
-    private Integer price;
+    private double price;
     private Integer status;
     private Integer visibility;
     private String type_id;
@@ -32,4 +31,7 @@ public class MagentoProduct {
     private String brand_name;
     private String brand_link;
     private Integer purchase_number_limit; // 每个账号至多购买x件
+
+    private List<JSONObject> options;
+    private List<JSONObject> tier_prices;
 }

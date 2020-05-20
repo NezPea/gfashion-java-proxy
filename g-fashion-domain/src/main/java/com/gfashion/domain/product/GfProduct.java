@@ -11,11 +11,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GfProduct {
+
     private Integer id;
     private String sku;
     private String name;
     private Integer attribute_set_id;
-    private Integer price;
+    private double price;
     private Integer status;
     private Integer visibility;
     private String type_id;
@@ -31,4 +32,8 @@ public class GfProduct {
     private String brand_name;
     private String brand_link;
     private Integer purchase_number_limit; // 每个账号至多购买x件
+
+    private List<JSONObject> options;
+    private List<JSONObject> tier_prices;
+
 }

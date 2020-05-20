@@ -9,9 +9,10 @@ import org.json.JSONObject;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GfProductLinks {
+
     private String sku;
     private String name;
-    private Integer price;
+    private double price;
     private String image;
     private String link_type;
     private String linked_product_sku;

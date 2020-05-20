@@ -1,6 +1,7 @@
-package com.gfashion.restclient.magento;
+package com.gfashion.restclient.magento.mapper;
 
 import com.gfashion.domain.product.*;
+import com.gfashion.restclient.magento.*;
 import org.mapstruct.Mapper;
 
 @Mapper
