@@ -8,6 +8,7 @@ import com.gfashion.restclient.magento.exception.CustomerNotFoundException;
 import com.gfashion.restclient.magento.exception.CustomerUnknowException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,25 +23,24 @@ public class GfashionCustomerResource {
     private MagentoCustomerClient magentoCustomerClient;
 
     @PostMapping("/customers")
-    public GfCustomer creatCustomer(@RequestBody GfCustomerRegistration customer) {
+    public ResponseEntity<Object> creatCustomer(@RequestBody GfCustomerRegistration customer) {
         try{
-            return magentoCustomerClient.createCustomer(customer);
+            return ResponseEntity.status(HttpStatus.CREATED).body(magentoCustomerClient.createCustomer(customer));
         } catch (CustomerCreationException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Customer Not Created, Pls examine your input parameters", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrorMessage());
         } catch (CustomerUnknowException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Other exception", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getErrorMessage());
         }
-
     }
 
     @GetMapping("/customers/{customerId}")
-    public GfCustomer getCustomerById(@PathVariable Integer customerId) {
+    public ResponseEntity<Object> getCustomerById(@PathVariable Integer customerId) {
         try{
-            return magentoCustomerClient.getCustomerById(customerId);
+            return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.getCustomerById(customerId));
         } catch (CustomerNotFoundException e){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer Not Found", e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getErrorMessage());
         } catch (CustomerUnknowException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Other exception", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getErrorMessage());
         }
 
     }

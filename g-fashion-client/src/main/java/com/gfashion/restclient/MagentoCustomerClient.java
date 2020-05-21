@@ -36,7 +36,7 @@ public class MagentoCustomerClient {
             return this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntity.getBody(), MagentoCustomer.class));
         } catch (HttpStatusCodeException e){
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST){
-                throw new CustomerCreationException();
+                throw new CustomerCreationException(e.getMessage());
             }
             throw new CustomerUnknowException(e.getMessage());
         }
@@ -52,7 +52,7 @@ public class MagentoCustomerClient {
             return this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntity.getBody(), MagentoCustomer.class));
         } catch (HttpStatusCodeException e) {
             if(e.getStatusCode() == HttpStatus.NOT_FOUND){
-                throw new CustomerNotFoundException();
+                throw new CustomerNotFoundException(e.getMessage());
             }
             throw new CustomerUnknowException(e.getMessage());
         }
