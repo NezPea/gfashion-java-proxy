@@ -23,7 +23,7 @@ public class GfashionCustomerResource {
     private MagentoCustomerClient magentoCustomerClient;
 
     @PostMapping("/customers")
-    public ResponseEntity<Object> creatCustomer(@RequestBody GfCustomerRegistration customer) {
+    public ResponseEntity creatCustomer(@RequestBody GfCustomerRegistration customer) {
         try{
             return ResponseEntity.status(HttpStatus.CREATED).body(magentoCustomerClient.createCustomer(customer));
         } catch (CustomerCreationException e) {
@@ -34,7 +34,7 @@ public class GfashionCustomerResource {
     }
 
     @GetMapping("/customers/{customerId}")
-    public ResponseEntity<Object> getCustomerById(@PathVariable Integer customerId) {
+    public ResponseEntity getCustomerById(@PathVariable Integer customerId) {
         try{
             return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.getCustomerById(customerId));
         } catch (CustomerNotFoundException e){

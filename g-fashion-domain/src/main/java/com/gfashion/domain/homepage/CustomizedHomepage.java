@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomizedHomepage {
+    private Integer id;
     private List<HomepageProduct> recommendedProducts;
     private List<HomepageDesigner> recommendedDesigners;
     private List<HomepageBrand> recommendedBrands;

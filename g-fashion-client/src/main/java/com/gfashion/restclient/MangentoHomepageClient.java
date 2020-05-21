@@ -1,4 +1,4 @@
-package com.gfashion.restclient.magento;
+package com.gfashion.restclient;
 
 import com.gfashion.domain.homepage.CustomizedHomepage;
 import com.gfashion.domain.homepage.HomepageBrand;
@@ -25,7 +25,11 @@ public class MangentoHomepageClient {
 
         // TODO： Get Data From Real Magento API; Create Corresponding Magento Objects; Change the Mapper
         // get the default CustomerHomePage
-        return getDefaultCustomizedHomepage();
+        if (customerId == 4) {
+            return getDefaultCustomizedHomepage();
+        } else {
+            throw new CustomerNotFoundException("The customer with Id = 4 does not exist.");
+        }
     }
 
     public CustomizedHomepage getDefaultCustomizedHomepage() throws CustomerNotFoundException {
@@ -34,6 +38,7 @@ public class MangentoHomepageClient {
         // mock the default CustomerHomePage
         CustomizedHomepage customizedHomepage = new CustomizedHomepage();
 
+        customizedHomepage.setId(4);
         customizedHomepage.setRecommendedProducts(getDefaultHomepageProducts());
         customizedHomepage.setRecommendedDesigners(getDefaultHomepageDesigners());
         customizedHomepage.setRecommendedBrands(getDefaultHomepageBrands());
