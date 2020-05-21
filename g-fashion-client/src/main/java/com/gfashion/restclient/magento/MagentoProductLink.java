@@ -15,7 +15,7 @@ public class MagentoProductLink {
     private String sku;
     private String name;
     private double price;
-    private String image;
+    private String file;
     private String link_type;
     private String linked_product_sku;
     private String linked_product_type;
