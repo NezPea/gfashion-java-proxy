@@ -2,6 +2,7 @@ package com.gfashion.restclient;
 
 import com.gfashion.domain.product.GfProduct;
 import com.gfashion.restclient.magento.MagentoProduct;
+import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONObject;
