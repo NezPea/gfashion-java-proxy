@@ -3,7 +3,11 @@ package com.gfashion.restclient.magento.mapper;
 import com.gfashion.domain.product.*;
 import com.gfashion.domain.customer.GfCustomer;
 import com.gfashion.domain.customer.GfCustomerAddress;
+import com.gfashion.domain.product.GfProductSearchResponse;
+import com.gfashion.restclient.magento.customer.MagentoCustomer;
+import com.gfashion.restclient.magento.customer.MagentoCustomerAddress;
 import com.gfashion.restclient.magento.*;
+
 import org.mapstruct.Mapper;
 
 @Mapper

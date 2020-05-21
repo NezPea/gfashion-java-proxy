@@ -1,0 +1,169 @@
+swagger: "2.0"
+info:
+  description: "GFashion"
+  version: "1.0.0"
+  title: "GFashion"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "gtv1.org"
+basePath: "/v1"
+tags:
+  - name: "gfashion"
+    description: "Everything about GFashion"
+    externalDocs:
+      description: "Find out more"
+      url: "http://swagger.io"
+  - name: "homepage"
+    description: "Homepage"
+schemes:
+  - "https"
+  - "http"
+paths:
+
+  /homepage/{customerId}:
+    get:
+      tags:
+        - "homepage"
+      summary: "Find recommending products, designers, brands for a customer and the customer's following data by customerId"
+      description: "Returns a single CustomizedHomepage object including all the info"
+      operationId: "getCustomizedHomepageByCustomerId"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "customerId"
+          in: "path"
+          description: "Id of customer whose recommending and following info are returned "
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/CustomizedHomepage"
+        "400":
+          description: "Invalid Id supplied"
+        "404":
+          description: "Customer not found"
+      security:
+        - api_key: []
+
+securityDefinitions:
+
+  gfashionstore_auth:
+    type: "oauth2"
+    authorizationUrl: "http://gfashionstore.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:products: "modify products in your account"
+      read:products: "read your products"
+      write:designers: "modify designers in your account"
+      read:designers: "read your designers"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+
+  HomepageProduct:
+    type: "object"
+    required:
+      - "id"
+      - "name"
+      - "photoUrls"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+        example: "Gucci Glass"
+      photoUrl:
+        type: "string"
+        example: "https://Xxx.xxxxx.xxx/gucci_glass.png"
+      isFeatured:
+        type: "boolean"
+        example: true
+
+  HomepageDesigner:
+    type: "object"
+    required:
+      - "id"
+      - "name"
+      - "photoUrls"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+        example: "Da Vinci"
+      country:
+        type: "string"
+        example: "Italy"
+      photoUrl:
+        type: "string"
+        example: "https://Xxx.xxxxx.xxx/gucci_glass.png"
+
+  HomepageBrand:
+    type: "object"
+    required:
+      - "id"
+      - "name"
+      - "photoUrls"
+      - "link"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+        example: "Gucci"
+      country:
+        type: "string"
+        example: "Italy"
+      photoUrl:
+        type: "string"
+        example: "https://Xxx.xxxxx.xxx/gucci_glass.png"
+      link:
+        type: "string"
+        example: "https://Xxx.xxxxx.xxx/gucci_glass.png"
+
+  CustomizedHomepage:
+    type: "object"
+    required:
+      - "name"
+      - "photoUrls"
+    properties:
+      customerId:
+        type: "integer"
+        format: "int64"
+      recommendedProducts:
+        type: "array"
+        items:
+          $ref: "#/definitions/HomepageProduct"
+        description: "The recommended products for the customer."
+      recommendedDesigners:
+        type: "array"
+        items:
+          $ref: "#/definitions/HomepageDesigner"
+        description: "The recommended designers for the customer."
+      recommendedBrands:
+        type: "array"
+        items:
+          $ref: "#/definitions/HomepageBrand"
+        description: "The recommended brands for the customer."
+      followingDesigners:
+        type: "array"
+        items:
+          $ref: "#/definitions/HomepageDesigner"
+        description: "The following designers of the customer."
+      followingBrands:
+        type: "array"
+        items:
+          $ref: "#/definitions/HomepageBrand"
+        description: "The following brands of the customer."
