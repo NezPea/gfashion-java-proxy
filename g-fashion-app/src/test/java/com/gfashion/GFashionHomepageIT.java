@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(SpringRunner.class)
@@ -28,7 +29,14 @@ public class GFashionHomepageIT {
         Response response = RestAssured.get("/gfashion/v1/homepage/{customerId}", 4);
         response.then().assertThat().
                 statusCode(200).
-                body("id", equalTo(4));
+                body("id", equalTo(4)).content(
+                        containsString("recommendedProducts"),
+                        containsString("recommendedDesigners"),
+                        containsString("recommendedBrands"),
+                        containsString("followingBrands"),
+                        containsString("followingDesigners"),
+                        containsString("Raffaello")
+                );
     }
 
     @Test
