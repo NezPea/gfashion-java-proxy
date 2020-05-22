@@ -1,6 +1,7 @@
 stages:
   - build
   - package
+  - deploy 
 
 build:
   image: maven:ibmjava-alpine
@@ -31,4 +32,11 @@ package:
   - master
   - develop
 
+deploy:
+  image: curlimages/curl
+  stage: deploy
+  script:
+  - curl remotecall.dev2.gfashion2020.tk/upgrade_java_proxy/${CI_COMMIT_SHORT_SHA} -X POST -H TOKEN:aWTUTKfApdKiU4d -v
+  only:
+  - develop
 
