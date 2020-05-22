@@ -24,9 +24,14 @@ magento:
     base: https://www.gfashion2020.tk/index.php/rest/V1/
     token: integration/admin/token
     customers: customers/
+    storeViews: store/storeViews/
+    websites: store/websites/
+    storeGroups: store/storeGroups/
+    storeConfigs: store/storeConfigs/
     products: products/
     categories: categories/
     attributes: attributes/
+
   username: admin
   password: 202064_Hh
 
@@ -46,6 +51,10 @@ magento:
     base: https://www.gfashion2020.tk/index.php/rest/V1/
     token: integration/admin/token
     customers: customers/
+    storeViews: store/storeViews/
+    websites: store/websites/
+    storeGroups: store/storeGroups/
+    storeConfigs: store/storeConfigs/
     products: products/
     categories: categories/
     attributes: attributes/
