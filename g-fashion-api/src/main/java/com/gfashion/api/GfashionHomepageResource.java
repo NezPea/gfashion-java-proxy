@@ -1,5 +1,6 @@
 package com.gfashion.api;
 
+import com.gfashion.domain.homepage.CustomizedHomepage;
 import com.gfashion.restclient.MangentoHomepageClient;
 import com.gfashion.restclient.magento.exception.CustomerNotFoundException;
 import lombok.AllArgsConstructor;
@@ -18,20 +19,20 @@ public class GfashionHomepageResource {
     private MangentoHomepageClient magentoHomepageClient;
 
     @GetMapping("/homepage")
-    public ResponseEntity getDefaultCustomizedHomepage() {
+    public ResponseEntity<CustomizedHomepage> getDefaultCustomizedHomepage() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoHomepageClient.getDefaultCustomizedHomepage());
         } catch (CustomerNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer Not Found", e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
         }
     }
 
     @GetMapping("/homepage/{customerId}")
-    public ResponseEntity getCustomizedHomepage(@PathVariable Integer customerId) {
+    public ResponseEntity<CustomizedHomepage> getCustomizedHomepage(@PathVariable Integer customerId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoHomepageClient.getCustomizedHomepage(customerId));
         } catch (CustomerNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getErrorMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
         }
     }
 
