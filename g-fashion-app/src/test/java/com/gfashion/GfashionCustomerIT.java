@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.hamcrest.Matchers.equalTo;
 
 /**
- * Integration tests for the {@link com.gfashion.domain.GfDesigner} REST controller.
+ * Integration tests for the {@link GfCustomer} REST controller.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
