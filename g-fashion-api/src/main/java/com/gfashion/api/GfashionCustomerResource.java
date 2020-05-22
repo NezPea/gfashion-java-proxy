@@ -2,6 +2,7 @@ package com.gfashion.api;
 
 import com.gfashion.domain.customer.GfCustomer;
 import com.gfashion.domain.customer.GfCustomerRegistration;
+import com.gfashion.domain.homepage.CustomizedHomepage;
 import com.gfashion.restclient.MagentoCustomerClient;
 import com.gfashion.restclient.magento.exception.CustomerCreationException;
 import com.gfashion.restclient.magento.exception.CustomerNotFoundException;
@@ -23,24 +24,24 @@ public class GfashionCustomerResource {
     private MagentoCustomerClient magentoCustomerClient;
 
     @PostMapping("/customers")
-    public ResponseEntity creatCustomer(@RequestBody GfCustomerRegistration customer) {
+    public ResponseEntity<GfCustomer> creatCustomer(@RequestBody GfCustomerRegistration customer) {
         try{
             return ResponseEntity.status(HttpStatus.CREATED).body(magentoCustomerClient.createCustomer(customer));
         } catch (CustomerCreationException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getErrorMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getErrorMessage());
         } catch (CustomerUnknowException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getErrorMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
         }
     }
 
     @GetMapping("/customers/{customerId}")
-    public ResponseEntity getCustomerById(@PathVariable Integer customerId) {
+    public ResponseEntity<GfCustomer> getCustomerById(@PathVariable Integer customerId) {
         try{
             return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.getCustomerById(customerId));
         } catch (CustomerNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getErrorMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
         } catch (CustomerUnknowException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getErrorMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
         }
 
     }
