@@ -26,23 +26,16 @@ public class GFashionHomepageIT {
 
     @Test
     public void getCustomerizedHomepageByCustomerIdShouldReturnOk() throws Exception {
-        Response response = RestAssured.get("/gfashion/v1/homepage/{customerId}", 4);
+        Response response = RestAssured.get("/gfashion/v1/homepage");
         response.then().assertThat().
                 statusCode(200).
-                body("id", equalTo(4)).content(
+                content(
                         containsString("recommendedProducts"),
                         containsString("recommendedDesigners"),
                         containsString("recommendedBrands"),
                         containsString("followingBrands"),
-                        containsString("followingDesigners"),
+                        containsString("Da Vinci"),
                         containsString("Raffaello")
                 );
-    }
-
-    @Test
-    public void getCustomerizedHomepageByCustomerIdShouldReturnNotFound() throws Exception {
-        Response response = RestAssured.get("/gfashion/v1/homepage/{customerId}", 1);
-        response.then().assertThat().
-                statusCode(404);
     }
 }

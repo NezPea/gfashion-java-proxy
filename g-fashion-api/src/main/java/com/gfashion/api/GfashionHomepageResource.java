@@ -28,14 +28,14 @@ public class GfashionHomepageResource {
         }
     }
 
-    @GetMapping("/homepage/{customerId}")
+    /*@GetMapping("/homepage/{customerId}")
     public ResponseEntity<CustomizedHomepage> getCustomizedHomepage(@PathVariable Integer customerId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoHomepageClient.getCustomizedHomepage(customerId));
         } catch (CustomerUnknowException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
         }
-    }
+    }*/
 
 
 }

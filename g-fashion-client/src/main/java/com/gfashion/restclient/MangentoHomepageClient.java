@@ -4,11 +4,11 @@ import com.gfashion.domain.homepage.CustomizedHomepage;
 import com.gfashion.domain.homepage.HomepageBrand;
 import com.gfashion.domain.homepage.HomepageDesigner;
 import com.gfashion.domain.homepage.HomepageProduct;
-import com.gfashion.restclient.magento.exception.CustomerNotFoundException;
 import com.gfashion.restclient.magento.exception.CustomerUnknowException;
 import com.gfashion.restclient.magento.homepage.MagentoCategories;
-import com.gfashion.restclient.magento.mapper.GfHomepageConverter;
+import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.google.gson.Gson;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -43,8 +43,7 @@ public class MangentoHomepageClient {
     @Autowired
     private RestClient _restClient;
 
-    @Autowired
-    private GfHomepageConverter gfHomepageConverter;
+    private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
 
     public CustomizedHomepage getCustomizedHomepage(Integer customerId) throws CustomerUnknowException {
 
@@ -90,7 +89,7 @@ public class MangentoHomepageClient {
         try {
             ResponseEntity<String> responseEntity = this._restClient.exchangeGet(getDefaultHomepageBrandsUrl, String.class, null);
             Gson gson = new Gson();
-            return gfHomepageConverter.convertCategoriesToHomepageBrands(gson.fromJson(responseEntity.getBody(), MagentoCategories.class));
+            return this._mapper.convertMagentoCategoriesToHomeBrands(gson.fromJson(responseEntity.getBody(), MagentoCategories.class).getItems());
         } catch (HttpStatusCodeException e) {
             throw new CustomerUnknowException(e.getMessage());
         }
@@ -104,7 +103,7 @@ public class MangentoHomepageClient {
         try {
             ResponseEntity<String> responseEntity = this._restClient.exchangeGet(getDefaultHomepageDesignersUrl, String.class, null);
             Gson gson = new Gson();
-            return gfHomepageConverter.convertCategoriesToHomepageDesigners(gson.fromJson(responseEntity.getBody(), MagentoCategories.class));
+            return this._mapper.convertMagentoCategoriesToHomeDesigners(gson.fromJson(responseEntity.getBody(), MagentoCategories.class).getItems());
         } catch (HttpStatusCodeException e) {
             throw new CustomerUnknowException(e.getMessage());
         }
