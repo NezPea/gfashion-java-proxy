@@ -31,6 +31,13 @@ magento:
     products: products/
     categories: categories/
     attributes: attributes/
+    listCategories: categories/list
+    parameters:
+      parentIdField: parent_id
+      field: searchCriteria[filterGroups][0][filters][0][field]=
+      value: searchCriteria[filterGroups][0][filters][0][value]=
+      recommendedDesignersParentId: 62 # the category id for designers
+      recommendedBrandsParentId: 59 # the category id for brands
 
   username: admin
   password: 202064_Hh
@@ -58,6 +65,13 @@ magento:
     products: products/
     categories: categories/
     attributes: attributes/
+    listCategories: categories/list
+    parameters:
+      parentIdField: parent_id
+      field: searchCriteria[filterGroups][0][filters][0][field]=
+      value: searchCriteria[filterGroups][0][filters][0][value]=
+      recommendedDesignersParentId: 62 # the category id for designers
+      recommendedBrandsParentId: 59 # the category id for brands
   username: admin
   password: 202064_Hh
 

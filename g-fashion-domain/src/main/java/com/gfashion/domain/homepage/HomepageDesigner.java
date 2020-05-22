@@ -11,5 +11,5 @@ public class HomepageDesigner {
     private Integer id;
     private String name;
     private String photoUrl;
-    private String country;
+    private String link;
 }
