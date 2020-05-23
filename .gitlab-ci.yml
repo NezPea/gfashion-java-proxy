@@ -39,4 +39,6 @@ deploy:
   - curl remotecall.dev2.gfashion2020.tk/upgrade_java_proxy/${CI_COMMIT_SHORT_SHA} -X POST -H TOKEN:aWTUTKfApdKiU4d -v
   only:
   - develop
+  tags: 
+  - docker
 
