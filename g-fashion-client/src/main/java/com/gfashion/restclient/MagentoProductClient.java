@@ -2,6 +2,7 @@ package com.gfashion.restclient;
 
 import com.gfashion.domain.product.*;
 import com.gfashion.restclient.magento.exception.*;
+import com.gfashion.restclient.magento.product.MagentoProductCategory;
 import com.gfashion.restclient.magento.product.MagentoEvaAttribute;
 import com.gfashion.restclient.magento.product.MagentoProduct;
 import com.gfashion.restclient.magento.product.MagentoProductSearchResponse;
@@ -11,9 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.*;
@@ -26,17 +29,25 @@ public class MagentoProductClient {
     @Value("${magento.url.products}")
     private String productsUrl;
 
+    @Value("${magento.url.categories}")
+    private String categoriesUrl;
+
     @Autowired
     private RestClient magentoRestClient;
 
 
     private final GfMagentoConverter gfMagentoConverter = Mappers.getMapper(GfMagentoConverter.class);
 
-    public Map<String, Map<String, String>> getAttributesOption() {
+    /**
+     * 加入参数extraHeaders，如果已经拿到token，避免再去取token
+     * @param extraHeaders
+     * @return
+     */
+    public Map<String, Map<String, String>> getAttributesOption(MultiValueMap<String, String> extraHeaders) {
 
         String attributesUrl = productsUrl + "attributes?searchCriteria[filterGroups][0][filters][0][field]=is_filterable&searchCriteria[filterGroups][0][filters][0][value]=false&searchCriteria[filterGroups][0][filters][0][conditionType]=neq";
         log.info("attributesUrl:" + attributesUrl);
-        ResponseEntity<String> responseEntityAttribute = magentoRestClient.exchangeGet(attributesUrl, String.class, null);
+        ResponseEntity<String> responseEntityAttribute = magentoRestClient.exchangeGet(attributesUrl, String.class, extraHeaders);
 
         Gson gson = new Gson();
         GfEvaAttribute gfEvaAttribute = gfMagentoConverter.convertMagentoEvaAttributeToGfEvaAttribute(gson.fromJson(responseEntityAttribute.getBody(), MagentoEvaAttribute.class));
@@ -59,14 +70,127 @@ public class MagentoProductClient {
         return attributeOption;
     }
 
+    public GfProductCategory getCategoryById(Integer CategoryId, MultiValueMap<String, String> extraHeaders){
+        String getProductUrl = categoriesUrl + CategoryId;
 
+        ResponseEntity<String> responseEntityCategory = magentoRestClient.exchangeGet(getProductUrl, String.class, extraHeaders);
+        Gson gson = new Gson();
+        return gfMagentoConverter.convertMagentoProductCategoryToGfProductCategory(gson.fromJson(responseEntityCategory.getBody(), MagentoProductCategory.class));
+    }
+    /**
+     * getProductBySku
+     * @param sku
+     * @return
+     * @throws ProductNotFoundException
+     * @throws ProductUnknowException
+     */
     public GfProduct getProductBySku(String sku) throws ProductNotFoundException, ProductUnknowException {
         String getProductUrl = productsUrl + sku;
 
         try {
-            ResponseEntity<String> responseEntityProduct = magentoRestClient.exchangeGet(getProductUrl, String.class, null);
+            HttpHeaders headers = magentoRestClient.getDefaultHeaders(null);
+            ResponseEntity<String> responseEntityProduct = magentoRestClient.exchangeGet(getProductUrl, String.class, headers);
             Gson gson = new Gson();
-            return gfMagentoConverter.convertMagentoProductToGfProduct(gson.fromJson(responseEntityProduct.getBody(), MagentoProduct.class));
+            GfProduct gfProduct = gfMagentoConverter.convertMagentoProductToGfProduct(gson.fromJson(responseEntityProduct.getBody(), MagentoProduct.class));
+            List <GfProductCustomAttribute> gfProductCustomAttributeList = gfProduct.getCustom_attributes();
+            if(null != gfProductCustomAttributeList && gfProductCustomAttributeList.size() > 0){
+                Map<String, Map<String, String>> attributesOption = getAttributesOption(headers);
+                Map<String, GfAvilableFlter> filters = new HashMap<>();
+                gfProductCustomAttributeList.forEach(gfProductCustomAttribute -> {
+                    String customAttribute = gfProductCustomAttribute.getAttribute_code();
+                    Object customValue = gfProductCustomAttribute.getValue();
+                    if(customValue instanceof String){
+                        if(customValue.toString().contains(",")){
+                            // 多个id 例如：
+                            // {
+                            //      "attribute_code": "activity",
+                            //      "value": "5435,5436,5444,5438"
+                            //    },
+                        }else{
+                            // 单个id
+                            if (attributesOption.containsKey(customAttribute)) {
+                                if (filters.containsKey(customAttribute)) {
+
+                                    GfAvilableFlter gfAvilableFlter = filters.get(customAttribute);
+                                    List<GfAttributeOption> gfAttributeOptions = gfAvilableFlter.getOptions();
+                                    Map<String, GfAttributeOption> gfAttributeOptionMap = new HashMap<>();
+                                    gfAttributeOptions.forEach(gfAttributeOption -> {
+                                        gfAttributeOptionMap.put(gfAttributeOption.getId(), gfAttributeOption);
+                                    });
+                                    if (!gfAttributeOptionMap.containsKey(customValue.toString()) && attributesOption.get(customAttribute).containsKey(customValue.toString())) {
+
+                                        GfAttributeOption gfAttributeOption = new GfAttributeOption();
+                                        gfAttributeOption.setId(customValue.toString());
+                                        gfAttributeOption.setName(attributesOption.get(customAttribute).get(customValue.toString()));
+                                        gfAttributeOption.setIsChecked("true");
+                                        gfAttributeOptions.add(gfAttributeOption);
+                                        gfAvilableFlter.setOptions(gfAttributeOptions);
+                                        filters.put(customAttribute, gfAvilableFlter);
+
+                                        gfProductCustomAttribute.setValue(gfAttributeOptions);
+                                    }
+                                } else if (attributesOption.get(customAttribute).containsKey(customValue.toString())) {
+
+                                    List<GfAttributeOption> gfAttributeOptions = new ArrayList<>();
+                                    GfAttributeOption gfAttributeOption = new GfAttributeOption();
+                                    GfAvilableFlter gfAvilableFlter = new GfAvilableFlter();
+                                    gfAvilableFlter.setCode(customAttribute);
+                                    String toFirstUpperCase = customAttribute.substring(0, 1).toUpperCase();
+                                    String nameCapitalized = toFirstUpperCase + customAttribute.substring(1);
+                                    gfAvilableFlter.setName(nameCapitalized);
+                                    gfAttributeOption.setId(customValue.toString());
+                                    gfAttributeOption.setName(attributesOption.get(customAttribute).get(customValue.toString()));
+                                    gfAttributeOption.setIsChecked("true");
+                                    gfAttributeOptions.add(gfAttributeOption);
+                                    gfAvilableFlter.setOptions(gfAttributeOptions);
+                                    filters.put(customAttribute, gfAvilableFlter);
+
+                                    gfProductCustomAttribute.setValue(gfAttributeOption);
+                                }
+                            }
+                        }
+                    }
+                    if(customValue instanceof ArrayList){
+                        // 是一个字符串数组，例如：这种情况
+                        // {
+                        //      "attribute_code": "category_ids",
+                        //      "value": [
+                        //        "3",
+                        //        "5"
+                        //      ]
+                        //    },
+                        List <GfProductCategory> GfProductCategoryList = new ArrayList<>();
+                        if("category_ids".equals(customAttribute)){
+                            ((ArrayList) customValue).forEach(customValueOne -> {
+                                GfProductCategory gfProductCategory = getCategoryById(Integer.parseInt(customValueOne.toString()), headers);
+                                GfProductCategoryList.add(gfProductCategory);
+                            });
+                        }
+                        gfProductCustomAttribute.setValue(GfProductCategoryList);
+                    }
+
+                });
+            }
+
+            List <GfProductLink> gfProductLinkList = gfProduct.getProduct_links();
+            if(null != gfProductLinkList && gfProductLinkList.size() >0){
+                // 循环获取关联产品的名称、价格、图片地址
+                gfProductLinkList.forEach(GfProductLink ->{
+                    ResponseEntity<String>  responseEntityProduct1= magentoRestClient.exchangeGet(productsUrl + GfProductLink.getLinked_product_sku(), String.class, headers);
+                    GfProduct gfProduct1 = gfMagentoConverter.convertMagentoProductToGfProduct(gson.fromJson(responseEntityProduct1.getBody(), MagentoProduct.class));
+
+                    GfProductLink.setName(gfProduct1.getName()); // 产品名称
+                    GfProductLink.setPrice(gfProduct1.getPrice()); // 产品价格
+                    List <GfMediaGalleryEntry> gfMediaGalleryEntryList = gfProduct1.getMedia_gallery_entries();
+                    String file = "";
+                    if(gfMediaGalleryEntryList.size() > 0){
+                        file = gfMediaGalleryEntryList.get(0).getFile();
+                    }
+                    GfProductLink.setFile(file); // 产品图片
+                });
+            }
+
+            return gfProduct;
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new ProductNotFoundException(e.getMessage());
@@ -81,7 +205,7 @@ public class MagentoProductClient {
 
         try {
             Map<String, GfAvilableFlter> filters = new HashMap<>();
-            Map<String, Map<String, String>> attributesOption = getAttributesOption();
+            Map<String, Map<String, String>> attributesOption = getAttributesOption(null);
 
             ResponseEntity<String> responseProductSearch = magentoRestClient.exchangeGet(getProductSearchUrl, String.class, null);
 
