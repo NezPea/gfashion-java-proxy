@@ -47,6 +47,14 @@ logging:
     ROOT: DEBUG
     com.gfashion: DEBUG
 
+amazon:
+  dynamodb:
+    accesskey: AK*******HB
+    secretkey: S0***mL
+    session_token:
+    endpoint: https://dynamodb.us-east-1.amazonaws.com
+    region: us-east-1
+
 ---
 spring:
   profiles: qa
@@ -80,3 +88,11 @@ logging:
   level:
     ROOT: DEBUG
     com.gfashion: DEBUG
+
+amazon:
+  dynamodb:
+    accesskey: AKIA*******B
+    secretkey: S0*******nmL
+    session_token:
+    endpoint: https://dynamodb.us-east-1.amazonaws.com
+    region: us-east-1
