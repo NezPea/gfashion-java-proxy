@@ -36,8 +36,7 @@ public class GfashionProductIT {
                 .body("id", equalTo(1393))
                 .body("sku", equalTo("WJ12-M-Black"))
                 .body("attribute_set_id", equalTo(9))
-//                .body("price", equalTo("77.0"))
-                ;
+                .body("price", equalTo(77));
     }
 
     @Test
