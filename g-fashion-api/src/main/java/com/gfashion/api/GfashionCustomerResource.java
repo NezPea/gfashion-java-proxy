@@ -17,7 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
  */
 @RestController
 @RequestMapping(path = "/gfashion/v1", produces = {"application/json"})
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class GfashionCustomerResource {
     private MagentoCustomerClient magentoCustomerClient;

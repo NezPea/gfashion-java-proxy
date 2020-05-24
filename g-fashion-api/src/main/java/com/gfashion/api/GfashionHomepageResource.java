@@ -2,18 +2,19 @@ package com.gfashion.api;
 
 import com.gfashion.domain.homepage.CustomizedHomepage;
 import com.gfashion.restclient.MangentoHomepageClient;
-import com.gfashion.restclient.magento.exception.CustomerNotFoundException;
 import com.gfashion.restclient.magento.exception.CustomerUnknowException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping(path = "/gfashion/v1", produces = {"application/json"})
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 @AllArgsConstructor
 @Slf4j
 public class GfashionHomepageResource {
