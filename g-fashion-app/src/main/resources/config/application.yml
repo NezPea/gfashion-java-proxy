@@ -64,7 +64,7 @@ magento:
     storeConfigs: store/storeConfigs/
     products: products/
     categories: categories/
-    attributes: attributes/
+    attributes: products/attributes?searchCriteria[filterGroups][0][filters][0][field]=is_filterable&searchCriteria[filterGroups][0][filters][0][value]=false&searchCriteria[filterGroups][0][filters][0][conditionType]=neq
     listCategories: categories/list
     parameters:
       parentIdField: parent_id
@@ -74,6 +74,7 @@ magento:
       recommendedBrandsParentId: 59 # the category id for brands
   username: admin
   password: 202064_Hh
+
 
 logging:
   level:

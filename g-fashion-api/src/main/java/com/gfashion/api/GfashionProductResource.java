@@ -2,12 +2,17 @@ package com.gfashion.api;
 
 import com.gfashion.domain.product.GfProduct;
 import com.gfashion.domain.product.GfProductSearchResponse;
+import com.gfashion.domain.product.GfProductSearchResponseFix;
 import com.gfashion.restclient.MagentoProductClient;
+import com.gfashion.restclient.magento.exception.ProductNotFoundException;
+import com.gfashion.restclient.magento.exception.ProductUnknowException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * REST controller for G-Fashion order page
@@ -22,29 +27,30 @@ public class GfashionProductResource {
 
 
     @GetMapping("/products/{skuId}")
-    public GfProduct getProductBySku(@PathVariable String skuId) {
-
-        return magentoProductClient.getProductBySku(skuId);
+    public ResponseEntity<GfProduct> getProductBySku(@PathVariable String skuId) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(magentoProductClient.getProductBySku(skuId));
+        } catch (ProductNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
+        } catch (ProductUnknowException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
+        }
     }
 
     /**
      * {@code GET  /channelProducts} : get all the channel products with given query string.
      *
-     * @param httpServletRequest HttpServletRequest
+     * @param @PathVariable String query
      * @return the {@link GfProductSearchResponse} with status {@code 200 (OK)} and the list of transactions in body.
      */
-    @GetMapping(value = "/channelProducts", produces = "application/json;charset=utf-8")
-    public GfProductSearchResponse searchChannelProducts(HttpServletRequest httpServletRequest) {
-
-        StringBuilder buf = new StringBuilder();
-        buf.append("?");
-        httpServletRequest.getParameterMap().forEach((k,v)->{
-            buf.append(k).append("=").append(v[0]).append("&");
-        });
-        String queryString = buf.substring(0, buf.length() - 1);
-        log.info("info:" + queryString);
-        return magentoProductClient.searchProducts(queryString);
+    @GetMapping("/channelProducts/{query}")
+    public ResponseEntity<GfProductSearchResponseFix> searchChannelProducts(@PathVariable String query) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(magentoProductClient.searchProducts(query));
+        } catch (ProductNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
+        } catch (ProductUnknowException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
+        }
     }
-
-
 }
