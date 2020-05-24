@@ -1,4 +1,4 @@
-package com.gfashion.restclient.magento;
+package com.gfashion.restclient.magento.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
