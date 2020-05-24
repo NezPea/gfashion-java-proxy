@@ -31,7 +31,7 @@ public class GfashionPorductDynamodbResource {
     }
 
     @GetMapping("/dynamodb/products/{productId}")
-    public ResponseEntity<GfProductEntity> readProduct(@PathVariable String productId) {
+    public ResponseEntity<GfProductEntity> getProduct(@PathVariable String productId) {
         try {
             GfProductEntity response = productRepository.readGfProductEntity(productId);
             return ResponseEntity.status(HttpStatus.OK).body(response);
