@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -16,7 +17,7 @@ public class GfChannelProduct {
     private String sku;
     private String name;
 //    private Integer attribute_set_id;
-    private double price;
+    private BigDecimal price;
     private String file;
 //    private Integer status;
 //    private Integer visibility;

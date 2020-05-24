@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 public interface GfMagentoConverter {
     GfCustomer convertMagentoCustomerToGfCustomer(MagentoCustomer magentoCustomer);
     GfProduct convertMagentoProductToGfProduct(MagentoProduct magentoProduct);
+    GfProductCategory convertMagentoProductCategoryToGfProductCategory(MagentoProductCategory magentoProductCategory);
     GfEvaAttribute convertMagentoEvaAttributeToGfEvaAttribute(MagentoEvaAttribute magentoEvaAttribute);
     GfProductLink convertMagentoProductLinkToGfProductLink(MagentoProductLink magentoProductLink);
     GfProductCustomAttribute convertMagentoProductCustomAttributeToGfProductCustomAttribute(MagentoProductCustomAttribute magentoProductCustomAttribute);

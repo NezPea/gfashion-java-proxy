@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -14,7 +15,7 @@ public class MagentoProductLink {
 
     private String sku;
     private String name;
-    private double price;
+    private BigDecimal price;
     private String file;
     private String link_type;
     private String linked_product_sku;
