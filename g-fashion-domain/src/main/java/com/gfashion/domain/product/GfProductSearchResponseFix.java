@@ -10,10 +10,10 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GfProductSearchResponse {
+public class GfProductSearchResponseFix {
 
-    private List<GfProduct> items;
+    private List<GfChannelProduct> items;
     private GfSearchCriteria search_criteria;
     private Integer total_count;
-    private Map<String, Map<String,Object>> avavilable_filters;
+    private List<GfAvilableFlter> avavilable_filters;
 }

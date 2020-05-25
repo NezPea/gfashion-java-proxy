@@ -11,12 +11,13 @@ import com.gfashion.domain.store.GfStoreConfig;
 import com.gfashion.domain.store.GfStoreGroup;
 import com.gfashion.domain.store.GfWebsite;
 import com.gfashion.domain.product.GfProductSearchResponse;
+import com.gfashion.restclient.magento.product.MagentoEvaAttribute;
 import com.gfashion.restclient.magento.customer.MagentoCustomer;
 import com.gfashion.restclient.magento.customer.MagentoCustomerAddress;
 import com.gfashion.restclient.magento.*;
 
-import com.gfashion.restclient.magento.homepage.MagentoCategories;
 import com.gfashion.restclient.magento.homepage.MagentoCategory;
+import com.gfashion.restclient.magento.product.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -29,6 +30,8 @@ import java.util.stream.Collectors;
 public interface GfMagentoConverter {
     GfCustomer convertMagentoCustomerToGfCustomer(MagentoCustomer magentoCustomer);
     GfProduct convertMagentoProductToGfProduct(MagentoProduct magentoProduct);
+    GfProductCategory convertMagentoProductCategoryToGfProductCategory(MagentoProductCategory magentoProductCategory);
+    GfEvaAttribute convertMagentoEvaAttributeToGfEvaAttribute(MagentoEvaAttribute magentoEvaAttribute);
     GfProductLink convertMagentoProductLinkToGfProductLink(MagentoProductLink magentoProductLink);
     GfProductCustomAttribute convertMagentoProductCustomAttributeToGfProductCustomAttribute(MagentoProductCustomAttribute magentoProductCustomAttribute);
     GfExtensionAttribute convertMagentoExtensionAttributeToGfExtensionAttribute(MagentoExtensionAttribute magentoExtensionAttribute);

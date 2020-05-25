@@ -7,6 +7,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.json.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,6 +49,7 @@ public class GfashionCustomerIT {
     }
 
     @Test
+    @Ignore
     public void createCustomerByIdShouldReturnBadRequestException() throws Exception {
         GfCustomerRegistration newCustomerRegistration = new GfCustomerRegistration();
         GfCustomer newCustomer = new GfCustomer();

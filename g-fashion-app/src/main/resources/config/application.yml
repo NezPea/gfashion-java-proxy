@@ -47,6 +47,14 @@ logging:
     ROOT: DEBUG
     com.gfashion: DEBUG
 
+amazon:
+  dynamodb:
+    accesskey: AK*******HB
+    secretkey: S0***mL
+    session_token:
+    endpoint: https://dynamodb.us-east-1.amazonaws.com
+    region: us-east-1
+
 ---
 spring:
   profiles: qa
@@ -64,7 +72,7 @@ magento:
     storeConfigs: store/storeConfigs/
     products: products/
     categories: categories/
-    attributes: attributes/
+    attributes: products/attributes?searchCriteria[filterGroups][0][filters][0][field]=is_filterable&searchCriteria[filterGroups][0][filters][0][value]=false&searchCriteria[filterGroups][0][filters][0][conditionType]=neq
     listCategories: categories/list
     parameters:
       parentIdField: parent_id
@@ -75,7 +83,16 @@ magento:
   username: admin
   password: 202064_Hh
 
+
 logging:
   level:
     ROOT: DEBUG
     com.gfashion: DEBUG
+
+amazon:
+  dynamodb:
+    accesskey: AKIA*******B
+    secretkey: S0*******nmL
+    session_token:
+    endpoint: https://dynamodb.us-east-1.amazonaws.com
+    region: us-east-1
