@@ -6,7 +6,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -21,17 +21,18 @@ public class GfCustomizedHomepageEntity {
     private Integer customerId;
 
     @DynamoDBAttribute(attributeName = "recommendedProducts")
-    private List<GfHomepageProductEntity> recommendedProducts;
+    private Set<GfHomepageProductEntity> recommendedProducts;
 
     @DynamoDBAttribute(attributeName = "recommendedDesigners")
-    private List<GfHomepageDesignerEntity> recommendedDesigners;
+    private Set<GfHomepageDesignerEntity> recommendedDesigners;
 
     @DynamoDBAttribute(attributeName = "recommendedBrands")
-    private List<GfHomepageBrandEntity> recommendedBrands;
+    private Set<GfHomepageBrandEntity> recommendedBrands;
 
     @DynamoDBAttribute(attributeName = "followingDesigners")
-    private List<GfHomepageDesignerEntity> followingDesigners;
+    private Set<GfHomepageDesignerEntity> followingDesigners;
 
     @DynamoDBAttribute(attributeName = "followingBrands")
-    private List<GfHomepageBrandEntity> followingBrands;
+    private Set<GfHomepageBrandEntity> followingBrands;
+
 }
