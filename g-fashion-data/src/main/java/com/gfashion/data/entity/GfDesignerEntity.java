@@ -1,4 +1,4 @@
-package com.gfashion.data;
+package com.gfashion.data.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HomepageDesigner {
-    private Integer id;
+    private Integer designerId;
     private String name;
     private List<String> cooperatingBrands;
     private String country;

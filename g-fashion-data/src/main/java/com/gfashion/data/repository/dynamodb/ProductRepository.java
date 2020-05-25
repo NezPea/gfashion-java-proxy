@@ -1,6 +1,6 @@
 package com.gfashion.data.repository.dynamodb;
 
-import com.gfashion.data.GfProductEntity;
+import com.gfashion.data.entity.GfProductEntity;
 
 public interface ProductRepository {
     GfProductEntity createGfProductEntity(GfProductEntity GfProductEntity);
