@@ -1,12 +1,11 @@
 package com.gfashion.data.repository.dynamodb.impl;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.gfashion.data.entity.GfProductEntity;
 import com.gfashion.data.entity.homepage.GfCustomizedHomepageEntity;
-import com.gfashion.data.repository.dynamodb.HomepageRepository;
+import com.gfashion.data.repository.dynamodb.HomepageDynamodbRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class HomepageRepositoryImpl implements HomepageRepository {
+public class HomepageDynamodbRepositoryImpl implements HomepageDynamodbRepository {
 
     @Autowired
     private DynamoDBMapper dynamoDBMapper;
