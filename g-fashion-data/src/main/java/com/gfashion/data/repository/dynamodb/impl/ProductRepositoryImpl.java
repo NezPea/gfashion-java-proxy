@@ -17,7 +17,7 @@ import java.util.Map;
 public class ProductRepositoryImpl implements ProductRepository {
 
     @Autowired
-    private DynamoDBMapper dynamoDBMapper;
+    public DynamoDBMapper dynamoDBMapper;
 
     @Override
     public GfProductEntity createGfProductEntity(GfProductEntity product) {
