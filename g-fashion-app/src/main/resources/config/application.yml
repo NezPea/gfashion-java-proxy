@@ -49,8 +49,8 @@ logging:
 
 amazon:
   dynamodb:
-    accesskey: AK*******HB
-    secretkey: S0***mL
+    accesskey: AKIA5VIRCT2GP56W4WU6
+    secretkey: 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
     session_token:
     endpoint: https://dynamodb.us-east-1.amazonaws.com
     region: us-east-1
@@ -91,8 +91,8 @@ logging:
 
 amazon:
   dynamodb:
-    accesskey: AKIA*******B
-    secretkey: S0*******nmL
+    accesskey: AKIA5VIRCT2GP56W4WU6
+    secretkey: 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
     session_token:
     endpoint: https://dynamodb.us-east-1.amazonaws.com
     region: us-east-1
