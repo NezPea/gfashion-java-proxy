@@ -51,15 +51,8 @@ public interface GfMagentoConverter {
     public HomepageBrand convertMagentoCategoryToHomeBrand(MagentoCategory magentoCategory);
 
     public List<HomepageDesigner> convertMagentoCategoriesToHomeDesigners(List<MagentoCategory> magentoCategories);
-    @Mapping(source = "custom_attributes", target = "link", qualifiedByName = "getLinkFromAttribute")
     @Mapping(source = "custom_attributes", target = "photoUrl", qualifiedByName = "getPhotoUrlFromAttribute")
     public HomepageDesigner convertMagentoCategoryToHomeDesigner(MagentoCategory magentoCategory);
-
-
-    @Named("getLinkFromAttribute")
-    public static String getLinkFromAttribute(List<Map<String, String>> customerAttributes){
-        return getCustomerAttributeValue(customerAttributes, "url_path");
-    }
 
     @Named("getPhotoUrlFromAttribute")
     public static String getPhotoUrlFromAttribute(List<Map<String, String>> customerAttributes){
