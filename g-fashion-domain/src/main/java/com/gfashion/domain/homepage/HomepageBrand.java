@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class HomepageBrand {
     private Integer id;
     private String name;
+    private String country;
     private String photoUrl;
     private String link;
 }

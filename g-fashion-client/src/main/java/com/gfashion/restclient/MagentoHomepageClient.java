@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class MangentoHomepageClient {
+public class MagentoHomepageClient {
 
     @Value("${magento.url.listCategories}")
     private String listCategories;
