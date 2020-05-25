@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import com.gfashion.restclient.MagentoProductClient;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "/gfashion", produces = "application/json")
@@ -23,6 +25,14 @@ public class GfashionProductResource {
     public GfProduct getProductBySku(@PathVariable("skuId") String skuId) {
         try{
             return magentoProductClient.getProductBySku(skuId);
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Products Not Found", e);
+        }
+    }
+    @GetMapping("/v1/storeConfigs")
+    public ArrayList getStoreConfigs() {
+        try{
+            return magentoProductClient.getStoreConfigs();
         }catch (Exception e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Products Not Found", e);
         }

@@ -27,6 +27,7 @@ magento:
     products: products/
     categories: categories/
     attributes: attributes/
+    storeConfigs: store/storeConfigs
   username: admin
   password: 202064_Hh
 

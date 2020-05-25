@@ -12,11 +12,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+
 @Component
 public class MagentoProductClient {
 
     @Value("${magento.url.products}")
     private String productsUrl;
+    @Value("${magento.url.storeConfigs}")
+    private String storeConfigsUrl;
 
     @Autowired
     private RestClient _restClient;
@@ -119,6 +123,15 @@ public class MagentoProductClient {
 
         Gson gson = new Gson();
         return _mapper.convertMagentoProductToGfProduct(gson.fromJson(responseEntity.getBody(), MagentoProduct.class));
+    }
+
+    public ArrayList getStoreConfigs(){
+        ResponseEntity<String> responseEntity = _restClient.exchangeGet(
+                storeConfigsUrl,
+                String.class,
+                null);
+        Gson gson = new Gson();
+        return gson.fromJson(responseEntity.getBody(), ArrayList.class);
     }
 
 }
