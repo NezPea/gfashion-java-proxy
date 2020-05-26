@@ -3,10 +3,7 @@ package com.gfashion.restclient;
 import com.gfashion.domain.product.*;
 import com.gfashion.domain.store.GfStoreConfig;
 import com.gfashion.restclient.magento.exception.*;
-import com.gfashion.restclient.magento.product.MagentoProductCategory;
-import com.gfashion.restclient.magento.product.MagentoEvaAttribute;
-import com.gfashion.restclient.magento.product.MagentoProduct;
-import com.gfashion.restclient.magento.product.MagentoProductSearchResponse;
+import com.gfashion.restclient.magento.product.*;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +29,9 @@ public class MagentoProductClient {
 
     @Value("${magento.url.categories}")
     private String categoriesUrl;
+
+    @Value("${magento.url.stockItems}")
+    private String stockItems;
 
     @Value("${magento.url.designersParentId}")
     private String designersParentId;
@@ -86,6 +86,13 @@ public class MagentoProductClient {
         ResponseEntity<String> responseEntityCategory = magentoRestClient.exchangeGet(getProductUrl, String.class, extraHeaders);
         Gson gson = new Gson();
         return gfMagentoConverter.convertMagentoProductCategoryToGfProductCategory(gson.fromJson(responseEntityCategory.getBody(), MagentoProductCategory.class));
+    }
+    public GfStockItem getStockItemBySku(String productSku, MultiValueMap<String, String> extraHeaders){
+        String getProductUrl = stockItems + productSku;
+
+        ResponseEntity<String> responseEntityStockItem = magentoRestClient.exchangeGet(getProductUrl, String.class, extraHeaders);
+        Gson gson = new Gson();
+        return gfMagentoConverter.convertMagentoStockItemToGfStockItem(gson.fromJson(responseEntityStockItem.getBody(), MagentoStockItem.class));
     }
     /**
      * getProductBySku
@@ -227,6 +234,13 @@ public class MagentoProductClient {
                     }
                     GfProductLink.setFile(file); // 产品图片
                 });
+            }
+
+            // 获取产品的库存信息
+            GfStockItem gfStockItem = getStockItemBySku(sku, headers);
+            if(null != gfStockItem){
+                log.info("==={}",gfStockItem);
+                gfProduct.setPurchase_number_limit(gfStockItem.getQty());
             }
 
             return gfProduct;
