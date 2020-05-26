@@ -189,17 +189,15 @@ public class MagentoProductClient {
                             ((ArrayList) customValue).forEach(customValueOne -> {
                                 GfProductCategory gfProductCategory = getCategoryById(Integer.parseInt(customValueOne.toString()), headers);
                                 if(null != gfProductCategory.getParent_id()){
-                                    String designerNamePrefix = "[Designer]";
-                                    String brandNamePrefix = "[Brand]";
                                     // 品牌的父类id是50，设计师的父类id是46
-                                    if(gfProductCategory.getParent_id() == Integer.parseInt(designersParentId) || gfProductCategory.getName().trim().startsWith(designerNamePrefix)){
+                                    if(gfProductCategory.getParent_id() == Integer.parseInt(designersParentId)){
                                         String designer_link = "/category/" + gfProductCategory.getId();
-                                        String designer_name = gfProductCategory.getName().replace(designerNamePrefix,"");
+                                        String designer_name = gfProductCategory.getName();
                                         gfProduct.setDesigner_name(designer_name);
                                         gfProduct.setDesigner_link(designer_link);
-                                    }else if(gfProductCategory.getParent_id() == Integer.parseInt(brandsParentId) || gfProductCategory.getName().trim().startsWith(brandNamePrefix)){
+                                    }else if(gfProductCategory.getParent_id() == Integer.parseInt(brandsParentId)){
                                         String brand_link = "/category/" + gfProductCategory.getId();
-                                        String brand_name = gfProductCategory.getName().replace(brandNamePrefix,"");
+                                        String brand_name = gfProductCategory.getName();
                                         gfProduct.setBrand_link(brand_link);
                                         gfProduct.setBrand_name(brand_name);
                                     }
