@@ -182,6 +182,20 @@ public class MagentoProductClient {
                         if("category_ids".equals(customAttribute)){
                             ((ArrayList) customValue).forEach(customValueOne -> {
                                 GfProductCategory gfProductCategory = getCategoryById(Integer.parseInt(customValueOne.toString()), headers);
+                                if(null != gfProductCategory.getParent_id()){
+                                    // 品牌的父类id是50，设计师的父类id是46
+                                    if(gfProductCategory.getParent_id() == 46){
+                                        String designer_link = "/category/" + gfProductCategory.getId();
+                                        String designer_name = gfProductCategory.getName();
+                                        gfProduct.setDesigner_name(designer_name);
+                                        gfProduct.setDesigner_link(designer_link);
+                                    }else if(gfProductCategory.getParent_id() == 50){
+                                        String brand_link = "/category/" + gfProductCategory.getId();
+                                        String brand_name = gfProductCategory.getName();
+                                        gfProduct.setBrand_link(brand_link);
+                                        gfProduct.setBrand_name(brand_name);
+                                    }
+                                }
                                 GfProductCategoryList.add(gfProductCategory);
                             });
                         }
