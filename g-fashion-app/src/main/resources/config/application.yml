@@ -29,6 +29,7 @@ magento:
     storeGroups: store/storeGroups/
     storeConfigs: store/storeConfigs/
     products: products/
+    stockItems: stockItems/
     categories: categories/
     attributes: attributes/
     listCategories: categories/list
@@ -38,7 +39,8 @@ magento:
       value: searchCriteria[filterGroups][0][filters][0][value]=
       recommendedDesignersParentId: 62 # the category id for designers
       recommendedBrandsParentId: 59 # the category id for brands
-
+    designersParentId: 46
+    brandsParentId: 50
   username: admin
   password: 202064_Hh
 
@@ -71,6 +73,7 @@ magento:
     storeGroups: store/storeGroups/
     storeConfigs: store/storeConfigs/
     products: products/
+    stockItems: stockItems/
     categories: categories/
     attributes: products/attributes?searchCriteria[filterGroups][0][filters][0][field]=is_filterable&searchCriteria[filterGroups][0][filters][0][value]=false&searchCriteria[filterGroups][0][filters][0][conditionType]=neq
     listCategories: categories/list
@@ -80,6 +83,8 @@ magento:
       value: searchCriteria[filterGroups][0][filters][0][value]=
       recommendedDesignersParentId: 62 # the category id for designers
       recommendedBrandsParentId: 59 # the category id for brands
+    designersParentId: 46
+    brandsParentId: 50
   username: admin
   password: 202064_Hh
 
