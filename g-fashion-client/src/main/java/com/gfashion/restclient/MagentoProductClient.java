@@ -1,6 +1,7 @@
 package com.gfashion.restclient;
 
 import com.gfashion.domain.product.*;
+import com.gfashion.domain.store.GfStoreConfig;
 import com.gfashion.restclient.magento.exception.*;
 import com.gfashion.restclient.magento.product.MagentoProductCategory;
 import com.gfashion.restclient.magento.product.MagentoEvaAttribute;
@@ -35,6 +36,9 @@ public class MagentoProductClient {
     @Autowired
     private RestClient magentoRestClient;
 
+    @Autowired
+    private MagentoStoreClient magentoStoreClient;
+    private String secureBaseMediaUrl = ""; // 产品图片地址
 
     private final GfMagentoConverter gfMagentoConverter = Mappers.getMapper(GfMagentoConverter.class);
 
@@ -86,12 +90,27 @@ public class MagentoProductClient {
      */
     public GfProduct getProductBySku(String sku) throws ProductNotFoundException, ProductUnknowException {
         String getProductUrl = productsUrl + sku;
-
+        String productFilePath = "catalog/product";
         try {
+            // 获取图片的基础地址
+            GfStoreConfig[] gfStoreConfig = magentoStoreClient.getStoreConfig();
+            if(null != gfStoreConfig && gfStoreConfig.length > 0){
+                secureBaseMediaUrl = gfStoreConfig[0].getSecure_base_media_url() + productFilePath;
+            }else{
+                secureBaseMediaUrl = "https://www.gfashion2020.tk/media/" + productFilePath;
+            }
             HttpHeaders headers = magentoRestClient.getDefaultHeaders(null);
             ResponseEntity<String> responseEntityProduct = magentoRestClient.exchangeGet(getProductUrl, String.class, headers);
             Gson gson = new Gson();
             GfProduct gfProduct = gfMagentoConverter.convertMagentoProductToGfProduct(gson.fromJson(responseEntityProduct.getBody(), MagentoProduct.class));
+            List <GfMediaGalleryEntry> gfMediaGalleryEntryList = gfProduct.getMedia_gallery_entries();
+            if(gfMediaGalleryEntryList.size() > 0){
+                gfMediaGalleryEntryList.forEach(gfMediaGalleryEntry -> {
+                    String file = "";
+                    file = secureBaseMediaUrl + gfMediaGalleryEntry.getFile();
+                    gfMediaGalleryEntry.setFile(file);
+                });
+            }
             List <GfProductCustomAttribute> gfProductCustomAttributeList = gfProduct.getCustom_attributes();
             if(null != gfProductCustomAttributeList && gfProductCustomAttributeList.size() > 0){
                 Map<String, Map<String, String>> attributesOption = getAttributesOption(headers);
@@ -181,10 +200,10 @@ public class MagentoProductClient {
 
                     GfProductLink.setName(gfProduct1.getName()); // 产品名称
                     GfProductLink.setPrice(gfProduct1.getPrice()); // 产品价格
-                    List <GfMediaGalleryEntry> gfMediaGalleryEntryList = gfProduct1.getMedia_gallery_entries();
+                    List <GfMediaGalleryEntry> gfMediaGalleryEntryList1 = gfProduct1.getMedia_gallery_entries();
                     String file = "";
-                    if(gfMediaGalleryEntryList.size() > 0){
-                        file = gfMediaGalleryEntryList.get(0).getFile();
+                    if(gfMediaGalleryEntryList1.size() > 0){
+                        file = secureBaseMediaUrl + gfMediaGalleryEntryList1.get(0).getFile();
                     }
                     GfProductLink.setFile(file); // 产品图片
                 });
