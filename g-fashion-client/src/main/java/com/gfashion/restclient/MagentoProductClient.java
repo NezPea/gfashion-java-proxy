@@ -33,6 +33,12 @@ public class MagentoProductClient {
     @Value("${magento.url.categories}")
     private String categoriesUrl;
 
+    @Value("${magento.url.designersParentId}")
+    private String designersParentId;
+
+    @Value("${magento.url.brandsParentId}")
+    private String brandsParentId;
+
     @Autowired
     private RestClient magentoRestClient;
 
@@ -183,15 +189,17 @@ public class MagentoProductClient {
                             ((ArrayList) customValue).forEach(customValueOne -> {
                                 GfProductCategory gfProductCategory = getCategoryById(Integer.parseInt(customValueOne.toString()), headers);
                                 if(null != gfProductCategory.getParent_id()){
+                                    String designerNamePrefix = "[Designer]";
+                                    String brandNamePrefix = "[Brand]";
                                     // 品牌的父类id是50，设计师的父类id是46
-                                    if(gfProductCategory.getParent_id() == 46){
+                                    if(gfProductCategory.getParent_id() == Integer.parseInt(designersParentId) || gfProductCategory.getName().trim().startsWith(designerNamePrefix)){
                                         String designer_link = "/category/" + gfProductCategory.getId();
-                                        String designer_name = gfProductCategory.getName();
+                                        String designer_name = gfProductCategory.getName().replace(designerNamePrefix,"");
                                         gfProduct.setDesigner_name(designer_name);
                                         gfProduct.setDesigner_link(designer_link);
-                                    }else if(gfProductCategory.getParent_id() == 50){
+                                    }else if(gfProductCategory.getParent_id() == Integer.parseInt(brandsParentId) || gfProductCategory.getName().trim().startsWith(brandNamePrefix)){
                                         String brand_link = "/category/" + gfProductCategory.getId();
-                                        String brand_name = gfProductCategory.getName();
+                                        String brand_name = gfProductCategory.getName().replace(brandNamePrefix,"");
                                         gfProduct.setBrand_link(brand_link);
                                         gfProduct.setBrand_name(brand_name);
                                     }

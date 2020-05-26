@@ -38,7 +38,8 @@ magento:
       value: searchCriteria[filterGroups][0][filters][0][value]=
       recommendedDesignersParentId: 62 # the category id for designers
       recommendedBrandsParentId: 59 # the category id for brands
-
+    designersParentId: 46
+    brandsParentId: 50
   username: admin
   password: 202064_Hh
 
@@ -80,6 +81,8 @@ magento:
       value: searchCriteria[filterGroups][0][filters][0][value]=
       recommendedDesignersParentId: 62 # the category id for designers
       recommendedBrandsParentId: 59 # the category id for brands
+    designersParentId: 46
+    brandsParentId: 50
   username: admin
   password: 202064_Hh
 
