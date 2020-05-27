@@ -198,12 +198,12 @@ public class MagentoProductClient {
                                 if(null != gfProductCategory.getParent_id()){
                                     // 品牌的父类id是50，设计师的父类id是46
                                     if(gfProductCategory.getParent_id() == Integer.parseInt(designersParentId)){
-                                        String designer_link = "/category/" + gfProductCategory.getId();
+                                        Integer designer_link = gfProductCategory.getId();
                                         String designer_name = gfProductCategory.getName();
                                         gfProduct.setDesigner_name(designer_name);
                                         gfProduct.setDesigner_link(designer_link);
                                     }else if(gfProductCategory.getParent_id() == Integer.parseInt(brandsParentId)){
-                                        String brand_link = "/category/" + gfProductCategory.getId();
+                                        Integer brand_link = gfProductCategory.getId();
                                         String brand_name = gfProductCategory.getName();
                                         gfProduct.setBrand_link(brand_link);
                                         gfProduct.setBrand_name(brand_name);

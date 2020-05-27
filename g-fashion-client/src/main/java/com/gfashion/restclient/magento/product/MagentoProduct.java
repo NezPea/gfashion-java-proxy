@@ -30,9 +30,9 @@ public class MagentoProduct {
     private List<MagentoProductLink> product_links; // 关联产品
     private MagentoMediaGalleryEntry extension_attributes; // 扩展属性
     private String designer_name;
-    private String designer_link;
+    private Integer designer_link; // 返回对应的分类id
     private String brand_name;
-    private String brand_link;
+    private Integer brand_link; // 返回对应的分类id
     private Integer purchase_number_limit; // 每个账号至多购买x件
 
     private List<JSONObject> options;
