@@ -125,9 +125,10 @@ public class MagentoProductClient {
                 });
             }
             List <GfProductCustomAttribute> gfProductCustomAttributeList = gfProduct.getCustom_attributes();
+            Map<String, Map<String, String>> attributesOption = getAttributesOption(headers);
+            Map<String, GfAvilableFlter> filters = new HashMap<>();
             if(null != gfProductCustomAttributeList && gfProductCustomAttributeList.size() > 0){
-                Map<String, Map<String, String>> attributesOption = getAttributesOption(headers);
-                Map<String, GfAvilableFlter> filters = new HashMap<>();
+
                 gfProductCustomAttributeList.forEach(gfProductCustomAttribute -> {
                     String customAttribute = gfProductCustomAttribute.getAttribute_code();
                     Object customValue = gfProductCustomAttribute.getValue();
@@ -236,11 +237,68 @@ public class MagentoProductClient {
                 });
             }
 
-            // 获取产品的库存信息
-            GfStockItem gfStockItem = getStockItemBySku(sku, headers);
-            if(null != gfStockItem){
-                log.info("==={}",gfStockItem);
-                gfProduct.setPurchase_number_limit(gfStockItem.getQty());
+            // 获取扩展属性
+            GfExtensionAttribute gfExtensionAttribute = gfProduct.getExtension_attributes();
+            if(null != gfExtensionAttribute){
+                // 获取产品的库存信息
+                GfStockItem gfStockItem = gfExtensionAttribute.getStock_item();
+                if(null != gfStockItem){
+                    gfProduct.setPurchase_number_limit(gfStockItem.getQty());
+                }
+
+                List <GfConfigurableProductOption> gfConfigurableProductOptionList = gfExtensionAttribute.getConfigurable_product_options();
+                if(null != gfConfigurableProductOptionList){
+                    gfConfigurableProductOptionList.forEach(gfConfigurableProductOption -> {
+                        List <GfConfigurableProductOptionValue> gfConfigurableProductOptionValueList =
+                                gfConfigurableProductOption.getValues();
+                        String customAttribute = gfConfigurableProductOption.getLabel().toLowerCase();
+                        if(null != gfConfigurableProductOptionValueList){
+                            gfConfigurableProductOptionValueList.forEach(gfConfigurableProductOptionValue ->{
+                                Integer attributeId = gfConfigurableProductOptionValue.getValue_index();
+                                // 单个id
+                                if (attributesOption.containsKey(customAttribute)) {
+                                    if (filters.containsKey(customAttribute)) {
+                                        GfAvilableFlter gfAvilableFlter = filters.get(customAttribute);
+                                        List<GfAttributeOption> gfAttributeOptions = gfAvilableFlter.getOptions();
+                                        Map<String, GfAttributeOption> gfAttributeOptionMap = new HashMap<>();
+                                        gfAttributeOptions.forEach(gfAttributeOption -> {
+                                            gfAttributeOptionMap.put(gfAttributeOption.getId(), gfAttributeOption);
+                                        });
+                                        if (!gfAttributeOptionMap.containsKey(attributeId.toString()) && attributesOption.get(customAttribute).containsKey(attributeId.toString())) {
+
+                                            GfAttributeOption gfAttributeOption = new GfAttributeOption();
+                                            gfAttributeOption.setId(attributeId.toString());
+                                            gfAttributeOption.setName(attributesOption.get(customAttribute).get(attributeId.toString()));
+                                            gfAttributeOption.setIsChecked("true");
+                                            gfAttributeOptions.add(gfAttributeOption);
+                                            gfAvilableFlter.setOptions(gfAttributeOptions);
+                                            filters.put(customAttribute, gfAvilableFlter);
+
+                                            gfConfigurableProductOptionValue.setValue(gfAttributeOption);
+                                        }
+                                    } else if (attributesOption.get(customAttribute).containsKey(attributeId.toString())) {
+                                        List<GfAttributeOption> gfAttributeOptions = new ArrayList<>();
+                                        GfAttributeOption gfAttributeOption = new GfAttributeOption();
+                                        GfAvilableFlter gfAvilableFlter = new GfAvilableFlter();
+                                        gfAvilableFlter.setCode(customAttribute);
+                                        String toFirstUpperCase = customAttribute.substring(0, 1).toUpperCase();
+                                        String nameCapitalized = toFirstUpperCase + customAttribute.substring(1);
+                                        gfAvilableFlter.setName(nameCapitalized);
+                                        gfAttributeOption.setId(attributeId.toString());
+                                        gfAttributeOption.setName(attributesOption.get(customAttribute).get(attributeId.toString()));
+                                        gfAttributeOption.setIsChecked("true");
+                                        gfAttributeOptions.add(gfAttributeOption);
+                                        gfAvilableFlter.setOptions(gfAttributeOptions);
+                                        filters.put(customAttribute, gfAvilableFlter);
+
+                                        gfConfigurableProductOptionValue.setValue(gfAttributeOption);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+
             }
 
             return gfProduct;
