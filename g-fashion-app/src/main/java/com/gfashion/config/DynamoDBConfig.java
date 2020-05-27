@@ -21,11 +21,14 @@ public class DynamoDBConfig {
     @Value("${amazon.dynamodb.secretkey}")
     private String secretkey;
 
+    @Value("${amazon.dynamodb.region}")
+    private String region;
+
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accesskey, secretkey)))
-                .withRegion(Regions.US_EAST_1)
+                .withRegion(region)
                 .build();
         return client;
     }
