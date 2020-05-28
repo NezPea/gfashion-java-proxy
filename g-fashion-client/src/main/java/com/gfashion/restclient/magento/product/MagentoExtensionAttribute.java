@@ -13,13 +13,13 @@ import java.util.List;
 public class MagentoExtensionAttribute {
 
     private List <Integer> website_ids;
-    private List <JSONObject> category_links;
-    private List <JSONObject> bundle_product_options;
-    private JSONObject stock_item;
-    private List <JSONObject> configurable_product_options;
+    private List <Object> category_links;
+    private List <Object> bundle_product_options;
+    private MagentoStockItem stock_item;
+    private List <MagentoConfigurableProductOption> configurable_product_options;
     private List <Integer> configurable_product_links;
-    private List <JSONObject> downloadable_product_links;
-    private List <JSONObject> downloadable_product_samples;
-    private List <JSONObject> giftcard_amounts;
+    private List <Object> downloadable_product_links;
+    private List <Object> downloadable_product_samples;
+    private List <Object> giftcard_amounts;
 
 }
