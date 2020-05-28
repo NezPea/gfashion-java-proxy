@@ -8,7 +8,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.servlet.http.HttpServletRequest;
+
+import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 
@@ -48,7 +53,12 @@ public class GfashionProductIT {
 
     @Test
     public void searchChannelProductsShouldReturnProducts() throws Exception {
-        Response response = RestAssured.get("/gfashion/v1/channelProducts/{query}", "?searchCriteria[filter_groups][0][filters][0][field]=category_id&searchCriteria[filter_groups][0][filters][0][value]=23&searchCriteria[filter_groups][0][filters][0][condition_type]=eq&searchCriteria[filter_groups][3][filters][0][field]=color&searchCriteria[filter_groups][3][filters][0][value]=5485&searchCriteria[filter_groups][3][filters][0][condition_type]=eq&searchCriteria[pageSize]=20&searchCriteria[currentPage]=0&searchCriteria[sortOrders][0][field]=price&searchCriteria[sortOrders][0][direction]=desc");
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setRequestURI("/gfashion/v1/channelProducts");
+        request.setQueryString("category_id,23,eq&pageSize=20&currentPage=1&sortField=id&sortDirection=asc&price,150,lt");
+        String url = request.getRequestURL() + "?" + request.getQueryString();
+
+        Response response = RestAssured.get(url);
         response.then().assertThat().
                 statusCode(200);
     }

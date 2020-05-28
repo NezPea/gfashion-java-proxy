@@ -253,14 +253,18 @@ public class MagentoProductClient {
 
     }
 
-    public GfProductSearchResponseFix searchProducts(String query) throws ProductNotFoundException, ProductUnknowException {
+    public GfProductSearchResponseFix searchProducts(String query,Integer category_id) throws ProductNotFoundException, ProductUnknowException {
         String getProductSearchUrl = productsUrl + query;
 
         try {
-            Map<String, GfAvilableFlter> filters = new HashMap<>();
-            Map<String, Map<String, String>> attributesOption = getAttributesOption(null);
 
-            ResponseEntity<String> responseProductSearch = magentoRestClient.exchangeGet(getProductSearchUrl, String.class, null);
+            HttpHeaders headers = magentoRestClient.getDefaultHeaders(null);
+            Map<String, GfAvilableFlter> filters = new HashMap<>();
+            Map<String, Map<String, String>> attributesOption = getAttributesOption(headers);
+
+            GfProductCategory gfProductCategory = getCategoryById(category_id, headers);
+            String category_name = gfProductCategory.getName();
+            ResponseEntity<String> responseProductSearch = magentoRestClient.exchangeGet(getProductSearchUrl, String.class, headers);
 
             Gson gson = new Gson();
             GfProductSearchResponse gfProductSearchResponse = gfMagentoConverter.convertMagentoProductSearchToGfProductSearch(gson.fromJson(responseProductSearch.getBody(), MagentoProductSearchResponse.class));
@@ -276,51 +280,54 @@ public class MagentoProductClient {
                 gfChannelProduct.setBrand_link(gfProduct.getBrand_link());
                 gfChannelProduct.setBrand_name(gfProduct.getBrand_name());
                 gfChannelProduct.setDesigner_link(gfProduct.getDesigner_link());
+                gfChannelProduct.setDesigner_name(gfProduct.getDesigner_name());
                 gfChannelProduct.setPrice(gfProduct.getPrice());
                 List<GfMediaGalleryEntry> gfMediaGalleryEntry = gfProduct.getMedia_gallery_entries();
-                gfMediaGalleryEntry.get(0).getFile();
                 gfChannelProduct.setFile(gfMediaGalleryEntry.get(0).getFile());
                 gfChannelProductList.add(gfChannelProduct);
-                gfProduct.getCustom_attributes().forEach(gfProductCustomAttribute -> {
-                    String customAttribute = gfProductCustomAttribute.getAttribute_code();
-                    Object customValue = gfProductCustomAttribute.getValue();
-                    if (attributesOption.containsKey(customAttribute))
-                        if (filters.containsKey(customAttribute)) {
+                if(null != gfProduct.getCustom_attributes() && gfProduct.getCustom_attributes().size() > 0) {
+                    gfProduct.getCustom_attributes().forEach(gfProductCustomAttribute -> {
+                        String customAttribute = gfProductCustomAttribute.getAttribute_code();
+                        Object customValue = gfProductCustomAttribute.getValue();
+                        if (attributesOption.containsKey(customAttribute))
+                            if (filters.containsKey(customAttribute)) {
 
-                            GfAvilableFlter gfAvilableFlter = filters.get(customAttribute);
-                            List<GfAttributeOption> gfAttributeOptions = gfAvilableFlter.getOptions();
-                            Map<String, GfAttributeOption> gfAttributeOptionMap = new HashMap<>();
-                            gfAttributeOptions.forEach(gfAttributeOption -> {
-                                gfAttributeOptionMap.put(gfAttributeOption.getId(), gfAttributeOption);
-                            });
-                            if (!gfAttributeOptionMap.containsKey(customValue.toString()) && attributesOption.get(customAttribute).containsKey(customValue.toString())) {
+                                GfAvilableFlter gfAvilableFlter = filters.get(customAttribute);
+                                List<GfAttributeOption> gfAttributeOptions = gfAvilableFlter.getOptions();
+                                Map<String, GfAttributeOption> gfAttributeOptionMap = new HashMap<>();
+                                gfAttributeOptions.forEach(gfAttributeOption -> {
+                                    gfAttributeOptionMap.put(gfAttributeOption.getId(), gfAttributeOption);
+                                });
+                                if (!gfAttributeOptionMap.containsKey(customValue.toString()) && attributesOption.get(customAttribute).containsKey(customValue.toString())) {
 
+                                    GfAttributeOption gfAttributeOption = new GfAttributeOption();
+                                    gfAttributeOption.setId(customValue.toString());
+                                    gfAttributeOption.setName(attributesOption.get(customAttribute).get(customValue.toString()));
+                                    gfAttributeOption.setIsChecked("false");
+                                    gfAttributeOptions.add(gfAttributeOption);
+                                    gfAvilableFlter.setOptions(gfAttributeOptions);
+                                    filters.put(customAttribute, gfAvilableFlter);
+
+                                }
+                            } else if (attributesOption.get(customAttribute).containsKey(customValue.toString())) {
+
+                                List<GfAttributeOption> gfAttributeOptions = new ArrayList<>();
                                 GfAttributeOption gfAttributeOption = new GfAttributeOption();
+                                GfAvilableFlter gfAvilableFlter = new GfAvilableFlter();
+                                gfAvilableFlter.setCode(customAttribute);
+                                String toFirstUpperCase = customAttribute.substring(0, 1).toUpperCase();
+                                String nameCapitalized = toFirstUpperCase + customAttribute.substring(1);
+                                gfAvilableFlter.setName(nameCapitalized);
                                 gfAttributeOption.setId(customValue.toString());
                                 gfAttributeOption.setName(attributesOption.get(customAttribute).get(customValue.toString()));
                                 gfAttributeOption.setIsChecked("false");
                                 gfAttributeOptions.add(gfAttributeOption);
                                 gfAvilableFlter.setOptions(gfAttributeOptions);
                                 filters.put(customAttribute, gfAvilableFlter);
-
                             }
-                        } else if (attributesOption.get(customAttribute).containsKey(customValue.toString())) {
+                    });
+                }
 
-                            List<GfAttributeOption> gfAttributeOptions = new ArrayList<>();
-                            GfAttributeOption gfAttributeOption = new GfAttributeOption();
-                            GfAvilableFlter gfAvilableFlter = new GfAvilableFlter();
-                            gfAvilableFlter.setCode(customAttribute);
-                            String toFirstUpperCase = customAttribute.substring(0, 1).toUpperCase();
-                            String nameCapitalized = toFirstUpperCase + customAttribute.substring(1);
-                            gfAvilableFlter.setName(nameCapitalized);
-                            gfAttributeOption.setId(customValue.toString());
-                            gfAttributeOption.setName(attributesOption.get(customAttribute).get(customValue.toString()));
-                            gfAttributeOption.setIsChecked("false");
-                            gfAttributeOptions.add(gfAttributeOption);
-                            gfAvilableFlter.setOptions(gfAttributeOptions);
-                            filters.put(customAttribute, gfAvilableFlter);
-                        }
-                });
             });
             gfProductSearchResponse.getSearch_criteria().getFilter_groups().forEach(Filter_group -> {
                 Filter_group.getFilters().forEach(searchFilter -> {
@@ -350,6 +357,8 @@ public class MagentoProductClient {
             gfProductSearchResponseFix.setSearch_criteria(gfProductSearchResponse.getSearch_criteria());
             gfProductSearchResponseFix.setTotal_count(gfProductSearchResponse.getTotal_count());
             gfProductSearchResponseFix.setAvavilable_filters(gfAvilableFlters);
+            gfProductSearchResponseFix.setCategory_name(category_name);
+            gfProductSearchResponseFix.setCategory_id(category_id);
             return gfProductSearchResponseFix;
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
