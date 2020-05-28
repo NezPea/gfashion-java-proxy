@@ -31,6 +31,8 @@ public interface GfMagentoConverter {
     GfCustomer convertMagentoCustomerToGfCustomer(MagentoCustomer magentoCustomer);
     GfProduct convertMagentoProductToGfProduct(MagentoProduct magentoProduct);
     GfStockItem convertMagentoStockItemToGfStockItem(MagentoStockItem magentoStockItem);
+    GfConfigurableProductOption convertMagentoConfigurableProductOptionToGfConfigurableProductOption(MagentoConfigurableProductOption magentoConfigurableProductOption);
+    GfConfigurableProductOptionValue convertMagentoConfigurableProductOptionValueToGfConfigurableProductOptionValue(MagentoConfigurableProductOptionValue magentoConfigurableProductOptionValue);
     GfProductCategory convertMagentoProductCategoryToGfProductCategory(MagentoProductCategory magentoProductCategory);
     GfEvaAttribute convertMagentoEvaAttributeToGfEvaAttribute(MagentoEvaAttribute magentoEvaAttribute);
     GfProductLink convertMagentoProductLinkToGfProductLink(MagentoProductLink magentoProductLink);

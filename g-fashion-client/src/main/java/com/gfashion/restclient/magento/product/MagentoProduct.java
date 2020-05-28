@@ -28,7 +28,7 @@ public class MagentoProduct {
     private List<MagentoMediaGalleryEntry> media_gallery_entries;  // 媒体图片资源库，包含图片地址
     private List<MagentoProductCustomAttribute> custom_attributes; // 自定义属性：可能包含颜色、描述、缩略图、价格
     private List<MagentoProductLink> product_links; // 关联产品
-    private MagentoMediaGalleryEntry extension_attributes; // 扩展属性
+    private MagentoExtensionAttribute extension_attributes; // 扩展属性
     private String designer_name;
     private Integer designer_link; // 返回对应的分类id
     private String brand_name;
