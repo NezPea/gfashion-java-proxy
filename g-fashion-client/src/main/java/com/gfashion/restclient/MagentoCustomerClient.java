@@ -57,5 +57,21 @@ public class MagentoCustomerClient {
             throw new CustomerUnknowException(e.getMessage());
         }
     }
+
+    public GfCustomer updateCustomerById(GfCustomerRegistration gfCustomer, Integer customerId) throws CustomerUnknowException, CustomerNotFoundException {
+        String getCustomerUrl = customersUrl + customerId;
+
+        try {
+            ResponseEntity<String> responseEntity = this._restClient.exchangePut(getCustomerUrl, gfCustomer, String.class, null);
+
+            Gson gson = new Gson();
+            return this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntity.getBody(), MagentoCustomer.class));
+        } catch (HttpStatusCodeException e) {
+            if(e.getStatusCode() == HttpStatus.NOT_FOUND){
+                throw new CustomerNotFoundException(e.getMessage());
+            }
+            throw new CustomerUnknowException(e.getMessage());
+        }
+    }
 }
 

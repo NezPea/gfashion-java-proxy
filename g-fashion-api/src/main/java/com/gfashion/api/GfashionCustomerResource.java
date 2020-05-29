@@ -23,9 +23,9 @@ public class GfashionCustomerResource {
     private MagentoCustomerClient magentoCustomerClient;
 
     @PostMapping("/customers")
-    public ResponseEntity<GfCustomer> creatCustomer(@RequestBody GfCustomerRegistration customer) {
+    public ResponseEntity<GfCustomer> creatCustomer(@RequestBody GfCustomerRegistration gfCustomer) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(magentoCustomerClient.createCustomer(customer));
+            return ResponseEntity.status(HttpStatus.CREATED).body(magentoCustomerClient.createCustomer(gfCustomer));
         } catch (CustomerCreationException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getErrorMessage());
         } catch (CustomerUnknowException e) {
@@ -37,6 +37,18 @@ public class GfashionCustomerResource {
     public ResponseEntity<GfCustomer> getCustomerById(@PathVariable Integer customerId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.getCustomerById(customerId));
+        } catch (CustomerNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
+        } catch (CustomerUnknowException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
+        }
+
+    }
+
+    @PutMapping("/customers/{customerId}")
+    public ResponseEntity<GfCustomer> getCustomerById(@RequestBody GfCustomerRegistration gfCustomer, @PathVariable Integer customerId) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.updateCustomerById(gfCustomer, customerId));
         } catch (CustomerNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
         } catch (CustomerUnknowException e) {

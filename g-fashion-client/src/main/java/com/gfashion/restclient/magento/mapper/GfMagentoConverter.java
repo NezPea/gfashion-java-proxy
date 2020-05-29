@@ -1,5 +1,7 @@
 package com.gfashion.restclient.magento.mapper;
 
+import com.gfashion.domain.customer.GfCustomerExtensionAttributes;
+import com.gfashion.domain.customer.GfCustomerRegion;
 import com.gfashion.domain.homepage.HomepageBrand;
 import com.gfashion.domain.homepage.HomepageDesigner;
 import com.gfashion.domain.product.*;
@@ -11,6 +13,8 @@ import com.gfashion.domain.store.GfStoreConfig;
 import com.gfashion.domain.store.GfStoreGroup;
 import com.gfashion.domain.store.GfWebsite;
 import com.gfashion.domain.product.GfProductSearchResponse;
+import com.gfashion.restclient.magento.customer.MagentoCustomerExtensionAttributes;
+import com.gfashion.restclient.magento.customer.MagentoCustomerRegion;
 import com.gfashion.restclient.magento.product.MagentoEvaAttribute;
 import com.gfashion.restclient.magento.customer.MagentoCustomer;
 import com.gfashion.restclient.magento.customer.MagentoCustomerAddress;
@@ -43,6 +47,10 @@ public interface GfMagentoConverter {
     MagentoCustomer convertGfCustomerToMagentoCustomer(GfCustomer gfCustomer);
     GfCustomerAddress convertMagentoCustomerAddressToGfCustomerAddress(MagentoCustomerAddress magentoCustomerAddress);
     MagentoCustomerAddress convertGfCustomerAddressToMagentoCustomerAddress(GfCustomerAddress gfCustomerAddress);
+    GfCustomerExtensionAttributes convertMagentoCustomerExtensionAttributesToGfCustomerExtensionAttributes(MagentoCustomerExtensionAttributes magentoCustomerExtensionAttributes);
+    MagentoCustomerExtensionAttributes convertGfCustomerExtensionAttributesToMagentoCustomerExtensionAttributes(GfCustomerExtensionAttributes gfCustomerExtensionAttributes);
+    GfCustomerRegion convertMagentoCustomerRegionToGfCustomerRegion(MagentoCustomerRegion magentoCustomerRegion);
+    MagentoCustomerRegion convertGfCustomerRegionToMagentoCustomerRegion(GfCustomerRegion gfCustomerRegion);
     GfStore[] convertMagentoStoreToGfStoreArray(MagentoStore[] magentoStore);
     GfWebsite[] convertMagentoWebsiteToGfWebsiteArray(MagentoWebsite[] magentoWebsites);
     GfStoreGroup[] convertMagentoStoreGroupToGfStoreGroupArray(MagentoStoreGroup[] magentoStoreGroups);

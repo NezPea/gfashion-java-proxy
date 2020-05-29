@@ -35,6 +35,6 @@ public class GfCustomer {
     private Integer website_id;
     private List<GfCustomerAddress> addresses;
     private Integer disable_auto_group_change;
-    private JSONObject extension_attributes;
+    private GfCustomerExtensionAttributes extension_attributes;
     private List<Map<String, String>> custom_attributes;
 }
