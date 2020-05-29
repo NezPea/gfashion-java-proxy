@@ -69,4 +69,11 @@ public class RestClient {
         return restTemplate.exchange(baseUrl + relativeUrl, HttpMethod.GET, new HttpEntity<>(headers), responseType);
     }
 
+    public <T> ResponseEntity<T> exchangePut(String relativeUrl, Object entity, Class<T> responseType, MultiValueMap<String, String> extraHeaders) {
+        HttpHeaders headers = getDefaultHeaders(extraHeaders);
+
+        Gson gson = new Gson();
+        return restTemplate.exchange(baseUrl + relativeUrl, HttpMethod.PUT, new HttpEntity<>(gson.toJson(entity), headers), responseType);
+    }
+
 }
