@@ -21,7 +21,7 @@ public class GfChannelProduct {
     private String file;
 //    private Integer status;
 //    private Integer visibility;
-//    private String type_id;
+    private String type_id;
 //    private String created_at;
 //    private String updated_at;
 //    private Integer weight;

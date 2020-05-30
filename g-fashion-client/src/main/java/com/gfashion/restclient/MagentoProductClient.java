@@ -50,6 +50,7 @@ public class MagentoProductClient {
 
     /**
      * 加入参数extraHeaders，如果已经拿到token，避免再去取token
+     *
      * @param extraHeaders
      * @return
      */
@@ -80,22 +81,25 @@ public class MagentoProductClient {
         return attributeOption;
     }
 
-    public GfProductCategory getCategoryById(Integer CategoryId, MultiValueMap<String, String> extraHeaders){
+    public GfProductCategory getCategoryById(Integer CategoryId, MultiValueMap<String, String> extraHeaders) {
         String getProductUrl = categoriesUrl + CategoryId;
 
         ResponseEntity<String> responseEntityCategory = magentoRestClient.exchangeGet(getProductUrl, String.class, extraHeaders);
         Gson gson = new Gson();
         return gfMagentoConverter.convertMagentoProductCategoryToGfProductCategory(gson.fromJson(responseEntityCategory.getBody(), MagentoProductCategory.class));
     }
-    public GfStockItem getStockItemBySku(String productSku, MultiValueMap<String, String> extraHeaders){
+
+    public GfStockItem getStockItemBySku(String productSku, MultiValueMap<String, String> extraHeaders) {
         String getProductUrl = stockItems + productSku;
 
         ResponseEntity<String> responseEntityStockItem = magentoRestClient.exchangeGet(getProductUrl, String.class, extraHeaders);
         Gson gson = new Gson();
         return gfMagentoConverter.convertMagentoStockItemToGfStockItem(gson.fromJson(responseEntityStockItem.getBody(), MagentoStockItem.class));
     }
+
     /**
      * getProductBySku
+     *
      * @param sku
      * @return
      * @throws ProductNotFoundException
@@ -107,39 +111,39 @@ public class MagentoProductClient {
         try {
             // 获取图片的基础地址
             GfStoreConfig[] gfStoreConfig = magentoStoreClient.getStoreConfig();
-            if(null != gfStoreConfig && gfStoreConfig.length > 0){
+            if (null != gfStoreConfig && gfStoreConfig.length > 0) {
                 secureBaseMediaUrl = gfStoreConfig[0].getSecure_base_media_url() + productFilePath;
-            }else{
+            } else {
                 secureBaseMediaUrl = "https://www.gfashion2020.tk/media/" + productFilePath;
             }
             HttpHeaders headers = magentoRestClient.getDefaultHeaders(null);
             ResponseEntity<String> responseEntityProduct = magentoRestClient.exchangeGet(getProductUrl, String.class, headers);
             Gson gson = new Gson();
             GfProduct gfProduct = gfMagentoConverter.convertMagentoProductToGfProduct(gson.fromJson(responseEntityProduct.getBody(), MagentoProduct.class));
-            List <GfMediaGalleryEntry> gfMediaGalleryEntryList = gfProduct.getMedia_gallery_entries();
-            if(gfMediaGalleryEntryList.size() > 0){
+            List<GfMediaGalleryEntry> gfMediaGalleryEntryList = gfProduct.getMedia_gallery_entries();
+            if (gfMediaGalleryEntryList.size() > 0) {
                 gfMediaGalleryEntryList.forEach(gfMediaGalleryEntry -> {
                     String file = "";
                     file = secureBaseMediaUrl + gfMediaGalleryEntry.getFile();
                     gfMediaGalleryEntry.setFile(file);
                 });
             }
-            List <GfProductCustomAttribute> gfProductCustomAttributeList = gfProduct.getCustom_attributes();
+            List<GfProductCustomAttribute> gfProductCustomAttributeList = gfProduct.getCustom_attributes();
             Map<String, Map<String, String>> attributesOption = getAttributesOption(headers);
             Map<String, GfAvilableFlter> filters = new HashMap<>();
-            if(null != gfProductCustomAttributeList && gfProductCustomAttributeList.size() > 0){
+            if (null != gfProductCustomAttributeList && gfProductCustomAttributeList.size() > 0) {
 
                 gfProductCustomAttributeList.forEach(gfProductCustomAttribute -> {
                     String customAttribute = gfProductCustomAttribute.getAttribute_code();
                     Object customValue = gfProductCustomAttribute.getValue();
-                    if(customValue instanceof String){
-                        if(customValue.toString().contains(",")){
+                    if (customValue instanceof String) {
+                        if (customValue.toString().contains(",")) {
                             // 多个id 例如：
                             // {
                             //      "attribute_code": "activity",
                             //      "value": "5435,5436,5444,5438"
                             //    },
-                        }else{
+                        } else {
                             // 单个id
                             if (attributesOption.containsKey(customAttribute)) {
                                 if (filters.containsKey(customAttribute)) {
@@ -183,7 +187,7 @@ public class MagentoProductClient {
                             }
                         }
                     }
-                    if(customValue instanceof ArrayList){
+                    if (customValue instanceof ArrayList) {
                         // 是一个字符串数组，例如：这种情况
                         // {
                         //      "attribute_code": "category_ids",
@@ -192,18 +196,18 @@ public class MagentoProductClient {
                         //        "5"
                         //      ]
                         //    },
-                        List <GfProductCategory> GfProductCategoryList = new ArrayList<>();
-                        if("category_ids".equals(customAttribute)){
+                        List<GfProductCategory> GfProductCategoryList = new ArrayList<>();
+                        if ("category_ids".equals(customAttribute)) {
                             ((ArrayList) customValue).forEach(customValueOne -> {
                                 GfProductCategory gfProductCategory = getCategoryById(Integer.parseInt(customValueOne.toString()), headers);
-                                if(null != gfProductCategory.getParent_id()){
+                                if (null != gfProductCategory.getParent_id()) {
                                     // 品牌的父类id是50，设计师的父类id是46
-                                    if(gfProductCategory.getParent_id() == Integer.parseInt(designersParentId)){
+                                    if (gfProductCategory.getParent_id() == Integer.parseInt(designersParentId)) {
                                         Integer designer_link = gfProductCategory.getId();
                                         String designer_name = gfProductCategory.getName();
                                         gfProduct.setDesigner_name(designer_name);
                                         gfProduct.setDesigner_link(designer_link);
-                                    }else if(gfProductCategory.getParent_id() == Integer.parseInt(brandsParentId)){
+                                    } else if (gfProductCategory.getParent_id() == Integer.parseInt(brandsParentId)) {
                                         Integer brand_link = gfProductCategory.getId();
                                         String brand_name = gfProductCategory.getName();
                                         gfProduct.setBrand_link(brand_link);
@@ -219,18 +223,18 @@ public class MagentoProductClient {
                 });
             }
 
-            List <GfProductLink> gfProductLinkList = gfProduct.getProduct_links();
-            if(null != gfProductLinkList && gfProductLinkList.size() >0){
+            List<GfProductLink> gfProductLinkList = gfProduct.getProduct_links();
+            if (null != gfProductLinkList && gfProductLinkList.size() > 0) {
                 // 循环获取关联产品的名称、价格、图片地址
-                gfProductLinkList.forEach(GfProductLink ->{
-                    ResponseEntity<String>  responseEntityProduct1= magentoRestClient.exchangeGet(productsUrl + GfProductLink.getLinked_product_sku(), String.class, headers);
+                gfProductLinkList.forEach(GfProductLink -> {
+                    ResponseEntity<String> responseEntityProduct1 = magentoRestClient.exchangeGet(productsUrl + GfProductLink.getLinked_product_sku(), String.class, headers);
                     GfProduct gfProduct1 = gfMagentoConverter.convertMagentoProductToGfProduct(gson.fromJson(responseEntityProduct1.getBody(), MagentoProduct.class));
 
                     GfProductLink.setName(gfProduct1.getName()); // 产品名称
                     GfProductLink.setPrice(gfProduct1.getPrice()); // 产品价格
-                    List <GfMediaGalleryEntry> gfMediaGalleryEntryList1 = gfProduct1.getMedia_gallery_entries();
+                    List<GfMediaGalleryEntry> gfMediaGalleryEntryList1 = gfProduct1.getMedia_gallery_entries();
                     String file = "";
-                    if(gfMediaGalleryEntryList1.size() > 0){
+                    if (gfMediaGalleryEntryList1.size() > 0) {
                         file = secureBaseMediaUrl + gfMediaGalleryEntryList1.get(0).getFile();
                     }
                     GfProductLink.setFile(file); // 产品图片
@@ -239,21 +243,21 @@ public class MagentoProductClient {
 
             // 获取扩展属性
             GfExtensionAttribute gfExtensionAttribute = gfProduct.getExtension_attributes();
-            if(null != gfExtensionAttribute){
+            if (null != gfExtensionAttribute) {
                 // 获取产品的库存信息
                 GfStockItem gfStockItem = gfExtensionAttribute.getStock_item();
-                if(null != gfStockItem){
+                if (null != gfStockItem) {
                     gfProduct.setPurchase_number_limit(gfStockItem.getQty());
                 }
 
-                List <GfConfigurableProductOption> gfConfigurableProductOptionList = gfExtensionAttribute.getConfigurable_product_options();
-                if(null != gfConfigurableProductOptionList){
+                List<GfConfigurableProductOption> gfConfigurableProductOptionList = gfExtensionAttribute.getConfigurable_product_options();
+                if (null != gfConfigurableProductOptionList) {
                     gfConfigurableProductOptionList.forEach(gfConfigurableProductOption -> {
-                        List <GfConfigurableProductOptionValue> gfConfigurableProductOptionValueList =
+                        List<GfConfigurableProductOptionValue> gfConfigurableProductOptionValueList =
                                 gfConfigurableProductOption.getValues();
                         String customAttribute = gfConfigurableProductOption.getLabel().toLowerCase();
-                        if(null != gfConfigurableProductOptionValueList){
-                            gfConfigurableProductOptionValueList.forEach(gfConfigurableProductOptionValue ->{
+                        if (null != gfConfigurableProductOptionValueList) {
+                            gfConfigurableProductOptionValueList.forEach(gfConfigurableProductOptionValue -> {
                                 Integer attributeId = gfConfigurableProductOptionValue.getValue_index();
                                 // 单个id
                                 if (attributesOption.containsKey(customAttribute)) {
@@ -311,7 +315,7 @@ public class MagentoProductClient {
 
     }
 
-    public GfProductSearchResponseFix searchProducts(String query,Integer category_id) throws ProductNotFoundException, ProductUnknowException {
+    public GfProductSearchResponseFix searchProducts(String query, Integer category_id) throws ProductNotFoundException, ProductUnknowException {
         String getProductSearchUrl = productsUrl + query;
 
         try {
@@ -335,6 +339,7 @@ public class MagentoProductClient {
                 gfChannelProduct.setId(gfProduct.getId());
                 gfChannelProduct.setSku(gfProduct.getSku());
                 gfChannelProduct.setName(gfProduct.getName());
+                gfChannelProduct.setType_id(gfProduct.getType_id());
                 gfChannelProduct.setBrand_link(gfProduct.getBrand_link());
                 gfChannelProduct.setBrand_name(gfProduct.getBrand_name());
                 gfChannelProduct.setDesigner_link(gfProduct.getDesigner_link());
@@ -343,7 +348,7 @@ public class MagentoProductClient {
                 List<GfMediaGalleryEntry> gfMediaGalleryEntry = gfProduct.getMedia_gallery_entries();
                 gfChannelProduct.setFile(gfMediaGalleryEntry.get(0).getFile());
                 gfChannelProductList.add(gfChannelProduct);
-                if(null != gfProduct.getCustom_attributes() && gfProduct.getCustom_attributes().size() > 0) {
+                if (null != gfProduct.getCustom_attributes() && gfProduct.getCustom_attributes().size() > 0) {
                     gfProduct.getCustom_attributes().forEach(gfProductCustomAttribute -> {
                         String customAttribute = gfProductCustomAttribute.getAttribute_code();
                         Object customValue = gfProductCustomAttribute.getValue();
@@ -358,6 +363,7 @@ public class MagentoProductClient {
                                 });
                                 if (!gfAttributeOptionMap.containsKey(customValue.toString()) && attributesOption.get(customAttribute).containsKey(customValue.toString())) {
 
+
                                     GfAttributeOption gfAttributeOption = new GfAttributeOption();
                                     gfAttributeOption.setId(customValue.toString());
                                     gfAttributeOption.setName(attributesOption.get(customAttribute).get(customValue.toString()));
@@ -368,6 +374,7 @@ public class MagentoProductClient {
 
                                 }
                             } else if (attributesOption.get(customAttribute).containsKey(customValue.toString())) {
+
 
                                 List<GfAttributeOption> gfAttributeOptions = new ArrayList<>();
                                 GfAttributeOption gfAttributeOption = new GfAttributeOption();
