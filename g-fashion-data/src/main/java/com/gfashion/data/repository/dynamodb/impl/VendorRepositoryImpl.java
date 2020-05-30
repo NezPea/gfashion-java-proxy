@@ -33,7 +33,7 @@ public class VendorRepositoryImpl implements VendorRepository {
     @Override
     public GfVendorEntity updateGfVendorEntity(GfVendorEntity Vendor) {
         Map<String, ExpectedAttributeValue> expectedAttributeValueMap = new HashMap<>();
-        expectedAttributeValueMap.put("VendorId", new ExpectedAttributeValue(new AttributeValue().withS(Vendor.getId())));
+        expectedAttributeValueMap.put("VendorId", new ExpectedAttributeValue(new AttributeValue().withS(Vendor.getVendorId())));
         DynamoDBSaveExpression saveExpression = new DynamoDBSaveExpression().withExpected(expectedAttributeValueMap);
         dynamoDBMapper.save(Vendor, saveExpression);
         return Vendor;
@@ -45,7 +45,7 @@ public class VendorRepositoryImpl implements VendorRepository {
         expectedAttributeValueMap.put("VendorId", new ExpectedAttributeValue(new AttributeValue().withS(VendorId)));
         DynamoDBDeleteExpression deleteExpression = new DynamoDBDeleteExpression().withExpected(expectedAttributeValueMap);
         GfVendorEntity Vendor = GfVendorEntity.builder()
-                .id(VendorId)
+                .vendorId(VendorId)
                 .build();
         dynamoDBMapper.delete(Vendor, deleteExpression);
     }
