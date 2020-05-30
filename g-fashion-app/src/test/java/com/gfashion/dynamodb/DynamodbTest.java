@@ -1,8 +1,13 @@
 package com.gfashion.dynamodb;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.model.*;
 import com.gfashion.data.repository.dynamodb.DynamodbRepository;
+import com.gfashion.data.repository.dynamodb.typeconverter.DimensionTypeConverter;
+import com.gfashion.data.repository.dynamodb.typeconverter.ProductDimensionType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +27,7 @@ public class DynamodbTest {
         System.out.println("create table.");
 
         CreateTableRequest request = new CreateTableRequest()
-                .withTableName("gf-products")
+                .withTableName("gfproduct")
                 .withAttributeDefinitions(new AttributeDefinition("productId", ScalarAttributeType.S))
                 .withKeySchema(new KeySchemaElement("productId", KeyType.HASH))
                 .withProvisionedThroughput(new ProvisionedThroughput(10L, 10L));
@@ -31,7 +36,31 @@ public class DynamodbTest {
 
     @Test
     public void getTable() throws Exception{
-        String result = dynamodbRepository.getTable("gf-products");
-        Assert.assertEquals(result, "gf-products");
+        String result = dynamodbRepository.getTable("gfproduct");
+        Assert.assertEquals(result, "gfproduct");
     }
+
+    /**
+     * demo dynamodb custom object put into table using converting class.
+     */
+    @Test
+    public void dynamodbConvertDemo(){
+        ProductDimensionType dimType = new ProductDimensionType();
+        dimType.setHeight("8.00");
+        dimType.setLength("11.0");
+        dimType.setThickness("1.0");
+    }
+
+    @DynamoDBTable(tableName = "ProductCatalog")
+    public static class Book {
+        private int id;
+        private ProductDimensionType dimensionType;
+
+        @DynamoDBTypeConverted(converter = DimensionTypeConverter.class)
+        @DynamoDBAttribute(attributeName = "Dimensions")
+        public ProductDimensionType getDimensions() {
+            return dimensionType;
+        }
+    }
+
 }

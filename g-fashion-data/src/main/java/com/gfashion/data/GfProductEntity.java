@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@DynamoDBTable(tableName = "gf-products")
+@DynamoDBTable(tableName = "gfproduct")
 public class GfProductEntity {
 
     @DynamoDBHashKey(attributeName = "productId")
@@ -117,13 +117,6 @@ public class GfProductEntity {
     @DynamoDBAttribute(attributeName = "weight")
     private Integer weight;
 
-//    private List<GfMediaGalleryEntry> media_gallery_entries;  // 媒体图片资源库，包含图片地址
-//    private List<GfProductCustomAttribute> custom_attributes; // 自定义属性：可能包含颜色、描述、缩略图、价格
-//    private List<GfProductLink> product_links; // 关联产品
-
-    @DynamoDBAttribute(attributeName = "extension_attributes")
-    private GfMediaGalleryEntry extension_attributes; // 扩展属性
-
     @DynamoDBAttribute(attributeName = "purchase_number_limit")
     private Integer purchase_number_limit; // 每个账号至多购买x件
 
@@ -163,7 +156,11 @@ public class GfProductEntity {
     private String linked_product_type;
 
 //    private JSONObject extension_attributes;
-
+//    private List<GfMediaGalleryEntry> media_gallery_entries;  // 媒体图片资源库，包含图片地址
+//    private List<GfProductCustomAttribute> custom_attributes; // 自定义属性：可能包含颜色、描述、缩略图、价格
+//    private List<GfProductLink> product_links; // 关联产品
+//    @DynamoDBAttribute(attributeName = "extension_attributes")
+//    private GfMediaGalleryEntry extension_attributes; // 扩展属性
     /**
      *  todo eric, dynamodb support using complex object to store, need check ES support complex object.
      */
