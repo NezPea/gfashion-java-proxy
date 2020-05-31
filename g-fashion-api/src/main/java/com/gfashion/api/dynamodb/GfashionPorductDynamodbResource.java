@@ -6,12 +6,13 @@ import com.gfashion.data.GfProductEntity;
 import com.gfashion.data.repository.dynamodb.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping(path = "/gfashion/v1", produces = {"application/json"})
+@RequestMapping(path = "/gfashion/v1", produces = {MediaType.APPLICATION_JSON_VALUE})
 //@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class GfashionPorductDynamodbResource {
