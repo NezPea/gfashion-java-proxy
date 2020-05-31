@@ -47,7 +47,7 @@ public class GfashionProductResource {
      * @param @PathVariable String query
      * @return the {@link GfProductSearchResponse} with status {@code 200 (OK)} and the list of transactions in body.
      */
-    
+
     @GetMapping(value = "/channelProducts", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfProductSearchResponseFix> searchTrxTransactions(HttpServletRequest httpServletRequest) {
         try {
