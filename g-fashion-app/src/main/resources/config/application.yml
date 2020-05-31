@@ -49,13 +49,19 @@ logging:
     ROOT: DEBUG
     com.gfashion: DEBUG
 
-amazon:
+aws:
   dynamodb:
     accesskey: AKIA5VIRCT2GP56W4WU6
     secretkey: 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
     session_token:
     endpoint: https://dynamodb.us-east-1.amazonaws.com
     region: us-east-1
+  es:
+    endpoint: https://search-gfproductdomain-bd4u3hhprgsfnhwek2wihxfvxq.us-east-1.es.amazonaws.com
+    accessKey: AKIA5VIRCT2GP56W4WU6
+    secretKey: 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
+    region: us-east-1
+    serviceName: es
 
 ---
 spring:
@@ -94,10 +100,16 @@ logging:
     ROOT: DEBUG
     com.gfashion: DEBUG
 
-amazon:
+aws:
   dynamodb:
     accesskey: AKIA5VIRCT2GP56W4WU6
     secretkey: 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
     session_token:
     endpoint: https://dynamodb.us-east-1.amazonaws.com
     region: us-east-1
+  es:
+    endpoint: https://search-gfproductdomain-bd4u3hhprgsfnhwek2wihxfvxq.us-east-1.es.amazonaws.com
+    accessKey: AKIA5VIRCT2GP56W4WU6
+    secretKey: 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
+    region: us-east-1
+    serviceName: es
