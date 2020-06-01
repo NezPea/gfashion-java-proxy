@@ -45,6 +45,9 @@ public class GfashionVendorDynamodbResource {
     @PutMapping("/dynamodb/vendors")
     public ResponseEntity<GfVendorEntity> updateVendor(@RequestBody GfVendorEntity vendor) {
         try {
+            if (null == vendor || null == vendorRepository.readGfVendorEntity(vendor.getVendorId())) {
+                return ResponseEntity.status(HttpStatus.OK).body(null);
+            }
             GfVendorEntity response = vendorRepository.updateGfVendorEntity(vendor);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
@@ -57,6 +60,9 @@ public class GfashionVendorDynamodbResource {
     @DeleteMapping("/dynamodb/vendors/{vendorId}")
     public ResponseEntity<GfVendorEntity> deleteVendor(@PathVariable String vendorId) {
         try {
+            if (null == vendorRepository.readGfVendorEntity(vendorId)) {
+                return ResponseEntity.status(HttpStatus.OK).body(null);
+            }
             vendorRepository.deleteGfVendorEntity(vendorId);
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (AmazonServiceException e) {

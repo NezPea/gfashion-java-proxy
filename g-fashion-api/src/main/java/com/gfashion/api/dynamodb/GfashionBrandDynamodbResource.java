@@ -45,6 +45,9 @@ public class GfashionBrandDynamodbResource {
     @PutMapping("/dynamodb/brands")
     public ResponseEntity<GfBrandEntity> updatedesigner(@RequestBody GfBrandEntity brand) {
         try {
+            if (null == brand || null == brandRepository.readGfBrandEntity(brand.getId())) {
+                return ResponseEntity.status(HttpStatus.OK).body(null);
+            }
             GfBrandEntity response = brandRepository.updateGfBrandEntity(brand);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
@@ -57,6 +60,9 @@ public class GfashionBrandDynamodbResource {
     @DeleteMapping("/dynamodb/brands/{brandId}")
     public ResponseEntity<GfBrandEntity> deletebrand(@PathVariable String brandId) {
         try {
+            if (null == brandRepository.readGfBrandEntity(brandId)) {
+                return ResponseEntity.status(HttpStatus.OK).body(null);
+            }
             brandRepository.deleteGfBrandEntity(brandId);
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (AmazonServiceException e) {

@@ -46,6 +46,9 @@ public class GfashionPorductDynamodbResource {
     @PutMapping("/dynamodb/products")
     public ResponseEntity<GfProductEntity> updateProduct(@RequestBody GfProductEntity product) {
         try {
+            if (productRepository.readGfProductEntity(product.getProductId()) == null) {
+                return ResponseEntity.status(HttpStatus.OK).body(null);
+            }
             GfProductEntity response = productRepository.updateGfProductEntity(product);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
@@ -58,6 +61,9 @@ public class GfashionPorductDynamodbResource {
     @DeleteMapping("/dynamodb/products/{productId}")
     public ResponseEntity<GfProductEntity> deleteProduct(@PathVariable String productId) {
         try {
+            if (productRepository.readGfProductEntity(productId) == null) {
+                return ResponseEntity.status(HttpStatus.OK).body(null);
+            }
             productRepository.deleteGfProductEntity(productId);
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (AmazonServiceException e) {

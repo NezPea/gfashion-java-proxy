@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.gfashion.data.repository.dynamodb.constant.ProductConstant.PRODUCT_KEY;
+
 @Component
 public class ProductRepositoryImpl implements ProductRepository {
 
@@ -33,7 +35,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public GfProductEntity updateGfProductEntity(GfProductEntity product) {
         Map<String, ExpectedAttributeValue> expectedAttributeValueMap = new HashMap<>();
-        expectedAttributeValueMap.put("productId", new ExpectedAttributeValue(new AttributeValue().withS(product.getProductId())));
+        expectedAttributeValueMap.put(PRODUCT_KEY, new ExpectedAttributeValue(new AttributeValue().withS(product.getProductId())));
         DynamoDBSaveExpression saveExpression = new DynamoDBSaveExpression().withExpected(expectedAttributeValueMap);
         dynamoDBMapper.save(product, saveExpression);
         return product;
@@ -42,7 +44,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public void deleteGfProductEntity (String productId) {
         Map<String, ExpectedAttributeValue> expectedAttributeValueMap = new HashMap<>();
-        expectedAttributeValueMap.put("productId", new ExpectedAttributeValue(new AttributeValue().withS(productId)));
+        expectedAttributeValueMap.put(PRODUCT_KEY, new ExpectedAttributeValue(new AttributeValue().withS(productId)));
         DynamoDBDeleteExpression deleteExpression = new DynamoDBDeleteExpression().withExpected(expectedAttributeValueMap);
         GfProductEntity product = GfProductEntity.builder()
                 .productId(productId)
