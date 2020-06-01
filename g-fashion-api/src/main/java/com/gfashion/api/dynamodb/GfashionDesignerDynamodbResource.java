@@ -45,6 +45,9 @@ public class GfashionDesignerDynamodbResource {
     @PutMapping("/dynamodb/designers")
     public ResponseEntity<GfDesignerEntity> updatedesigner(@RequestBody GfDesignerEntity designer) {
         try {
+            if (null == designer || null == designer.getId()) {
+                return ResponseEntity.status(HttpStatus.OK).body(null);
+            }
             GfDesignerEntity response = designerRepository.updateGfDesignerEntity(designer);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
@@ -57,6 +60,9 @@ public class GfashionDesignerDynamodbResource {
     @DeleteMapping("/dynamodb/designers/{designerId}")
     public ResponseEntity<GfDesignerEntity> deletedesigner(@PathVariable String designerId) {
         try {
+            if (null == designerRepository.readGfDesignerEntity(designerId)) {
+                return ResponseEntity.status(HttpStatus.OK).body(null);
+            }
             designerRepository.deleteGfDesignerEntity(designerId);
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (AmazonServiceException e) {
