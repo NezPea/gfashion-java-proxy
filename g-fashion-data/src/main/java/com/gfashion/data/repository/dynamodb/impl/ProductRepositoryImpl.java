@@ -35,7 +35,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public GfProductEntity updateGfProductEntity(GfProductEntity product) {
         Map<String, ExpectedAttributeValue> expectedAttributeValueMap = new HashMap<>();
-        expectedAttributeValueMap.put(PRODUCT_KEY, new ExpectedAttributeValue(new AttributeValue().withS(product.getProductId())));
+        expectedAttributeValueMap.put(PRODUCT_KEY, new ExpectedAttributeValue(new AttributeValue().withS(product.getId())));
         DynamoDBSaveExpression saveExpression = new DynamoDBSaveExpression().withExpected(expectedAttributeValueMap);
         dynamoDBMapper.save(product, saveExpression);
         return product;
@@ -47,7 +47,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         expectedAttributeValueMap.put(PRODUCT_KEY, new ExpectedAttributeValue(new AttributeValue().withS(productId)));
         DynamoDBDeleteExpression deleteExpression = new DynamoDBDeleteExpression().withExpected(expectedAttributeValueMap);
         GfProductEntity product = GfProductEntity.builder()
-                .productId(productId)
+                .id(productId)
                 .build();
         dynamoDBMapper.delete(product, deleteExpression);
     }

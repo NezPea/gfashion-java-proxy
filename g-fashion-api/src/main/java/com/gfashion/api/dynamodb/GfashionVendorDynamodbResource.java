@@ -45,7 +45,7 @@ public class GfashionVendorDynamodbResource {
     @PutMapping("/dynamodb/vendors")
     public ResponseEntity<GfVendorEntity> updateVendor(@RequestBody GfVendorEntity vendor) {
         try {
-            if (null == vendor || null == vendorRepository.readGfVendorEntity(vendor.getVendorId())) {
+            if (null == vendor || null == vendorRepository.readGfVendorEntity(vendor.getId())) {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
             }
             GfVendorEntity response = vendorRepository.updateGfVendorEntity(vendor);
