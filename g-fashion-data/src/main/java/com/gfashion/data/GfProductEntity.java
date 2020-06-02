@@ -159,6 +159,7 @@ public class GfProductEntity {
 //    private List<GfProductLink> product_links; // 关联产品
 //    @DynamoDBAttribute(attributeName = "extension_attributes")
 //    private GfMediaGalleryEntry extension_attributes; // 扩展属性
+
     /**
      *  todo eric, dynamodb support using complex object to store, need check ES support complex object.
      */

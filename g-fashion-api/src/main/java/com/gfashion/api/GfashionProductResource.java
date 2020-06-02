@@ -69,10 +69,19 @@ public class GfashionProductResource {
                     if(key.split(",")[0].equals("category_id")){
                         categoryId.set(Integer.parseInt(key.split(",")[1]));
                     }
-                    url.append("searchCriteria[filter_groups][").append(i).append("][filters][0][field]=").append(key.split(",")[0]).append("&");
-                    url.append("searchCriteria[filter_groups][").append(i).append("][filters][0][value]=").append(key.split(",")[1]).append("&");
-                    url.append("searchCriteria[filter_groups][").append(i).append("][filters][0][condition_type]=").append(key.split(",")[2]).append("&");
-                    i.getAndIncrement();
+                    if(key.split(",")[1].contains("_")){
+                        String [] filters=key.split(",")[1].split("_");
+                        for (int j=0;j<filters.length;j++) {
+                            url.append("searchCriteria[filter_groups][").append(i).append("][filters][").append(j).append("][field]=").append(key.split(",")[0]).append("&");
+                            url.append("searchCriteria[filter_groups][").append(i).append("][filters][").append(j).append("][value]=").append(filters[j]).append("&");
+                            url.append("searchCriteria[filter_groups][").append(i).append("][filters][").append(j).append("][condition_type]=").append(key.split(",")[2]).append("&");
+                        }
+                    }else {
+                        url.append("searchCriteria[filter_groups][").append(i).append("][filters][0][field]=").append(key.split(",")[0]).append("&");
+                        url.append("searchCriteria[filter_groups][").append(i).append("][filters][0][value]=").append(key.split(",")[1]).append("&");
+                        url.append("searchCriteria[filter_groups][").append(i).append("][filters][0][condition_type]=").append(key.split(",")[2]).append("&");
+                        i.getAndIncrement();
+                    }
                 }
             });
             String resultUrl = url.subSequence(0, url.length() - 1).toString();
@@ -81,12 +90,11 @@ public class GfashionProductResource {
             log.info("info:" + resultUrl);
             String magentoSearchCriteria = "";
             return ResponseEntity.status(HttpStatus.OK).body(magentoProductClient.searchProducts(resultUrl,categoryId.intValue()));
+
         } catch (ProductNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
         } catch (ProductUnknowException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
         }
     }
-
-
 }

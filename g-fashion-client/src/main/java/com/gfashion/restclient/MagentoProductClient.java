@@ -326,15 +326,21 @@ public class MagentoProductClient {
 
             GfProductCategory gfProductCategory = getCategoryById(category_id, headers);
             String category_name = gfProductCategory.getName();
+            //返回meganto格式产品
             ResponseEntity<String> responseProductSearch = magentoRestClient.exchangeGet(getProductSearchUrl, String.class, headers);
 
             Gson gson = new Gson();
+            //将产品格式转换为GfProductSearchResponse
             GfProductSearchResponse gfProductSearchResponse = gfMagentoConverter.convertMagentoProductSearchToGfProductSearch(gson.fromJson(responseProductSearch.getBody(), MagentoProductSearchResponse.class));
 
+            //产品详情，精简字段
             List<GfChannelProduct> gfChannelProductList = new ArrayList<>();
+
+            //频道页产品详情，精简字段字段，转类型，返回结构数据
             GfProductSearchResponseFix gfProductSearchResponseFix = new GfProductSearchResponseFix();
 
             gfProductSearchResponse.getItems().forEach(gfProduct -> {
+                //产品详情，精简字段设置
                 GfChannelProduct gfChannelProduct = new GfChannelProduct();
                 gfChannelProduct.setId(gfProduct.getId());
                 gfChannelProduct.setSku(gfProduct.getSku());
@@ -346,43 +352,84 @@ public class MagentoProductClient {
                 gfChannelProduct.setDesigner_name(gfProduct.getDesigner_name());
                 gfChannelProduct.setPrice(gfProduct.getPrice());
                 List<GfMediaGalleryEntry> gfMediaGalleryEntry = gfProduct.getMedia_gallery_entries();
+
+                //设置图片地址
                 gfChannelProduct.setFile(gfMediaGalleryEntry.get(0).getFile());
                 gfChannelProductList.add(gfChannelProduct);
+                //设置产品属性
+                // gfProductCustomAttribute 例子 getAttribute_code="color" getValue="5487"
                 if (null != gfProduct.getCustom_attributes() && gfProduct.getCustom_attributes().size() > 0) {
                     gfProduct.getCustom_attributes().forEach(gfProductCustomAttribute -> {
                         String customAttribute = gfProductCustomAttribute.getAttribute_code();
                         Object customValue = gfProductCustomAttribute.getValue();
-                        if (attributesOption.containsKey(customAttribute))
-                            if (filters.containsKey(customAttribute)) {
 
+                        //在属性map中查找 getAttribute_code="color" ，如果有这个属性，返回颜色码 "5487" 对应的颜色 "Yellow"
+                        if (attributesOption.containsKey(customAttribute))
+                            /* Map<String, GfAvilableFlter> filters key=color
+                            GfAvilableFlter 包含  code; name; List<GfAttributeOption> options;
+                            返回 filters 格式 avavilable_filters
+                             */
+                            //如果包含key，添加options
+                            if (filters.containsKey(customAttribute)) {
+                                /*
+                                "avavilable_filters": [
+                                   {
+                                        "code": "color",
+                                        "name": "Color",
+                                        "options": [
+                                            {
+                                                "id": "5487",
+                                                "name": "Yellow",
+                                                "isChecked": "true"
+                                            }
+                                        ]
+                                    }
+                                ]
+                                 */
                                 GfAvilableFlter gfAvilableFlter = filters.get(customAttribute);
+                                //获取AttributeOption字段列表
+                                /* GfAttributeOption 包含 id; name; isChecked;
+                                 */
                                 List<GfAttributeOption> gfAttributeOptions = gfAvilableFlter.getOptions();
                                 Map<String, GfAttributeOption> gfAttributeOptionMap = new HashMap<>();
                                 gfAttributeOptions.forEach(gfAttributeOption -> {
                                     gfAttributeOptionMap.put(gfAttributeOption.getId(), gfAttributeOption);
                                 });
+
+                                //如果当前颜色代码不存在 5487，但是在属性集合attributesOption.get("color").containsKey("5487") 中有对应的值 Yellow
                                 if (!gfAttributeOptionMap.containsKey(customValue.toString()) && attributesOption.get(customAttribute).containsKey(customValue.toString())) {
 
 
                                     GfAttributeOption gfAttributeOption = new GfAttributeOption();
+                                    //gfAttributeOption 设置id 5487
                                     gfAttributeOption.setId(customValue.toString());
+                                    //gfAttributeOption 设置name,查找属性集合attributesOption.get("color").get("5487") 的结果 Yellow
                                     gfAttributeOption.setName(attributesOption.get(customAttribute).get(customValue.toString()));
+                                    //gfAttributeOption 这里设置isChecked 为false，后面查找入参时如果找到，则可设为true
+
                                     gfAttributeOption.setIsChecked("false");
                                     gfAttributeOptions.add(gfAttributeOption);
                                     gfAvilableFlter.setOptions(gfAttributeOptions);
                                     filters.put(customAttribute, gfAvilableFlter);
 
                                 }
+
+                                //如果不包含key，初始化code，name，options，但是在属性集合attributesOption.get("color").containsKey("5487") 中有对应的值 Yellow
                             } else if (attributesOption.get(customAttribute).containsKey(customValue.toString())) {
 
 
                                 List<GfAttributeOption> gfAttributeOptions = new ArrayList<>();
                                 GfAttributeOption gfAttributeOption = new GfAttributeOption();
                                 GfAvilableFlter gfAvilableFlter = new GfAvilableFlter();
+                                //初始化code
                                 gfAvilableFlter.setCode(customAttribute);
+
+                                //初始化name 将code首字母大写
                                 String toFirstUpperCase = customAttribute.substring(0, 1).toUpperCase();
                                 String nameCapitalized = toFirstUpperCase + customAttribute.substring(1);
                                 gfAvilableFlter.setName(nameCapitalized);
+
+                                //初始化options
                                 gfAttributeOption.setId(customValue.toString());
                                 gfAttributeOption.setName(attributesOption.get(customAttribute).get(customValue.toString()));
                                 gfAttributeOption.setIsChecked("false");
@@ -394,21 +441,45 @@ public class MagentoProductClient {
                 }
 
             });
+            /* 搜索条件示例，对于包含在搜索条件中的属性，颜色码值 5487，5477，5485 设置 gfAttributeOption.setIsChecked("true")
+            ?searchCriteria[filter_groups][0][filters][0][field]=category_id&
+             searchCriteria[filter_groups][0][filters][0][value]=23&
+             searchCriteria[filter_groups][0][filters][0][condition_type]=eq&
+             searchCriteria[filter_groups][1][filters][0][field]=price&
+             searchCriteria[filter_groups][1][filters][0][value]=150&
+             searchCriteria[filter_groups][1][filters][0][condition_type]=lt&
+             searchCriteria[filter_groups][2][filters][0][field]=color&
+             searchCriteria[filter_groups][2][filters][0][value]=5487&
+             searchCriteria[filter_groups][2][filters][0][condition_type]=eq&
+             searchCriteria[filter_groups][2][filters][1][field]=color&
+             searchCriteria[filter_groups][2][filters][1][value]=5477&
+             searchCriteria[filter_groups][2][filters][1][condition_type]=eq&
+             searchCriteria[filter_groups][2][filters][2][field]=color&
+             searchCriteria[filter_groups][2][filters][2][value]=5485&
+             searchCriteria[filter_groups][2][filters][2][condition_type]=eq
+             */
             gfProductSearchResponse.getSearch_criteria().getFilter_groups().forEach(Filter_group -> {
                 Filter_group.getFilters().forEach(searchFilter -> {
+                    //searchFilter.getField=color
                     if (filters.containsKey(searchFilter.getField())) {
 
                         GfAvilableFlter gfAvilableFlter = filters.get(searchFilter.getField());
                         List<GfAttributeOption> gfAttributeOptions = gfAvilableFlter.getOptions();
+                        //可用条件集合，更新setIsChecked
                         List<GfAttributeOption> gfAttributeOptionTmp = new ArrayList<>();
                         Map<String, GfAttributeOption> gfAttributeOptionMap = new HashMap<>();
+                        //将GfAttributeOption List 还原成map key=id value=gfAttributeOption<id,name,isChecked>
                         gfAttributeOptions.forEach(gfAttributeOption -> {
                             gfAttributeOptionMap.put(gfAttributeOption.getId(), gfAttributeOption);
                         });
-
-                        GfAttributeOption gfAttributeOption = gfAttributeOptionMap.get(searchFilter.getValue());
-                        gfAttributeOption.setIsChecked("true");
-                        gfAttributeOptionTmp.add(gfAttributeOption);
+                        gfAttributeOptionMap.forEach((optionKey,optionValue)->{
+                            if(optionKey.equals(searchFilter.getValue())){
+                                optionValue.setIsChecked("true");
+                                gfAttributeOptionTmp.add(optionValue);
+                            }else{
+                                gfAttributeOptionTmp.add(optionValue);
+                            }
+                        });
                         gfAvilableFlter.setOptions(gfAttributeOptionTmp);
                         filters.put(searchFilter.getField(), gfAvilableFlter);
                     }
