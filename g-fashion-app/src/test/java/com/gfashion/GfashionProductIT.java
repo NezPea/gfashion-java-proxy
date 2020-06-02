@@ -55,7 +55,7 @@ public class GfashionProductIT {
     public void searchChannelProductsShouldReturnProducts() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRequestURI("/gfashion/v1/channelProducts");
-        request.setQueryString("category_id,23,eq&pageSize=20&currentPage=1&sortField=id&sortDirection=asc&price,150,lt");
+        request.setQueryString("category_id,23,eq&price,150,lt&color,5487_5477_5485,eq&pageSize=20&currentPage=1&sortField=id&sortDirection=asc&price,150,lt");
         String url = request.getRequestURL() + "?" + request.getQueryString();
 
         Response response = RestAssured.get(url);
