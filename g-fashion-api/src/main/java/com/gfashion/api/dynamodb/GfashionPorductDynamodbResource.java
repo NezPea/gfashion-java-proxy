@@ -46,7 +46,7 @@ public class GfashionPorductDynamodbResource {
     @PutMapping("/dynamodb/products")
     public ResponseEntity<GfProductEntity> updateProduct(@RequestBody GfProductEntity product) {
         try {
-            if (productRepository.readGfProductEntity(product.getProductId()) == null) {
+            if (productRepository.readGfProductEntity(product.getId()) == null) {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
             }
             GfProductEntity response = productRepository.updateGfProductEntity(product);

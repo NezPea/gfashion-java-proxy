@@ -19,7 +19,7 @@ public class GfashionDesignerDynamodbResource {
     private GfDesignerRepository designerRepository;
 
     @PostMapping("/dynamodb/designers")
-    public ResponseEntity<GfDesignerEntity> createdesigner(@RequestBody GfDesignerEntity designer) {
+    public ResponseEntity<GfDesignerEntity> createDesigner(@RequestBody GfDesignerEntity designer) {
         try {
             GfDesignerEntity response = designerRepository.createGfDesignerEntity(designer);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -31,7 +31,7 @@ public class GfashionDesignerDynamodbResource {
     }
 
     @GetMapping("/dynamodb/designers/{designerId}")
-    public ResponseEntity<GfDesignerEntity> getdesigner(@PathVariable String designerId) {
+    public ResponseEntity<GfDesignerEntity> getDesigner(@PathVariable String designerId) {
         try {
             GfDesignerEntity response = designerRepository.readGfDesignerEntity(designerId);
             return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -43,7 +43,7 @@ public class GfashionDesignerDynamodbResource {
     }
 
     @PutMapping("/dynamodb/designers")
-    public ResponseEntity<GfDesignerEntity> updatedesigner(@RequestBody GfDesignerEntity designer) {
+    public ResponseEntity<GfDesignerEntity> updateDesigner(@RequestBody GfDesignerEntity designer) {
         try {
             if (null == designer || null == designer.getId()) {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -58,7 +58,7 @@ public class GfashionDesignerDynamodbResource {
     }
 
     @DeleteMapping("/dynamodb/designers/{designerId}")
-    public ResponseEntity<GfDesignerEntity> deletedesigner(@PathVariable String designerId) {
+    public ResponseEntity<GfDesignerEntity> deleteDesigner(@PathVariable String designerId) {
         try {
             if (null == designerRepository.readGfDesignerEntity(designerId)) {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
