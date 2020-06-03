@@ -53,9 +53,6 @@ public class GfProductEntity {
     @DynamoDBAttribute(attributeName = "productDelete")
     private String productDelete;
 
-    @DynamoDBAttribute(attributeName = "productPrice")
-    private String productPrice;
-
     @DynamoDBAttribute(attributeName = "productBrief")
     private String productBrief;
 
