@@ -10,12 +10,68 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GfShipmentTrack implements Serializable {
-    private String parent_id;
+    /**
+     * The order_id for the shipment package.
+     * 必填
+     */
+    private Integer order_id;
+
+    /**
+     * Created-at timestamp.
+     */
     private String created_at;
+
+    /**
+     * Shipment package ID.
+     */
+    private Integer entity_id;
+
+    /**
+     * Parent ID.
+     * 必填
+     */
+    private Integer parent_id;
+
+    /**
+     * Updated-at timestamp.
+     */
     private String updated_at;
-    private String carrier_code;
+
+    /**
+     * Weight.
+     * 必填
+     */
+    private Integer weight;
+
+    /**
+     * Quantity.
+     * 必填
+     */
+    private Integer qty;
+
+    /**
+     * Description.
+     * 必填
+     */
+    private String description;
+
+//    private sales-data-shipment-track-extension-interface extension_attributes;
+
+    /**
+     * Track number.
+     * 必填
+     */
+    private String track_number;
+
+    /**
+     * Title.
+     * 必填
+     */
     private String title;
-    private String number;
-    private String order_id;
-    private String track_id;
+
+    /**
+     * Carrier code.
+     * 必填
+     */
+    private String carrier_code;
 }

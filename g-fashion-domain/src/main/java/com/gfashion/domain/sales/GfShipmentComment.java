@@ -6,15 +6,45 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class GfShipmentComment implements Serializable {
+    /**
+     * Is-customer-notified flag value.
+     * 必填
+     */
+    private Integer is_customer_notified;
 
-    private String parent_id;
-    private String created_at;
-    private String updated_at;
+    /**
+     * Parent ID.
+     * 必填
+     */
+    private Integer parent_id;
+
+//    private sales-data-shipment-comment-extension-interface extension_attributes;
+
+    /**
+     * Comment.
+     * 必填
+     */
     private String comment;
-    private String is_customer_notified;
-    private String comment_id;
+
+    /**
+     * Is-visible-on-storefront flag value.
+     * 必填
+     */
+    private Integer is_visible_on_front;
+
+    /**
+     * Created-at timestamp.
+     */
+    private String created_at;
+
+    /**
+     * Invoice ID.
+     */
+    private Integer entity_id;
+
 }
