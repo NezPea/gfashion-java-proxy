@@ -39,6 +39,15 @@ public class MagentoProductClient {
     @Value("${magento.url.brandsParentId}")
     private String brandsParentId;
 
+
+    @Value("${magento.url.locale.en}")
+    private String localeEn;
+
+    @Value("${magento.url.locale.zh}")
+    private String localeZh;
+
+
+
     @Autowired
     private RestClient magentoRestClient;
 
@@ -316,7 +325,7 @@ public class MagentoProductClient {
     }
 
     public GfProductSearchResponseFix searchProducts(String query, Integer category_id) throws ProductNotFoundException, ProductUnknowException {
-        String getProductSearchUrl = productsUrl + query;
+        String getProductSearchUrl = productsUrl + query.replace("localeEn",localeEn).replace("localeZh",localeZh);
 
         try {
 
