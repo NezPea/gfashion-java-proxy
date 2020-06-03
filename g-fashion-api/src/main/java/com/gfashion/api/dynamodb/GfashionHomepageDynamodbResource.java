@@ -23,7 +23,7 @@ public class GfashionHomepageDynamodbResource {
     @GetMapping("/dynamodb/homepage")
     public ResponseEntity<CustomizedHomepage> getDefaultCustomizedHomepage() {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(gfHomepageRepository.getDefaultCustomizedHomepageReflection());
+            return ResponseEntity.status(HttpStatus.OK).body(gfHomepageRepository.getDefaultCustomizedHomepageBatchQuery());
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
         } catch (AmazonClientException e) {

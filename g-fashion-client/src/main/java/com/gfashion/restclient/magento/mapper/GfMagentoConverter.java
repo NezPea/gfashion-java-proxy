@@ -2,6 +2,7 @@ package com.gfashion.restclient.magento.mapper;
 
 import com.gfashion.domain.customer.GfCustomerExtensionAttributes;
 import com.gfashion.domain.customer.GfCustomerRegion;
+import com.gfashion.domain.homepage.GfCategory;
 import com.gfashion.domain.homepage.HomepageBrand;
 import com.gfashion.domain.homepage.HomepageDesigner;
 import com.gfashion.domain.product.*;
@@ -55,22 +56,24 @@ public interface GfMagentoConverter {
     GfWebsite[] convertMagentoWebsiteToGfWebsiteArray(MagentoWebsite[] magentoWebsites);
     GfStoreGroup[] convertMagentoStoreGroupToGfStoreGroupArray(MagentoStoreGroup[] magentoStoreGroups);
     GfStoreConfig[] convertMagentoStoreConfigToGfStoreConfigArray(MagentoStoreConfig[] magentoStoreConfigs);
+    List<GfCategory> convertMagentoCategoriesToGfCategories(List<MagentoCategory> magentoCategories);
+    GfCategory convertMagentoCategoryToGfCategory(MagentoCategory magentoCategory);
 
-    public List<HomepageBrand> convertMagentoCategoriesToHomeBrands(List<MagentoCategory> magentoCategories);
+    List<HomepageBrand> convertMagentoCategoriesToHomeBrands(List<MagentoCategory> magentoCategories);
     @Mapping(source = "custom_attributes", target = "link", qualifiedByName = "getLinkFromAttribute")
     @Mapping(source = "custom_attributes", target = "photoUrl", qualifiedByName = "getPhotoUrlFromAttribute")
-    public HomepageBrand convertMagentoCategoryToHomeBrand(MagentoCategory magentoCategory);
+    HomepageBrand convertMagentoCategoryToHomeBrand(MagentoCategory magentoCategory);
 
-    public List<HomepageDesigner> convertMagentoCategoriesToHomeDesigners(List<MagentoCategory> magentoCategories);
+    List<HomepageDesigner> convertMagentoCategoriesToHomeDesigners(List<MagentoCategory> magentoCategories);
     @Mapping(source = "custom_attributes", target = "photoUrl", qualifiedByName = "getPhotoUrlFromAttribute")
-    public HomepageDesigner convertMagentoCategoryToHomeDesigner(MagentoCategory magentoCategory);
+    HomepageDesigner convertMagentoCategoryToHomeDesigner(MagentoCategory magentoCategory);
 
     @Named("getPhotoUrlFromAttribute")
-    public static String getPhotoUrlFromAttribute(List<Map<String, String>> customerAttributes){
+    static String getPhotoUrlFromAttribute(List<Map<String, String>> customerAttributes){
         return getCustomerAttributeValue(customerAttributes, "url_path");
     }
 
-    public static String getCustomerAttributeValue(List<Map<String, String>> customerAttributes, String attributeName){
+    static String getCustomerAttributeValue(List<Map<String, String>> customerAttributes, String attributeName){
         if (customerAttributes == null){
             return null;
         }
