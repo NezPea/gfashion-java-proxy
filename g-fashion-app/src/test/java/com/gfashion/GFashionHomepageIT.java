@@ -30,12 +30,27 @@ public class GFashionHomepageIT {
         response.then().assertThat().
                 statusCode(200).
                 content(
-                        containsString("recommendedProducts"),
-                        containsString("recommendedDesigners"),
-                        containsString("recommendedBrands"),
-                        containsString("followingBrands"),
+                        containsString("product2"),
                         containsString("Miles"),
-                        containsString("Trump")
+                        containsString("Trump"),
+                        containsString("HERMES"),
+                        containsString("Pence"),
+                        containsString("Italy")
+                );
+    }
+
+    @Test
+    public void getCustomerizedHomepageByCustomerIdShouldReturnOkDynamodb() throws Exception {
+        Response response = RestAssured.get("/gfashion/v1/dynamodb/homepage");
+        response.then().assertThat().
+                statusCode(200).
+                content(
+                        containsString("product2"),
+                        containsString("Miles"),
+                        containsString("Trump"),
+                        containsString("HERMES"),
+                        containsString("Pence"),
+                        containsString("Italy")
                 );
     }
 }

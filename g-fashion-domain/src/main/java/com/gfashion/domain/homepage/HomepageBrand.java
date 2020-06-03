@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class HomepageBrand {
-    private Integer id;
+    private String id;
     private String name;
     private String country;
     private String photoUrl;

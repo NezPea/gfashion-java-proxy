@@ -5,5 +5,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GfHomepageRepository {
-    public CustomizedHomepage getDefaultCustomizedHomepage();
+    public CustomizedHomepage getDefaultCustomizedHomepageBatchQuery();
+    public CustomizedHomepage getDefaultCustomizedHomepageReflection();
 }
