@@ -32,6 +32,7 @@ magento:
     stockItems: stockItems/
     categories: categories/
     attributes: attributes/
+    carts: carts/
     locale:
       en: 1
       zh: 6
@@ -89,6 +90,7 @@ magento:
     stockItems: stockItems/
     categories: categories/
     attributes: products/attributes?searchCriteria[filterGroups][0][filters][0][field]=is_filterable&searchCriteria[filterGroups][0][filters][0][value]=false&searchCriteria[filterGroups][0][filters][0][conditionType]=neq
+    carts: carts/
     locale:
       us: 1
       cn: 6

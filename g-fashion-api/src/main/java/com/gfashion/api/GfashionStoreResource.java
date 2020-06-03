@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/gfashion/v1", produces = {"application/json"})
-//@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class GfashionStoreResource {
     private MagentoStoreClient _client;
