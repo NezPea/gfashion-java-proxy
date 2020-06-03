@@ -1,0 +1,33 @@
+package com.gfashion.data.repository.dynamodb.typeconverter;
+
+import com.gfashion.data.GfBrandEntity;
+import com.gfashion.data.GfDesignerEntity;
+import com.gfashion.data.GfProductEntity;
+import com.gfashion.domain.homepage.HomepageBrand;
+import com.gfashion.domain.homepage.HomepageDesigner;
+import com.gfashion.domain.homepage.HomepageProduct;
+import com.google.gson.Gson;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.mapstruct.ReportingPolicy;
+
+import java.util.Arrays;
+import java.util.List;
+
+@Mapper
+public interface GfDynamodbConverter {
+    HomepageBrand convertDynamodbBrandToHomeBrand(GfBrandEntity gfBrandEntity);
+
+    @Mapping(source = "cooperatingBrands", target = "cooperatingBrands", qualifiedByName = "getCooperatingBrandsFromAttribute")
+    HomepageDesigner convertDynamodbDesignerToHomeDesigner(GfDesignerEntity gfDesignerEntity);
+
+    @Named("getCooperatingBrandsFromAttribute")
+    public static List<String> getCooperatingBrandsFromAttribute(String cooperatingBrands){
+        Gson gson = new Gson();
+        String[] brands = gson.fromJson(cooperatingBrands, String[].class);
+        return Arrays.asList(brands);
+    }
+
+    HomepageProduct convertDynamodbProductToHomeProduct(GfProductEntity gfProductEntity);
+}

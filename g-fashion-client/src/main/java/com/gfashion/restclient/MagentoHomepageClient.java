@@ -70,10 +70,10 @@ public class MagentoHomepageClient {
 
     private List<HomepageProduct> getDefaultHomepageProducts(){
         List<HomepageProduct> homepageProducts = new ArrayList<HomepageProduct>();
-        HomepageProduct homepageProduct1 = new HomepageProduct(1, "shoe",
+        HomepageProduct homepageProduct1 = new HomepageProduct("1", "shoe",
                 "https://www.google.com/aclk?sa=l&ai=DChcSEwiC66Dw58HpAhXkCX0KHXP7AkgYABAHGgJwdg&sig=AOD64_1pSaVMQUmT6DFg7tdDM6UARZbXOw&adurl&ctype=5&ved=2ahUKEwimlZbw58HpAhWD6J4KHVppDTkQvhd6BAgBEF0",
                 true);
-        HomepageProduct homepageProduct2 = new HomepageProduct(2, "hat",
+        HomepageProduct homepageProduct2 = new HomepageProduct("2", "hat",
                 "https://www.google.com/aclk?sa=l&ai=DChcSEwiI56WD6MHpAhViGH0KHZkSDzYYABAEGgJwdg&sig=AOD64_15E0SJt1kMywkoQWoxEV0KCrpDwA&adurl&ctype=5&ved=2ahUKEwibs5qD6MHpAhXYgZ4KHTD-AjUQwg96BAgBEFk",
                 false);
         homepageProducts.add(homepageProduct1);
