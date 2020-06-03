@@ -23,32 +23,20 @@ public class GfProductEntity {
     @DynamoDBAttribute(attributeName = "name")
     private String name;
 
+    @DynamoDBAttribute(attributeName = "language")
+    private String language;
+
+    @DynamoDBAttribute(attributeName = "keyword")
+    private String keyword;
+
     @DynamoDBAttribute(attributeName = "brandId")
     private String brandId;
-
-    @DynamoDBAttribute(attributeName = "brandName")
-    private String brandName;
-
-    @DynamoDBAttribute(attributeName = "brandLink")
-    private String brandLink;
 
     @DynamoDBAttribute(attributeName = "designerId")
     private String designerId;
 
-    @DynamoDBAttribute(attributeName = "designerName")
-    private String designerName;
-
-    @DynamoDBAttribute(attributeName = "designerLink")
-    private String designerLink;
-
     @DynamoDBAttribute(attributeName = "vendorId")
     private String vendorId;
-
-    @DynamoDBAttribute(attributeName = "vendorName")
-    private String vendorName;
-
-    @DynamoDBAttribute(attributeName = "vendorLink")
-    private String vendorLink;
 
     @DynamoDBAttribute(attributeName = "productDelete")
     private String productDelete;
