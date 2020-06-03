@@ -38,4 +38,7 @@ public class GfBrandEntity {
     @DynamoDBAttribute(attributeName = "link")
     private String link;
 
+    @DynamoDBAttribute(attributeName = "language")
+    private String language;
+
 }
