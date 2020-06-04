@@ -45,11 +45,11 @@ public class MagentoSalesClient {
         }
     }
 
-    public GfShipment getShipmentById(Integer shipmentId) throws Exception {
-        String getShipmentUrl = shipmentUrl + shipmentId;
+    public GfShipment getShipmentById(Integer id) throws Exception {
+        String url = shipmentUrl + id;
 
         try {
-            ResponseEntity<String> responseEntity = this._restClient.exchangeGet(getShipmentUrl, String.class, null);
+            ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, null);
 
             Gson gson = new Gson();
             MagentoShipment magentoShipment = gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
