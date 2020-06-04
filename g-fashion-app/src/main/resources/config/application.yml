@@ -22,7 +22,8 @@ server:
 magento:
   url:
     base: https://www.gfashion2020.tk/index.php/rest/V1/
-    token: integration/admin/token
+    adminToken: integration/admin/token
+    customerToken: integration/customer/token
     customers: customers/
     carts: carts/mine/
     cartItems: carts/mine/items/
@@ -81,7 +82,8 @@ server:
 magento:
   url:
     base: https://www.gfashion2020.tk/index.php/rest/V1/
-    token: integration/admin/token
+    adminToken: integration/admin/token
+    customerToken: integration/customer/token
     customers: customers/
     carts: carts/mine/
     cartItems: carts/mine/items/

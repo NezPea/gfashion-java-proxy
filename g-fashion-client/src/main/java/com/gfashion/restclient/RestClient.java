@@ -1,5 +1,6 @@
 package com.gfashion.restclient;
 
+import com.gfashion.domain.customer.GfCustomerLogin;
 import com.gfashion.restclient.magento.exception.CustomerTokenNotFoundException;
 import com.google.gson.Gson;
 import org.json.JSONObject;
@@ -16,8 +17,10 @@ public class RestClient {
 
     @Value("${magento.url.base}")
     private String baseUrl;
-    @Value("${magento.url.token}")
-    private String tokenUrl;
+    @Value("${magento.url.adminToken}")
+    private String adminTokenUrl;
+    @Value("${magento.url.customerToken}")
+    private String customerTokenUrl;
     @Value("${magento.username}")
     private String username;
     @Value("${magento.password}")
@@ -39,9 +42,18 @@ public class RestClient {
 
         HttpEntity<String> request = new HttpEntity<>(adminInfo.toString(), headers);
         ResponseEntity<String> responseEntity =
-                restTemplate.postForEntity(baseUrl + tokenUrl, request, String.class);
+                restTemplate.postForEntity(baseUrl + adminTokenUrl, request, String.class);
 
         return Objects.requireNonNull(responseEntity.getBody()).replace("\"", "");
+    }
+
+    public ResponseEntity<String> getCustomerToken(GfCustomerLogin customerLogin) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        Gson gson = new Gson();
+
+        HttpEntity<String> request = new HttpEntity<>(gson.toJson(customerLogin), headers);
+        return restTemplate.postForEntity(baseUrl + customerTokenUrl, request, String.class);
     }
 
     public HttpHeaders getDefaultHeaders(MultiValueMap<String, String> extraHeaders) {

@@ -93,6 +93,9 @@ public class MagentoCartClient {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 throw new CustomerTokenNotFoundException(e.getMessage());
             }
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new CartItemCreationException(e.getMessage());
+            }
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
                 throw new CartItemCreationException(e.getMessage());
             }
@@ -114,7 +117,7 @@ public class MagentoCartClient {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 throw new CustomerTokenNotFoundException(e.getMessage());
             }
-            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new CartItemNotFoundException(e.getMessage());
             }
             throw new CartItemUnknownException(e.getMessage());

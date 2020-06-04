@@ -5,7 +5,6 @@ import com.gfashion.domain.customer.GfCustomerRegistration;
 import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
