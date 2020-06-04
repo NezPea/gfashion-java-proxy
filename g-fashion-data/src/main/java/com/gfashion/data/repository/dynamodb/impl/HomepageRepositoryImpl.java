@@ -4,6 +4,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.KeyPair;
 import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.gfashion.data.GfBrandEntity;
 import com.gfashion.data.GfDesignerEntity;
@@ -42,14 +44,18 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
 
     private final GfDynamodbConverter _mapper = Mappers.getMapper(GfDynamodbConverter.class);
 
-    public CustomizedHomepage getDefaultCustomizedHomepageBatchQuery() {
+    public CustomizedHomepage getDefaultCustomizedHomepageBatchQuery(String lang) {
         CustomizedHomepage customizedHomepage = new CustomizedHomepage();
 
         // Construct the batch query
         Map<Class<?>, String[]> keyMap = new HashMap<>();
-        keyMap.put(GfBrandEntity.class, brands.split(","));
-        keyMap.put(GfDesignerEntity.class, designers.split(","));
-        keyMap.put(GfProductEntity.class, products.split(","));
+        if(lang == null || lang.equalsIgnoreCase("en") ){
+            keyMap.put(GfBrandEntity.class, brands.split(","));
+            keyMap.put(GfDesignerEntity.class, designers.split(","));
+            keyMap.put(GfProductEntity.class, products.split(","));
+        } else if (lang.equalsIgnoreCase("cn")){
+            // Batch load the corresponding records in Chinese
+        }
 
         Map<Class<?>, List<KeyPair>> keyPairForTable = new HashMap<>();
 
@@ -91,23 +97,25 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
         return customizedHomepage;
     }
 
-    public CustomizedHomepage getDefaultCustomizedHomepageReflection() {
+    public CustomizedHomepage getDefaultCustomizedHomepageReflection(String lang) {
+        lang = lang == null? "en" : lang;
+
         // get recommended brands
         List<HomepageBrand> recommendedBrands = new ArrayList<>();
-        getResults(HomepageBrand.class, GfBrandEntity.class, 5)
+        getResults(HomepageBrand.class, GfBrandEntity.class, 5, lang)
                 .parallelStream().forEach(b ->
                 recommendedBrands.add(this._mapper.convertDynamodbBrandToHomeBrand((GfBrandEntity) b)));
 
         // get recommended designers
         List<HomepageDesigner> recommendedDesigners = new ArrayList<>();
-        getResults(HomepageDesigner.class, GfDesignerEntity.class, 8)
+        getResults(HomepageDesigner.class, GfDesignerEntity.class, 8, lang)
                 .parallelStream().forEach(d ->
                 recommendedDesigners.add(this._mapper
                         .convertDynamodbDesignerToHomeDesigner((GfDesignerEntity) d)));
 
         // get recommended products
         List<HomepageProduct> recommendedProducts = new ArrayList<>();
-        getResults(HomepageProduct.class, GfProductEntity.class, 6)
+        getResults(HomepageProduct.class, GfProductEntity.class, 6, lang)
                 .parallelStream().forEach(p ->
                 recommendedProducts.add(this._mapper.convertDynamodbProductToHomeProduct((GfProductEntity) p)));
 
@@ -120,14 +128,22 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
                 .build();
     }
 
-    private <T> PaginatedScanList<T> getResults(Class<?> source, Class<T> target, int limit) {
+    private <T> PaginatedScanList<T> getResults(Class<?> source, Class<T> target, int limit, String lang) {
         DynamoDBScanExpression brandScanExpression = new DynamoDBScanExpression();
         Map<String, Condition> brandConditions = new HashMap<>();
         for (Field field : source.getDeclaredFields()) {
             Condition c = new Condition();
-            c.setComparisonOperator("NOT_NULL");
+            c.setComparisonOperator(ComparisonOperator.NOT_NULL);
             brandConditions.put(field.getName(), c);
         }
+        // language condition
+        Condition languageCondition = new Condition();
+        languageCondition.setComparisonOperator(ComparisonOperator.EQ);
+        List<AttributeValue> valueList = new ArrayList<AttributeValue>();
+        valueList.add(new AttributeValue("en"));
+        languageCondition.setAttributeValueList(valueList);
+        brandConditions.put("language", languageCondition);
+
         brandScanExpression.setLimit(limit);
         brandScanExpression.setScanFilter(brandConditions);
 

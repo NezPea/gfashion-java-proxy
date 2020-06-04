@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,10 +21,10 @@ public class GfashionHomepageDynamodbResource {
 
     private GfHomepageRepository gfHomepageRepository;
 
-    @GetMapping("/dynamodb/homepage")
-    public ResponseEntity<CustomizedHomepage> getDefaultCustomizedHomepage() {
+    @GetMapping(value = "/dynamodb/homepage", produces = "application/json;charset=utf-8")
+    public ResponseEntity<CustomizedHomepage> getDefaultCustomizedHomepage(@RequestParam(required = false) String lang) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(gfHomepageRepository.getDefaultCustomizedHomepageBatchQuery());
+            return ResponseEntity.status(HttpStatus.OK).body(gfHomepageRepository.getDefaultCustomizedHomepageBatchQuery(lang));
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
         } catch (AmazonClientException e) {
