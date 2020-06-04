@@ -24,6 +24,8 @@ magento:
     base: https://www.gfashion2020.tk/index.php/rest/V1/
     token: integration/admin/token
     customers: customers/
+    carts: carts/mine/
+    cartItems: carts/mine/items/
     storeViews: store/storeViews/
     websites: store/websites/
     storeGroups: store/storeGroups/
@@ -83,6 +85,8 @@ magento:
     base: https://www.gfashion2020.tk/index.php/rest/V1/
     token: integration/admin/token
     customers: customers/
+    carts: carts/mine/
+    cartItems: carts/mine/items/
     storeViews: store/storeViews/
     websites: store/websites/
     storeGroups: store/storeGroups/

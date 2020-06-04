@@ -1,5 +1,7 @@
 package com.gfashion.restclient.magento.mapper;
 
+import com.gfashion.domain.cart.GFCartItem;
+import com.gfashion.domain.cart.GfCart;
 import com.gfashion.domain.customer.GfCustomerExtensionAttributes;
 import com.gfashion.domain.customer.GfCustomerRegion;
 import com.gfashion.domain.homepage.GfCategory;
@@ -14,11 +16,8 @@ import com.gfashion.domain.store.GfStoreConfig;
 import com.gfashion.domain.store.GfStoreGroup;
 import com.gfashion.domain.store.GfWebsite;
 import com.gfashion.domain.product.GfProductSearchResponse;
-import com.gfashion.restclient.magento.customer.MagentoCustomerExtensionAttributes;
-import com.gfashion.restclient.magento.customer.MagentoCustomerRegion;
+import com.gfashion.restclient.magento.customer.*;
 import com.gfashion.restclient.magento.product.MagentoEvaAttribute;
-import com.gfashion.restclient.magento.customer.MagentoCustomer;
-import com.gfashion.restclient.magento.customer.MagentoCustomerAddress;
 import com.gfashion.restclient.magento.*;
 
 import com.gfashion.restclient.magento.homepage.MagentoCategory;
@@ -59,7 +58,10 @@ public interface GfMagentoConverter {
     List<GfCategory> convertMagentoCategoriesToGfCategories(List<MagentoCategory> magentoCategories);
     GfCategory convertMagentoCategoryToGfCategory(MagentoCategory magentoCategory);
 
-    List<HomepageBrand> convertMagentoCategoriesToHomeBrands(List<MagentoCategory> magentoCategories);
+    GfCart convertMagentoCartToGfCart(MagentoCart magentoCart);
+    GFCartItem convertMagentoCartItemToGfCartItem(MagentoCartItem magentoCart);
+
+    public List<HomepageBrand> convertMagentoCategoriesToHomeBrands(List<MagentoCategory> magentoCategories);
     @Mapping(source = "custom_attributes", target = "link", qualifiedByName = "getLinkFromAttribute")
     @Mapping(source = "custom_attributes", target = "photoUrl", qualifiedByName = "getPhotoUrlFromAttribute")
     HomepageBrand convertMagentoCategoryToHomeBrand(MagentoCategory magentoCategory);
