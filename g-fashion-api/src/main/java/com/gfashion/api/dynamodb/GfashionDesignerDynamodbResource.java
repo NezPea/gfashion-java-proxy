@@ -18,7 +18,7 @@ public class GfashionDesignerDynamodbResource {
 
     private GfDesignerRepository designerRepository;
 
-    @PostMapping("/dynamodb/designers")
+    @PostMapping(value = "/dynamodb/designers", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfDesignerEntity> createDesigner(@RequestBody GfDesignerEntity designer) {
         try {
             GfDesignerEntity response = designerRepository.createGfDesignerEntity(designer);
@@ -30,7 +30,7 @@ public class GfashionDesignerDynamodbResource {
         }
     }
 
-    @GetMapping("/dynamodb/designers/{designerId}")
+    @GetMapping(value = "/dynamodb/designers/{designerId}", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfDesignerEntity> getDesigner(@PathVariable String designerId) {
         try {
             GfDesignerEntity response = designerRepository.readGfDesignerEntity(designerId);
@@ -42,7 +42,7 @@ public class GfashionDesignerDynamodbResource {
         }
     }
 
-    @PutMapping("/dynamodb/designers")
+    @PutMapping(value = "/dynamodb/designers", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfDesignerEntity> updateDesigner(@RequestBody GfDesignerEntity designer) {
         try {
             if (null == designer || null == designer.getId()) {
@@ -57,7 +57,7 @@ public class GfashionDesignerDynamodbResource {
         }
     }
 
-    @DeleteMapping("/dynamodb/designers/{designerId}")
+    @DeleteMapping(value = "/dynamodb/designers/{designerId}", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfDesignerEntity> deleteDesigner(@PathVariable String designerId) {
         try {
             if (null == designerRepository.readGfDesignerEntity(designerId)) {

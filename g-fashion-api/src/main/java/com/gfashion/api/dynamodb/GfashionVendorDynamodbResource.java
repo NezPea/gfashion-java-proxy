@@ -18,7 +18,7 @@ public class GfashionVendorDynamodbResource {
 
     private VendorRepository vendorRepository;
 
-    @PostMapping("/dynamodb/vendors")
+    @PostMapping(value = "/dynamodb/vendors", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfVendorEntity> createVendor(@RequestBody GfVendorEntity vendor) {
         try {
             GfVendorEntity response = vendorRepository.createGfVendorEntity(vendor);
@@ -30,7 +30,7 @@ public class GfashionVendorDynamodbResource {
         }
     }
 
-    @GetMapping("/dynamodb/vendors/{vendorId}")
+    @GetMapping(value = "/dynamodb/vendors/{vendorId}", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfVendorEntity> getVendor(@PathVariable String vendorId) {
         try {
             GfVendorEntity response = vendorRepository.readGfVendorEntity(vendorId);
@@ -42,7 +42,7 @@ public class GfashionVendorDynamodbResource {
         }
     }
 
-    @PutMapping("/dynamodb/vendors")
+    @PutMapping(value = "/dynamodb/vendors", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfVendorEntity> updateVendor(@RequestBody GfVendorEntity vendor) {
         try {
             if (null == vendor || null == vendorRepository.readGfVendorEntity(vendor.getId())) {
@@ -57,7 +57,7 @@ public class GfashionVendorDynamodbResource {
         }
     }
 
-    @DeleteMapping("/dynamodb/vendors/{vendorId}")
+    @DeleteMapping(value = "/dynamodb/vendors/{vendorId}", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfVendorEntity> deleteVendor(@PathVariable String vendorId) {
         try {
             if (null == vendorRepository.readGfVendorEntity(vendorId)) {

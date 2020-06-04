@@ -18,7 +18,7 @@ public class GfashionBrandDynamodbResource {
 
     private GfBrandRepository brandRepository;
 
-    @PostMapping("/dynamodb/brands")
+    @PostMapping(value = "/dynamodb/brands", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfBrandEntity> createBrand(@RequestBody GfBrandEntity brand) {
         try {
             GfBrandEntity response = brandRepository.createGfBrandEntity(brand);
@@ -30,7 +30,7 @@ public class GfashionBrandDynamodbResource {
         }
     }
 
-    @GetMapping("/dynamodb/brands/{brandId}")
+    @GetMapping(value = "/dynamodb/brands/{brandId}", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfBrandEntity> getBrand(@PathVariable String brandId) {
         try {
             GfBrandEntity response = brandRepository.readGfBrandEntity(brandId);
@@ -42,7 +42,7 @@ public class GfashionBrandDynamodbResource {
         }
     }
 
-    @PutMapping("/dynamodb/brands")
+    @PutMapping(value = "/dynamodb/brands", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfBrandEntity> updateDesigner(@RequestBody GfBrandEntity brand) {
         try {
             if (null == brand || null == brandRepository.readGfBrandEntity(brand.getId())) {
@@ -57,7 +57,7 @@ public class GfashionBrandDynamodbResource {
         }
     }
 
-    @DeleteMapping("/dynamodb/brands/{brandId}")
+    @DeleteMapping(value = "/dynamodb/brands/{brandId}", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfBrandEntity> deleteBrand(@PathVariable String brandId) {
         try {
             if (null == brandRepository.readGfBrandEntity(brandId)) {

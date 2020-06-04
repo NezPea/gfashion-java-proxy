@@ -42,6 +42,15 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
     @Value("${aws.samples.products}")
     private String products;
 
+    @Value("${aws.samples.brandsCn}")
+    private String brandsCn;
+
+    @Value("${aws.samples.designersCn}")
+    private String designersCn;
+
+    @Value("${aws.samples.productsCn}")
+    private String productsCn;
+
     private final GfDynamodbConverter _mapper = Mappers.getMapper(GfDynamodbConverter.class);
 
     public CustomizedHomepage getDefaultCustomizedHomepageBatchQuery(String lang) {
@@ -55,6 +64,9 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
             keyMap.put(GfProductEntity.class, products.split(","));
         } else if (lang.equalsIgnoreCase("cn")){
             // Batch load the corresponding records in Chinese
+            keyMap.put(GfBrandEntity.class, brandsCn.split(","));
+            keyMap.put(GfDesignerEntity.class, designersCn.split(","));
+            keyMap.put(GfProductEntity.class, productsCn.split(","));
         }
 
         Map<Class<?>, List<KeyPair>> keyPairForTable = new HashMap<>();
@@ -123,8 +135,8 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
                 .recommendedBrands(recommendedBrands)
                 .recommendedDesigners(recommendedDesigners)
                 .recommendedProducts(recommendedProducts)
-                .followingBrands(recommendedBrands.subList(0, 1))
-                .followingDesigners(recommendedDesigners.subList(0, 3))
+                .followingBrands(recommendedBrands.subList(0, Math.min(1, recommendedBrands.size())))
+                .followingDesigners(recommendedDesigners.subList(0, Math.min(3, recommendedDesigners.size())))
                 .build();
     }
 
@@ -140,7 +152,7 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
         Condition languageCondition = new Condition();
         languageCondition.setComparisonOperator(ComparisonOperator.EQ);
         List<AttributeValue> valueList = new ArrayList<AttributeValue>();
-        valueList.add(new AttributeValue("en"));
+        valueList.add(new AttributeValue(lang));
         languageCondition.setAttributeValueList(valueList);
         brandConditions.put("language", languageCondition);
 
