@@ -10,5 +10,5 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MagentoShipmentPackageExtension implements Serializable {
-
+	private String test;
 }

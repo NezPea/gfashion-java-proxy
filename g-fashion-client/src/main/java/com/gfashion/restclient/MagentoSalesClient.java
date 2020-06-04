@@ -4,11 +4,11 @@ import com.gfashion.domain.customer.GfCustomer;
 import com.gfashion.domain.customer.GfCustomerRegistration;
 import com.gfashion.domain.sales.GfShipment;
 import com.gfashion.restclient.magento.customer.MagentoCustomer;
-import com.gfashion.restclient.magento.exception.CustomerCreationException;
 import com.gfashion.restclient.magento.exception.CustomerNotFoundException;
 import com.gfashion.restclient.magento.exception.CustomerUnknowException;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.gfashion.restclient.magento.sales.MagentoShipment;
+import com.gfashion.restclient.magento.sales.request.MagentoShipmentReq;
 import com.google.gson.Gson;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.BeanUtils;
@@ -30,18 +30,18 @@ public class MagentoSalesClient {
 
     private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
 
-    public GfCustomer createCustomer(GfCustomerRegistration customerRegistration) throws CustomerCreationException, CustomerUnknowException {
+    public MagentoShipment saveShipment(MagentoShipmentReq magentoShipmentReq) throws Exception {
 
         try {
-            ResponseEntity<String> responseEntity = this._restClient.postForEntity(shipmentUrl, customerRegistration, String.class, null);
-
+            ResponseEntity<String> responseEntity = this._restClient.postForEntity(shipmentUrl, magentoShipmentReq, String.class, null);
             Gson gson = new Gson();
-            return this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntity.getBody(), MagentoCustomer.class));
-        } catch (HttpStatusCodeException e) {
-            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                throw new CustomerCreationException(e.getMessage());
-            }
-            throw new CustomerUnknowException(e.getMessage());
+            return gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
+//            return this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntity.getBody(), MagentoShipment.class));
+//            GfShipment gfShipment = new GfShipment();
+//            BeanUtils.copyProperties(magentoShipment, gfShipment);
+//            return gfShipment;
+        } catch (Exception e) {
+            throw e;
         }
     }
 
