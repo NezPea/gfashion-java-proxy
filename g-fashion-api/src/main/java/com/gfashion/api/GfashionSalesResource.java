@@ -6,11 +6,10 @@ import com.gfashion.domain.sales.GfShipment;
 import com.gfashion.restclient.MagentoSalesClient;
 import com.gfashion.restclient.magento.exception.CustomerNotFoundException;
 import com.gfashion.restclient.magento.exception.CustomerUnknowException;
-import com.gfashion.restclient.magento.sales.MagentoShipment;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,12 +21,9 @@ public class GfashionSalesResource {
 	private MagentoSalesClient magentoSalesClient;
 
 	@PostMapping("/saveShipment")
-	public ResponseEntity<GfShipment> creatCustomer(@RequestBody GfShipment gfShipment) {
+	public ResponseEntity<GfShipment> creatCustomer(@RequestBody @Validated GfShipment gfShipment) {
 		try {
-			MagentoShipment magentoShipment = new MagentoShipment();
-			BeanUtils.copyProperties(gfShipment, magentoShipment);
-			magentoShipment = magentoSalesClient.saveShipment(magentoShipment);
-			BeanUtils.copyProperties(magentoShipment, gfShipment);
+			gfShipment = magentoSalesClient.saveShipment(gfShipment);
 			return ResponseEntity.status(HttpStatus.CREATED).body(gfShipment);
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());

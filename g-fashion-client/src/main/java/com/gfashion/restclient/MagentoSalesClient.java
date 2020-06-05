@@ -30,16 +30,14 @@ public class MagentoSalesClient {
 
     private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
 
-    public MagentoShipment saveShipment(MagentoShipmentReq magentoShipmentReq) throws Exception {
-
+    public GfShipment saveShipment(GfShipment gfShipment) throws Exception {
         try {
+            MagentoShipment magentoShipment = _mapper.from(gfShipment);
+            MagentoShipmentReq magentoShipmentReq = new MagentoShipmentReq(magentoShipment);
             ResponseEntity<String> responseEntity = this._restClient.postForEntity(shipmentUrl, magentoShipmentReq, String.class, null);
             Gson gson = new Gson();
-            return gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
-//            return this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntity.getBody(), MagentoShipment.class));
-//            GfShipment gfShipment = new GfShipment();
-//            BeanUtils.copyProperties(magentoShipment, gfShipment);
-//            return gfShipment;
+//            return gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
+            return this._mapper.from(gson.fromJson(responseEntity.getBody(), MagentoShipment.class));
         } catch (Exception e) {
             throw e;
         }

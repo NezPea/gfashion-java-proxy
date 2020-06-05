@@ -14,7 +14,7 @@ public class GfShipmentTrack implements Serializable {
      * The order_id for the shipment package.
      * 必填
      */
-    private Integer order_id;
+    private Integer orderId;
 
     /**
      * Created-at timestamp.

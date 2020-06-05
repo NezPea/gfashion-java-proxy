@@ -67,7 +67,7 @@ public class GfShipmentItem implements Serializable {
      * Order item ID.
      * 必填
      */
-    private Integer order_item_id;
+    private Integer orderItemId;
 
     /**
      * Quantity.
