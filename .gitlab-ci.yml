@@ -32,11 +32,27 @@ package:
   - master
   - develop
 
+regversion:
+  image: 939023048332.dkr.ecr.us-east-1.amazonaws.com/ops/regversion:059c89fb
+  stage: deploy
+  script: /regversion
+  variables:
+    REPO_NAME: 'gfashion-java-proxy'
+    ENDPOINT: 'http://api.chatops.dev2.gfashion2020.tk/version/record/add'
+    TOKEN: 'aWTUTKfApdKiU4d'
+  tags:
+  - docker
+  only:
+  - master
+  - develop
+
+
 deploy:
   image: curlimages/curl
   stage: deploy
   script:
   - curl remotecall.dev2.gfashion2020.tk/upgrade_java_proxy/${CI_COMMIT_SHORT_SHA} -X POST -H TOKEN:aWTUTKfApdKiU4d -v
+  - curl -H TOKEN:aWTUTKfApdKiU4d http://api.chatops.dev2.gfashion2020.tk/msg/hook/707658231291576331 -d "----> New version deployed on dev2 ${CI_COMMIT_BRANCH}:${CI_COMMIT_SHORT_SHA}<----" -v
   only:
   - develop
   tags: 
