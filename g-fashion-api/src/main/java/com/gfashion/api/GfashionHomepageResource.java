@@ -28,12 +28,12 @@ public class GfashionHomepageResource {
 
     private MagentoHomepageClient magentoHomepageClient;
 
-    @GetMapping("/homepage")
+    @GetMapping(value = "/homepage", produces = "application/json;charset=utf-8")
     public ResponseEntity<CustomizedHomepage> getDefaultCustomizedHomepage() {
         return ResponseEntity.status(HttpStatus.OK).body(magentoMockDataClient.getDefaultCustomizedHomepage());
     }
 
-    @GetMapping("/homepage/categories/{categoryId}")
+    @GetMapping(value = "/homepage/categories/{categoryId}", produces = "application/json;charset=utf-8")
     public ResponseEntity<List<GfCategory>> getCategoriesUnderParentId(@PathVariable String categoryId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoHomepageClient.getCategoriesUnderParentId(categoryId));

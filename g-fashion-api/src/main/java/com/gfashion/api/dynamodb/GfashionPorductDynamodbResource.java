@@ -19,7 +19,7 @@ public class GfashionPorductDynamodbResource {
 
     private ProductRepository productRepository;
 
-    @PostMapping("/dynamodb/products")
+    @PostMapping(value = "/dynamodb/products", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfProductEntity> createProduct(@RequestBody GfProductEntity product) {
         try {
             GfProductEntity response = productRepository.createGfProductEntity(product);
@@ -31,7 +31,7 @@ public class GfashionPorductDynamodbResource {
         }
     }
 
-    @GetMapping("/dynamodb/products/{productId}")
+    @GetMapping(value = "/dynamodb/products/{productId}", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfProductEntity> getProduct(@PathVariable String productId) {
         try {
             GfProductEntity response = productRepository.readGfProductEntity(productId);
@@ -43,7 +43,7 @@ public class GfashionPorductDynamodbResource {
         }
     }
 
-    @PutMapping("/dynamodb/products")
+    @PutMapping(value = "/dynamodb/products", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfProductEntity> updateProduct(@RequestBody GfProductEntity product) {
         try {
             if (productRepository.readGfProductEntity(product.getId()) == null) {
@@ -58,7 +58,7 @@ public class GfashionPorductDynamodbResource {
         }
     }
 
-    @DeleteMapping("/dynamodb/products/{productId}")
+    @DeleteMapping(value = "/dynamodb/products/{productId}", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfProductEntity> deleteProduct(@PathVariable String productId) {
         try {
             if (productRepository.readGfProductEntity(productId) == null) {
