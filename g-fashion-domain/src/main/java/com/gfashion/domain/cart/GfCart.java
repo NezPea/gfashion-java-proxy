@@ -19,7 +19,7 @@ public class GfCart {
     private String updated_at;
     private Boolean is_active;
     private Boolean is_virtual;
-    private List<GFCartItem> items;
+    private List<GfCartItem> items;
     private Integer items_count;
     private Integer items_qty;
     private GfCustomer customer;

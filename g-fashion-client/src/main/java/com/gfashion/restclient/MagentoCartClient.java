@@ -1,12 +1,16 @@
 package com.gfashion.restclient;
 
-import com.gfashion.domain.cart.GFCartItem;
+import com.gfashion.domain.cart.GfCartEstimateShippingMethod;
+import com.gfashion.domain.cart.GfCartItem;
 import com.gfashion.domain.cart.GfCart;
+import com.gfashion.domain.cart.GfShippingAddress;
 import com.gfashion.restclient.magento.customer.MagentoCart;
 import com.gfashion.restclient.magento.customer.MagentoCartItem;
+import com.gfashion.restclient.magento.customer.MagentoCartEstimateShippingMethod;
 import com.gfashion.restclient.magento.exception.*;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
-import com.gfashion.restclient.request.GFCartItemRequest;
+import com.gfashion.restclient.request.GfAddressRequest;
+import com.gfashion.restclient.request.GfCartItemRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.mapstruct.factory.Mappers;
@@ -29,6 +33,8 @@ public class MagentoCartClient {
     private String cartsUrl;
     @Value("${magento.url.cartItems}")
     private String cartItemsUrl;
+    @Value("${magento.url.cartEstimateShippingMethods}")
+    private String cartEstimateShippingMethodsUrl;
 
     @Autowired
     private RestClient restClient;
@@ -41,7 +47,7 @@ public class MagentoCartClient {
             ResponseEntity<String> responseEntity = restClient.exchangeGet(cartsUrl, String.class, headers);
             Gson gson = new Gson();
             GfCart gfCart = mapper.convertMagentoCartToGfCart(gson.fromJson(responseEntity.getBody(), MagentoCart.class));
-            List<GFCartItem> cartItems = getCartItemList(customerToken);
+            List<GfCartItem> cartItems = getCartItemList(customerToken);
             gfCart.setItems(cartItems);
             return mapper.convertMagentoCartToGfCart(gson.fromJson(responseEntity.getBody(), MagentoCart.class));
         } catch (HttpStatusCodeException e) {
@@ -55,7 +61,7 @@ public class MagentoCartClient {
         }
     }
 
-    public List<GFCartItem> getCartItemList(String customerToken) throws CustomerTokenNotFoundException, CartItemNotFoundException, CartItemUnknownException {
+    public List<GfCartItem> getCartItemList(String customerToken) throws CustomerTokenNotFoundException, CartItemNotFoundException, CartItemUnknownException {
         String updateCartItemUrl = cartItemsUrl;
 
         try {
@@ -81,10 +87,10 @@ public class MagentoCartClient {
         }
     }
 
-    public GFCartItem addCartItem(String customerToken, GFCartItem cartItem) throws CustomerTokenNotFoundException, CartItemCreationException, CartUnknownException {
+    public GfCartItem addCartItem(String customerToken, GfCartItem cartItem) throws CustomerTokenNotFoundException, CartItemCreationException, CartUnknownException {
         try {
             HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
-            GFCartItemRequest body = new GFCartItemRequest(cartItem);
+            GfCartItemRequest<GfCartItem> body = new GfCartItemRequest<>(cartItem);
             ResponseEntity<String> responseEntity = restClient.postForEntity(cartItemsUrl, body, String.class, headers);
 
             Gson gson = new Gson();
@@ -103,12 +109,12 @@ public class MagentoCartClient {
         }
     }
 
-    public GFCartItem updateCartItem(String customerToken, Integer cartItemId, GFCartItem cartItem) throws CustomerTokenNotFoundException, CartItemNotFoundException, CartItemUnknownException {
+    public GfCartItem updateCartItem(String customerToken, Integer cartItemId, GfCartItem cartItem) throws CustomerTokenNotFoundException, CartItemNotFoundException, CartItemUnknownException {
         String updateCartItemUrl = cartItemsUrl + cartItemId;
 
         try {
             HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
-            GFCartItemRequest body = new GFCartItemRequest(cartItem);
+            GfCartItemRequest<GfCartItem> body = new GfCartItemRequest<>(cartItem);
             ResponseEntity<String> responseEntity = restClient.exchangePut(updateCartItemUrl, body, String.class, headers);
 
             Gson gson = new Gson();
@@ -140,6 +146,31 @@ public class MagentoCartClient {
                 throw new CartItemNotFoundException(e.getMessage());
             }
             throw new CartItemUnknownException(e.getMessage());
+        }
+    }
+
+    public List<GfCartEstimateShippingMethod> getEstimateShippingMethods(String customerToken, GfShippingAddress address) throws CustomerTokenNotFoundException, CartShippingAddressGetException, CartUnknownException {
+        try {
+            HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
+            GfAddressRequest<GfShippingAddress> body = new GfAddressRequest<>(address);
+            ResponseEntity<String> responseEntity = restClient.postForEntity(cartEstimateShippingMethodsUrl, body, String.class, headers);
+
+            Gson gson = new Gson();
+
+            Type listType = new TypeToken<List<MagentoCartEstimateShippingMethod>>() {}.getType();
+            List<MagentoCartEstimateShippingMethod> methods = gson.fromJson(responseEntity.getBody(), listType);
+            if (methods == null) {
+                throw new CartShippingAddressGetException("Response is null");
+            }
+            return methods.stream().map(mapper::convertMagentoCartEstimateShippingMethodToGfCartEstimateShippingMethod).collect(Collectors.toList());
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new CustomerTokenNotFoundException(e.getMessage());
+            }
+            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                throw new CartShippingAddressGetException(e.getMessage());
+            }
+            throw new CartUnknownException(e.getMessage());
         }
     }
 }

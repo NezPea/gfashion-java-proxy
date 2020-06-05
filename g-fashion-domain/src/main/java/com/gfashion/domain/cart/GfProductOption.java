@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GFProductOption {
-    private GFExtensionAttributes extension_attributes;
+public class GfProductOption {
+    private GfExtensionAttributes extension_attributes;
 }

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GFCartItem {
+public class GfCartItem {
 
     private Integer item_id;
     private String sku;
@@ -22,6 +22,6 @@ public class GFCartItem {
      * Cart ID
      */
     private Integer quote_id;
-    private GFProductOption product_option;
+    private GfProductOption product_option;
 
 }
