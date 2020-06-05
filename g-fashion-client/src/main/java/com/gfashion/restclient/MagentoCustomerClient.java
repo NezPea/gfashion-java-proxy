@@ -1,10 +1,12 @@
 package com.gfashion.restclient;
 
 import com.gfashion.domain.customer.GfCustomer;
+import com.gfashion.domain.customer.GfCustomerLogin;
 import com.gfashion.domain.customer.GfCustomerRegistration;
 import com.gfashion.restclient.magento.customer.MagentoCustomer;
 import com.gfashion.restclient.magento.exception.CustomerCreationException;
 import com.gfashion.restclient.magento.exception.CustomerNotFoundException;
+import com.gfashion.restclient.magento.exception.CustomerTokenNotFoundException;
 import com.gfashion.restclient.magento.exception.CustomerUnknowException;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.google.gson.Gson;
@@ -26,6 +28,18 @@ public class MagentoCustomerClient {
     private RestClient _restClient;
 
     private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
+
+    public String customerLogin(GfCustomerLogin customerLogin) throws CustomerTokenNotFoundException, CustomerUnknowException {
+        try{
+            ResponseEntity<String> responseEntity = _restClient.getCustomerToken(customerLogin);
+            return responseEntity.getBody();
+        } catch (HttpStatusCodeException e){
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED){
+                throw new CustomerTokenNotFoundException(e.getMessage());
+            }
+            throw new CustomerUnknowException(e.getMessage());
+        }
+    }
 
     public GfCustomer createCustomer(GfCustomerRegistration customerRegistration) throws CustomerCreationException, CustomerUnknowException {
 
