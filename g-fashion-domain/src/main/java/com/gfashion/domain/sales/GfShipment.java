@@ -3,8 +3,8 @@ package com.gfashion.domain.sales;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class GfShipment implements Serializable {
      * Order ID.
      * 必填
      */
-    @NonNull
+//    @NotNull
     private Integer orderId;
 
     private List<GfShipmentPackage> packages;
@@ -90,6 +90,7 @@ public class GfShipment implements Serializable {
     /**
      * 必填
      */
+    @NotEmpty
     private List<GfShipmentItem> items;
 
     /**
