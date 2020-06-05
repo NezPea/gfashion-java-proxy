@@ -55,4 +55,20 @@ public class GFashionHomepageIT {
                         containsString("Italy")
                 );
     }
+
+    @Test
+    @Ignore
+    public void getCustomerizedHomepageByCustomerIdShouldReturnOkDynamodbChinese() throws Exception {
+        Response response = RestAssured.get("/gfashion/v1/dynamodb/homepage?lang=cn");
+        response.then().assertThat().
+                statusCode(200).
+                content(
+                        containsString("产品2"),
+                        containsString("迈尔斯"),
+                        containsString("川普"),
+                        containsString("爱马仕"),
+                        containsString("彭斯"),
+                        containsString("意大利")
+                );
+    }
 }

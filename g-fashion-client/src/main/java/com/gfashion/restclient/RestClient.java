@@ -1,5 +1,7 @@
 package com.gfashion.restclient;
 
+import com.gfashion.domain.customer.GfCustomerLogin;
+import com.gfashion.restclient.magento.exception.CustomerTokenNotFoundException;
 import com.google.gson.Gson;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,14 +17,16 @@ public class RestClient {
 
     @Value("${magento.url.base}")
     private String baseUrl;
-    @Value("${magento.url.token}")
-    private String tokenUrl;
+    @Value("${magento.url.adminToken}")
+    private String adminTokenUrl;
+    @Value("${magento.url.customerToken}")
+    private String customerTokenUrl;
     @Value("${magento.username}")
     private String username;
     @Value("${magento.password}")
     private String password;
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     public RestClient(RestTemplate client) {
         restTemplate = client;
@@ -36,11 +40,20 @@ public class RestClient {
         adminInfo.put("username", username);
         adminInfo.put("password", password);
 
-        HttpEntity<String> request = new HttpEntity<String>(adminInfo.toString(), headers);
+        HttpEntity<String> request = new HttpEntity<>(adminInfo.toString(), headers);
         ResponseEntity<String> responseEntity =
-                restTemplate.postForEntity(baseUrl + tokenUrl, request, String.class);
+                restTemplate.postForEntity(baseUrl + adminTokenUrl, request, String.class);
 
         return Objects.requireNonNull(responseEntity.getBody()).replace("\"", "");
+    }
+
+    public ResponseEntity<String> getCustomerToken(GfCustomerLogin customerLogin) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        Gson gson = new Gson();
+
+        HttpEntity<String> request = new HttpEntity<>(gson.toJson(customerLogin), headers);
+        return restTemplate.postForEntity(baseUrl + customerTokenUrl, request, String.class);
     }
 
     public HttpHeaders getDefaultHeaders(MultiValueMap<String, String> extraHeaders) {
@@ -53,6 +66,16 @@ public class RestClient {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBearerAuth(adminToken);
         }
+        return headers;
+    }
+
+    public HttpHeaders getCustomerHeaders(String customerToken) throws CustomerTokenNotFoundException {
+        if (customerToken == null) {
+            throw new CustomerTokenNotFoundException("Customer token not found");
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set(HttpHeaders.AUTHORIZATION, customerToken);
         return headers;
     }
 
@@ -74,6 +97,11 @@ public class RestClient {
 
         Gson gson = new Gson();
         return restTemplate.exchange(baseUrl + relativeUrl, HttpMethod.PUT, new HttpEntity<>(gson.toJson(entity), headers), responseType);
+    }
+
+    public <T> ResponseEntity<T> exchangeDelete(String relativeUrl, Class<T> responseType, MultiValueMap<String, String> extraHeaders) {
+        HttpHeaders headers = getDefaultHeaders(extraHeaders);
+        return restTemplate.exchange(baseUrl + relativeUrl, HttpMethod.DELETE, new HttpEntity<>(headers), responseType);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.gfashion.restclient.magento.homepage;
+package com.gfashion.domain.homepage;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MagentoCategory {
+public class GfCategory {
     private Integer id;
     private Integer parent_id;
     private String name;
