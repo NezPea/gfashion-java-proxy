@@ -35,6 +35,12 @@ public class GfDesignerEntity {
     @DynamoDBAttribute(attributeName = "link")
     private String link;
 
+    @DynamoDBAttribute(attributeName = "forMan")
+    private Boolean forMan;
+
+    @DynamoDBAttribute(attributeName = "forWoman")
+    private Boolean forWoman;
+
     @DynamoDBAttribute(attributeName = "language")
     private String language;
 
