@@ -58,11 +58,11 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
 
         // Construct the batch query
         Map<Class<?>, String[]> keyMap = new HashMap<>();
-        if(lang == null || lang.equalsIgnoreCase("en") ){
+        if (lang == null || lang.equalsIgnoreCase("en")) {
             keyMap.put(GfBrandEntity.class, brands.split(","));
             keyMap.put(GfDesignerEntity.class, designers.split(","));
             keyMap.put(GfProductEntity.class, products.split(","));
-        } else if (lang.equalsIgnoreCase("cn")){
+        } else if (lang.equalsIgnoreCase("cn")) {
             // Batch load the corresponding records in Chinese
             keyMap.put(GfBrandEntity.class, brandsCn.split(","));
             keyMap.put(GfDesignerEntity.class, designersCn.split(","));
@@ -110,7 +110,7 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
     }
 
     public CustomizedHomepage getDefaultCustomizedHomepageReflection(String lang) {
-        lang = lang == null? "en" : lang;
+        lang = lang == null ? "en" : lang;
 
         // get recommended brands
         List<HomepageBrand> recommendedBrands = new ArrayList<>();
