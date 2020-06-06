@@ -94,28 +94,28 @@ public interface GfMagentoConverter {
     }
 
     //--shipment
-    @Mapping(source = "orderId",target = "order_id")
+//    @Mapping(source = "orderId",target = "order_id")
     MagentoShipment from(GfShipment shipment);
 
-    @Mapping(source = "orderItemId",target = "order_item_id")
+//    @Mapping(source = "orderItemId",target = "order_item_id")
     MagentoShipmentItem from(GfShipmentItem shipmentItem);
 
-    @Mapping(source = "orderId",target = "order_id")
+//    @Mapping(source = "orderId",target = "order_id")
     MagentoShipmentTrack from(GfShipmentTrack shipmentTrack);
 
-    @Mapping(source = "parentId",target = "parent_id")
+//    @Mapping(source = "parentId",target = "parent_id")
     MagentoShipmentComment from(GfShipmentComment gfShipmentComment);
     //
-    @Mapping(target = "orderId",source = "order_id")
+//    @Mapping(target = "orderId",source = "order_id")
     GfShipment from(MagentoShipment shipment);
 
-    @Mapping(target = "orderItemId",source = "order_item_id")
+//    @Mapping(target = "orderItemId",source = "order_item_id")
     GfShipmentItem from(MagentoShipmentItem shipmentItem);
 
-    @Mapping(target = "orderId",source = "order_id")
+//    @Mapping(target = "orderId",source = "order_id")
     GfShipmentTrack from(MagentoShipmentTrack shipmentTrack);
 
-    @Mapping(target = "parentId",source = "parent_id")
+//    @Mapping(target = "parentId",source = "parent_id")
     GfShipmentComment from(MagentoShipmentComment comment);
     //--shipment
 }

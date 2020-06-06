@@ -24,6 +24,8 @@ public class MagentoSalesClient {
 
     public GfShipment createShipment(GfShipment gfShipment) throws Exception {
         try {
+//            Integer totalQty = gfShipment.getItems().stream().mapToInt(GfShipmentItem::getQty).sum();
+//            gfShipment.setTotal_qty(totalQty);
             MagentoShipment magentoShipment = _mapper.from(gfShipment);
             MagentoShipmentReq magentoShipmentReq = new MagentoShipmentReq(magentoShipment);
             ResponseEntity<String> responseEntity = this._restClient.postForEntity(shipmentUrl, magentoShipmentReq, String.class, null);

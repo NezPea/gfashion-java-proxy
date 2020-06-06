@@ -69,7 +69,7 @@ public class GfShipmentItem implements Serializable {
      * 必填
      */
     @NotNull
-    private Integer orderItemId;
+    private Integer order_item_id;
 
     /**
      * Quantity.

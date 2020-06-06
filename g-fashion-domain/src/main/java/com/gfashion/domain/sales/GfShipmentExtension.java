@@ -10,5 +10,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GfShipmentExtension implements Serializable {
+    /**
+     *
+     */
     private String source_code;
 }

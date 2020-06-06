@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -47,8 +48,8 @@ public class GfShipment implements Serializable {
      * Order ID.
      * 必填
      */
-//    @NotNull
-    private Integer orderId;
+    @NotNull
+    private Integer order_id;
 
     private List<GfShipmentPackage> packages;
 
@@ -103,7 +104,7 @@ public class GfShipment implements Serializable {
      */
     private List<GfShipmentComment> comments;
 
-//    private sales-data-shipment-extension-interface extension_attributes;
+    private GfShipmentExtension extension_attributes;
 
 
 }

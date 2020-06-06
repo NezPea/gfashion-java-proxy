@@ -21,7 +21,7 @@ public class GfShipmentComment implements Serializable {
      * Parent ID.
      * 必填
      */
-    private Integer parentId;
+    private Integer parent_id;
 
 //    private sales-data-shipment-comment-extension-interface extension_attributes;
 
