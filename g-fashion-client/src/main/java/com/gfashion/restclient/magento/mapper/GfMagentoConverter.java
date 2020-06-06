@@ -1,6 +1,7 @@
 package com.gfashion.restclient.magento.mapper;
 
-import com.gfashion.domain.cart.GFCartItem;
+import com.gfashion.domain.cart.GfCartEstimateShippingMethod;
+import com.gfashion.domain.cart.GfCartItem;
 import com.gfashion.domain.cart.GfCart;
 import com.gfashion.domain.customer.GfCustomerExtensionAttributes;
 import com.gfashion.domain.customer.GfCustomerRegion;
@@ -59,7 +60,8 @@ public interface GfMagentoConverter {
     GfCategory convertMagentoCategoryToGfCategory(MagentoCategory magentoCategory);
 
     GfCart convertMagentoCartToGfCart(MagentoCart magentoCart);
-    GFCartItem convertMagentoCartItemToGfCartItem(MagentoCartItem magentoCart);
+    GfCartItem convertMagentoCartItemToGfCartItem(MagentoCartItem magentoCart);
+    GfCartEstimateShippingMethod convertMagentoCartEstimateShippingMethodToGfCartEstimateShippingMethod(MagentoCartEstimateShippingMethod magentoCart);
 
     public List<HomepageBrand> convertMagentoCategoriesToHomeBrands(List<MagentoCategory> magentoCategories);
     @Mapping(source = "custom_attributes", target = "link", qualifiedByName = "getLinkFromAttribute")

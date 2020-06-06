@@ -1,6 +1,6 @@
 package com.gfashion.restclient.magento.customer;
 
-import com.gfashion.domain.cart.GFCartItem;
+import com.gfashion.domain.cart.GfCartItem;
 import com.gfashion.domain.cart.GfCartExtensionAttributes;
 import com.gfashion.domain.customer.GfCustomer;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ public class MagentoCart {
     private String updated_at;
     private Boolean is_active;
     private Boolean is_virtual;
-    private List<GFCartItem> items;
+    private List<GfCartItem> items;
     private Integer items_count;
     private Integer items_qty;
     private GfCustomer customer;

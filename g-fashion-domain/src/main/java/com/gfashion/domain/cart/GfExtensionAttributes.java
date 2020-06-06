@@ -11,6 +11,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GFExtensionAttributes {
-    private List<GFConfigurableItemOption> configurable_item_options;
+public class GfExtensionAttributes {
+    private List<GfConfigurableItemOption> configurable_item_options;
 }

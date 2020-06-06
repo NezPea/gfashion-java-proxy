@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
- * Integration tests for the {@link GfCart} REST controller.
+ * Integration tests for the {@link GfCartItem} REST controller.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -56,14 +56,14 @@ public class GfashionCartItemAddIT {
 
     @Test
     public void addCartItemReturnCartItem() throws Exception {
-        List<GFConfigurableItemOption> options = new ArrayList<>();
-        options.add(new GFConfigurableItemOption("145", "5595"));
-        options.add(new GFConfigurableItemOption("93", "5487"));
+        List<GfConfigurableItemOption> options = new ArrayList<>();
+        options.add(new GfConfigurableItemOption("145", "5595"));
+        options.add(new GfConfigurableItemOption("93", "5487"));
 
-        GFExtensionAttributes attributes = new GFExtensionAttributes(options);
-        GFProductOption option = new GFProductOption(attributes);
+        GfExtensionAttributes attributes = new GfExtensionAttributes(options);
+        GfProductOption option = new GfProductOption(attributes);
 
-        GFCartItem cartItem = new GFCartItem();
+        GfCartItem cartItem = new GfCartItem();
         cartItem.setSku("WT09");
         cartItem.setQty(1);
         cartItem.setQuote_id(cartId);
