@@ -14,6 +14,6 @@ public class GfCartTotalSegment {
     private String code;
     private String title;
     private Integer value;
-    private GfCartTotalSegmentExtensionAttributes extension_attributes;
+    private GfCartTotalSegmentExtensionAttributes extensionAttributes;
     private String area;
 }

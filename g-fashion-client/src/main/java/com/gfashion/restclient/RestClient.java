@@ -27,9 +27,11 @@ public class RestClient {
     private String password;
 
     private final RestTemplate restTemplate;
+    private final Gson gson;
 
-    public RestClient(RestTemplate client) {
+    public RestClient(RestTemplate client, Gson gson) {
         restTemplate = client;
+        this.gson = gson;
     }
 
     private String getAdminToken() {
@@ -50,7 +52,6 @@ public class RestClient {
     public ResponseEntity<String> getCustomerToken(GfCustomerLogin customerLogin) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        Gson gson = new Gson();
 
         HttpEntity<String> request = new HttpEntity<>(gson.toJson(customerLogin), headers);
         return restTemplate.postForEntity(baseUrl + customerTokenUrl, request, String.class);
@@ -81,8 +82,6 @@ public class RestClient {
 
     public <T> ResponseEntity<T> postForEntity(String relativeUrl, Object entity, Class<T> responseType, MultiValueMap<String, String> extraHeaders) {
         HttpHeaders headers = getDefaultHeaders(extraHeaders);
-
-        Gson gson = new Gson();
         HttpEntity<String> request = new HttpEntity<>(gson.toJson(entity), headers);
         return restTemplate.postForEntity(baseUrl + relativeUrl, request, responseType);
     }
@@ -94,14 +93,12 @@ public class RestClient {
 
     public <T> ResponseEntity<T> exchangePut(String relativeUrl, Object entity, Class<T> responseType, MultiValueMap<String, String> extraHeaders) {
         HttpHeaders headers = getDefaultHeaders(extraHeaders);
-
-        Gson gson = new Gson();
-        return restTemplate.exchange(baseUrl + relativeUrl, HttpMethod.PUT, new HttpEntity<>(gson.toJson(entity), headers), responseType);
+        HttpEntity<String> request = new HttpEntity<>(gson.toJson(entity), headers);
+        return restTemplate.exchange(baseUrl + relativeUrl, HttpMethod.PUT, request, responseType);
     }
 
     public <T> ResponseEntity<T> exchangeDelete(String relativeUrl, Class<T> responseType, MultiValueMap<String, String> extraHeaders) {
         HttpHeaders headers = getDefaultHeaders(extraHeaders);
         return restTemplate.exchange(baseUrl + relativeUrl, HttpMethod.DELETE, new HttpEntity<>(headers), responseType);
     }
-
 }

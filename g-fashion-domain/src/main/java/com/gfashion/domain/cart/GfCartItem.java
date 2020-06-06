@@ -11,17 +11,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GfCartItem {
 
-    private Integer item_id;
+    private Integer itemId;
     private String sku;
     private Integer qty;
     private String name;
     private Integer price;
-    private String product_type;
+    private String productType;
 
     /**
      * Cart ID
      */
-    private Integer quote_id;
-    private GfProductOption product_option;
-
+    private Integer quoteId;
+    private GfCartItemProductOption productOption;
+    private GfCartItemExtensionAttributes extensionAttributes;
 }

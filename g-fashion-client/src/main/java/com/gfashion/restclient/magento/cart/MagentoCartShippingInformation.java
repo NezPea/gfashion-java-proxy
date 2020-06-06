@@ -1,5 +1,6 @@
-package com.gfashion.restclient.magento.customer;
+package com.gfashion.restclient.magento.cart;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MagentoCartShippingInformation {
 
-    private List<MagentoCartPaymentMethod> payment_methods;
+    @SerializedName("payment_methods")
+    private List<MagentoCartPaymentMethod> paymentMethods;
     private MagentoCartTotals totals;
 }

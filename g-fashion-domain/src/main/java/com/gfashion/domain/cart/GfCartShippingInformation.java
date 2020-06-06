@@ -13,6 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class GfCartShippingInformation {
 
-    private List<GfCartPaymentMethod> payment_methods;
+    private List<GfCartPaymentMethod> paymentMethods;
     private GfCartTotals totals;
 }

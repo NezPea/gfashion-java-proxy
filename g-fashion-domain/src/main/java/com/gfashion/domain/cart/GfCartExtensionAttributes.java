@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -13,5 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GfCartExtensionAttributes {
-    private List<JSONObject> shipping_assignments;
+
+    private List<GfCartShippingAssignment> shippingAssignments;
 }

@@ -1,24 +1,27 @@
 package com.gfashion.restclient.magento.mapper;
 
 import com.gfashion.domain.cart.*;
+import com.gfashion.domain.customer.GfCustomer;
+import com.gfashion.domain.customer.GfCustomerAddress;
 import com.gfashion.domain.customer.GfCustomerExtensionAttributes;
 import com.gfashion.domain.customer.GfCustomerRegion;
 import com.gfashion.domain.homepage.GfCategory;
 import com.gfashion.domain.homepage.HomepageBrand;
 import com.gfashion.domain.homepage.HomepageDesigner;
 import com.gfashion.domain.product.*;
-import com.gfashion.domain.customer.GfCustomer;
-import com.gfashion.domain.customer.GfCustomerAddress;
-
 import com.gfashion.domain.store.GfStore;
 import com.gfashion.domain.store.GfStoreConfig;
 import com.gfashion.domain.store.GfStoreGroup;
 import com.gfashion.domain.store.GfWebsite;
-import com.gfashion.domain.product.GfProductSearchResponse;
-import com.gfashion.restclient.magento.customer.*;
-import com.gfashion.restclient.magento.product.MagentoEvaAttribute;
-import com.gfashion.restclient.magento.*;
-
+import com.gfashion.restclient.magento.MagentoStore;
+import com.gfashion.restclient.magento.MagentoStoreConfig;
+import com.gfashion.restclient.magento.MagentoStoreGroup;
+import com.gfashion.restclient.magento.MagentoWebsite;
+import com.gfashion.restclient.magento.cart.*;
+import com.gfashion.restclient.magento.customer.MagentoCustomer;
+import com.gfashion.restclient.magento.customer.MagentoCustomerAddress;
+import com.gfashion.restclient.magento.customer.MagentoCustomerExtensionAttributes;
+import com.gfashion.restclient.magento.customer.MagentoCustomerRegion;
 import com.gfashion.restclient.magento.homepage.MagentoCategory;
 import com.gfashion.restclient.magento.product.*;
 import org.mapstruct.Mapper;
@@ -60,7 +63,12 @@ public interface GfMagentoConverter {
     GfCart convertMagentoCartToGfCart(MagentoCart cart);
     GfCartItem convertMagentoCartItemToGfCartItem(MagentoCartItem cartItem);
     GfCartEstimateShippingMethod convertMagentoCartEstimateShippingMethodToGfCartEstimateShippingMethod(MagentoCartEstimateShippingMethod estimateShippingMethod);
+    GfCartPaymentMethod convertMagentoCartPaymentMethodToGfCartPaymentMethod(MagentoCartPaymentMethod paymentMethod);
     GfCartShippingInformation convertMagentoCartShippingInformationToGfCartShippingInformation(MagentoCartShippingInformation shippingInformation);
+    MagentoCartItem convertGfCartItemToMagentoCartItem(GfCartItem cartItem);
+    MagentoCartAddress convertGfCartAddressToMagentoCartAddress(GfCartAddress cartAddress);
+    MagentoCartAddressInformation convertGfCartAddressInformationToMagentoCartAddressInformation(GfCartAddressInformation cartAddress);
+    MagentoCartPaymentInformation convertGfCartPaymentInformationToMagentoCartPaymentInformation(GfCartPaymentInformation cartAddress);
 
     public List<HomepageBrand> convertMagentoCategoriesToHomeBrands(List<MagentoCategory> magentoCategories);
     @Mapping(source = "custom_attributes", target = "link", qualifiedByName = "getLinkFromAttribute")

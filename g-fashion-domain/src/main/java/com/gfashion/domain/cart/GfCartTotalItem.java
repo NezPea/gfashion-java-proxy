@@ -11,23 +11,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GfCartTotalItem {
 
-    private Integer item_id;
+    private Integer itemId;
     private Integer price;
-    private Integer base_price;
+    private Integer basePrice;
     private Integer qty;
-    private Integer row_total;
-    private Integer base_row_total;
-    private Integer row_total_with_discount;
-    private Integer tax_amount;
-    private Integer base_tax_amount;
-    private Integer tax_percent;
-    private Integer discount_amount;
-    private Integer base_discount_amount;
-    private Integer discount_percent;
-    private Integer price_incl_tax;
-    private Integer base_price_incl_tax;
-    private Integer row_total_incl_tax;
-    private Integer base_row_total_incl_tax;
+    private Integer rowTotal;
+    private Integer baseRowTotal;
+    private Integer rowTotalWithDiscount;
+    private Integer taxAmount;
+    private Integer baseTaxAmount;
+    private Integer taxPercent;
+    private Integer discountAmount;
+    private Integer baseDiscountAmount;
+    private Integer discountPercent;
+    private Integer priceInclTax;
+    private Integer basePriceInclTax;
+    private Integer rowTotalInclTax;
+    private Integer baseRowTotalInclTax;
     private String options;
     private String name;
 }
