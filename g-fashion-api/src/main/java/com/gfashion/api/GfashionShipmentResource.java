@@ -2,6 +2,7 @@ package com.gfashion.api;
 
 import com.gfashion.domain.sales.GfShipment;
 import com.gfashion.restclient.MagentoShipmentClient;
+import com.gfashion.restclient.magento.sales.response.MagentoShipmentResp;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,5 +36,14 @@ public class GfashionShipmentResource {
 		}
 	}
 
+
+	@GetMapping("/shipments")
+	public ResponseEntity<MagentoShipmentResp> queryShipments(String searchCriteria, String fields) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(magentoShipmentClient.queryShipments(searchCriteria, fields));
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+		}
+	}
 
 }

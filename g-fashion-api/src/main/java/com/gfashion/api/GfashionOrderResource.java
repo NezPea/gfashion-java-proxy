@@ -1,32 +1,57 @@
 package com.gfashion.api;
 
 import com.gfashion.domain.sales.GfShipment;
+import com.gfashion.restclient.MagentoOrderClient;
 import com.gfashion.restclient.MagentoShipmentClient;
+import com.gfashion.restclient.magento.sales.MagentoShipOrder;
+import com.gfashion.restclient.magento.sales.MagentoShipment;
+import com.gfashion.restclient.magento.sales.MagentoShipmentTrack;
+import com.gfashion.restclient.magento.sales.response.MagentoShipmentResp;
 import lombok.AllArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/gfashion/v1/order", produces = {"application/json"})
 //@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class GfashionOrderResource {
-	private MagentoShipmentClient magentoSalesClient;
+	private MagentoOrderClient magentoOrderClient;
+	private MagentoShipmentClient magentoShipmentClient;
 
-	@PostMapping("/ship")
-	public ResponseEntity<GfShipment> createShipment(@RequestBody @Validated GfShipment gfShipment) {
+	@PostMapping("/{orderId}/ship")
+	public ResponseEntity<GfShipment> createShipment(@PathVariable Integer orderId, @RequestBody MagentoShipOrder magentoShipOrder) {
 		try {
-			gfShipment = magentoSalesClient.createShipment(gfShipment);
-			return ResponseEntity.status(HttpStatus.CREATED).body(gfShipment);
+			magentoOrderClient.createShipment(orderId, magentoShipOrder);
+			return ResponseEntity.status(HttpStatus.CREATED).build();
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 	}
+
+	@GetMapping("/{orderId}/tracks")
+	public ResponseEntity<List<MagentoShipmentTrack>> getTracksByOrderId(@PathVariable Integer orderId) {
+		try {
+			MagentoShipmentResp magentoShipmentResp = magentoShipmentClient.queryShipments("order_id=" + orderId, "items[tracks]");
+			List<MagentoShipmentTrack> tracks = new ArrayList<>(magentoShipmentResp.getItems().size() * 3);
+			for (MagentoShipment item : magentoShipmentResp.getItems()) {
+				if (CollectionUtils.isNotEmpty(item.getTracks())) {
+					tracks.addAll(item.getTracks());
+				}
+			}
+			tracks.sort(Comparator.comparing(MagentoShipmentTrack::getCreated_at));
+			return ResponseEntity.status(HttpStatus.OK).body(tracks);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+		}
+	}
+
 
 }
