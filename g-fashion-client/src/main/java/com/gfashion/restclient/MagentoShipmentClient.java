@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MagentoSalesClient {
+public class MagentoShipmentClient {
 
     @Value("${magento.url.shipment}")
     private String shipmentUrl;
