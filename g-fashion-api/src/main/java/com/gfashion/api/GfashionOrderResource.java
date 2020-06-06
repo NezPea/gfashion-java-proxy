@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping(path = "/gfashion/v1", produces = {"application/json"})
+@RequestMapping(path = "/gfashion/v1/order", produces = {"application/json"})
 //@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class GfashionOrderResource {

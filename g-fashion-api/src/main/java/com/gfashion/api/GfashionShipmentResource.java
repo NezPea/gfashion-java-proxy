@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping(path = "/gfashion/v1", produces = {"application/json"})
+@RequestMapping(path = "/gfashion/v1/shipment", produces = {"application/json"})
 //@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class GfashionShipmentResource {
 	private MagentoShipmentClient magentoShipmentClient;
 
-	@PostMapping("/shipment")
+	@PostMapping("/")
 	public ResponseEntity<GfShipment> updateShipment(@RequestBody @Validated GfShipment gfShipment) {
 		try {
 			gfShipment = magentoShipmentClient.createShipment(gfShipment);
@@ -26,7 +26,7 @@ public class GfashionShipmentResource {
 		}
 	}
 
-	@GetMapping("/shipment/{shipmentId}")
+	@GetMapping("/{shipmentId}")
 	public ResponseEntity<GfShipment> getShipmentById(@PathVariable Integer shipmentId) {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(magentoShipmentClient.getShipmentById(shipmentId));
