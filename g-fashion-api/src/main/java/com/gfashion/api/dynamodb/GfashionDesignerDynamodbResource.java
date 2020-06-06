@@ -4,11 +4,14 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.gfashion.data.GfDesignerEntity;
 import com.gfashion.data.repository.dynamodb.GfDesignerRepository;
+import com.gfashion.domain.designer.GfDesignerSearchAttributeValueMappings;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/gfashion/v1", produces = {"application/json"})
@@ -68,6 +71,19 @@ public class GfashionDesignerDynamodbResource {
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
         } catch (AmazonClientException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+        }
+    }
+
+    @PostMapping(value = "/dynamodb/designers/_search", produces = "application/json;charset=utf-8")
+    public ResponseEntity<List<GfDesignerEntity>> searchDesigner(@RequestBody GfDesignerSearchAttributeValueMappings mappings) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(this.designerRepository.searchGfDesignerEntities(mappings));
+        } catch (AmazonServiceException e) {
+            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
+        } catch (AmazonClientException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+        } catch (RuntimeException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
     }

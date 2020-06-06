@@ -54,14 +54,14 @@ public class GfashionCartIT {
         cartId = response.jsonPath().getInt("id");
 
         // add cart item for get cart item id
-        List<GFConfigurableItemOption> options = new ArrayList<>();
-        options.add(new GFConfigurableItemOption("145", "5595"));
-        options.add(new GFConfigurableItemOption("93", "5487"));
+        List<GfConfigurableItemOption> options = new ArrayList<>();
+        options.add(new GfConfigurableItemOption("145", "5595"));
+        options.add(new GfConfigurableItemOption("93", "5487"));
 
-        GFExtensionAttributes attributes = new GFExtensionAttributes(options);
-        GFProductOption option = new GFProductOption(attributes);
+        GfExtensionAttributes attributes = new GfExtensionAttributes(options);
+        GfProductOption option = new GfProductOption(attributes);
 
-        GFCartItem cartItem = new GFCartItem();
+        GfCartItem cartItem = new GfCartItem();
         cartItem.setSku("WT09");
         cartItem.setQty(1);
         cartItem.setQuote_id(cartId);
@@ -91,14 +91,14 @@ public class GfashionCartIT {
 
     @Test
     public void addCartItemWithErrorSku() throws Exception {
-        List<GFConfigurableItemOption> options = new ArrayList<>();
-        options.add(new GFConfigurableItemOption("145", "5595"));
-        options.add(new GFConfigurableItemOption("93", "5487"));
+        List<GfConfigurableItemOption> options = new ArrayList<>();
+        options.add(new GfConfigurableItemOption("145", "5595"));
+        options.add(new GfConfigurableItemOption("93", "5487"));
 
-        GFExtensionAttributes attributes = new GFExtensionAttributes(options);
-        GFProductOption option = new GFProductOption(attributes);
+        GfExtensionAttributes attributes = new GfExtensionAttributes(options);
+        GfProductOption option = new GfProductOption(attributes);
 
-        GFCartItem cartItem = new GFCartItem();
+        GfCartItem cartItem = new GfCartItem();
         cartItem.setSku("Error");
         cartItem.setQty(1);
         cartItem.setQuote_id(cartId);
@@ -115,14 +115,14 @@ public class GfashionCartIT {
 
     @Test
     public void addCartItemWithoutCartId() throws Exception {
-        List<GFConfigurableItemOption> options = new ArrayList<>();
-        options.add(new GFConfigurableItemOption("145", "5595"));
-        options.add(new GFConfigurableItemOption("93", "5487"));
+        List<GfConfigurableItemOption> options = new ArrayList<>();
+        options.add(new GfConfigurableItemOption("145", "5595"));
+        options.add(new GfConfigurableItemOption("93", "5487"));
 
-        GFExtensionAttributes attributes = new GFExtensionAttributes(options);
-        GFProductOption option = new GFProductOption(attributes);
+        GfExtensionAttributes attributes = new GfExtensionAttributes(options);
+        GfProductOption option = new GfProductOption(attributes);
 
-        GFCartItem cartItem = new GFCartItem();
+        GfCartItem cartItem = new GfCartItem();
         cartItem.setSku("WT09");
         cartItem.setQty(1);
         cartItem.setProduct_option(option);
@@ -136,7 +136,7 @@ public class GfashionCartIT {
 
     @Test
     public void addCartItemWithoutOptionsSku() throws Exception {
-        GFCartItem cartItem = new GFCartItem();
+        GfCartItem cartItem = new GfCartItem();
         cartItem.setSku("Error");
         cartItem.setQty(1);
         cartItem.setQuote_id(cartId);
@@ -150,14 +150,14 @@ public class GfashionCartIT {
 
     @Test
     public void updateCartItemReturnCartItem() throws Exception {
-        List<GFConfigurableItemOption> options = new ArrayList<>();
-        options.add(new GFConfigurableItemOption("145", "5595"));
-        options.add(new GFConfigurableItemOption("93", "5484"));
+        List<GfConfigurableItemOption> options = new ArrayList<>();
+        options.add(new GfConfigurableItemOption("145", "5595"));
+        options.add(new GfConfigurableItemOption("93", "5484"));
 
-        GFExtensionAttributes attributes = new GFExtensionAttributes(options);
-        GFProductOption option = new GFProductOption(attributes);
+        GfExtensionAttributes attributes = new GfExtensionAttributes(options);
+        GfProductOption option = new GfProductOption(attributes);
 
-        GFCartItem cartItem = new GFCartItem();
+        GfCartItem cartItem = new GfCartItem();
         cartItem.setSku("WT09");
         cartItem.setQty(2);
         cartItem.setQuote_id(cartId);
@@ -184,14 +184,14 @@ public class GfashionCartIT {
 
     @Test
     public void updateCartItemReturnNotFound() throws Exception {
-        List<GFConfigurableItemOption> options = new ArrayList<>();
-        options.add(new GFConfigurableItemOption("145", "5595"));
-        options.add(new GFConfigurableItemOption("93", "5484"));
+        List<GfConfigurableItemOption> options = new ArrayList<>();
+        options.add(new GfConfigurableItemOption("145", "5595"));
+        options.add(new GfConfigurableItemOption("93", "5484"));
 
-        GFExtensionAttributes attributes = new GFExtensionAttributes(options);
-        GFProductOption option = new GFProductOption(attributes);
+        GfExtensionAttributes attributes = new GfExtensionAttributes(options);
+        GfProductOption option = new GfProductOption(attributes);
 
-        GFCartItem cartItem = new GFCartItem();
+        GfCartItem cartItem = new GfCartItem();
         cartItem.setSku("WT09");
         cartItem.setQty(2);
         cartItem.setQuote_id(cartId);

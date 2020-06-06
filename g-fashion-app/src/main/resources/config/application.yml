@@ -27,6 +27,7 @@ magento:
     customers: customers/
     carts: carts/mine/
     cartItems: carts/mine/items/
+    cartEstimateShippingMethods: carts/mine/estimate-shipping-methods
     storeViews: store/storeViews/
     websites: store/websites/
     storeGroups: store/storeGroups/
@@ -90,6 +91,7 @@ magento:
     customers: customers/
     carts: carts/mine/
     cartItems: carts/mine/items/
+    cartEstimateShippingMethods: carts/mine/estimate-shipping-methods
     storeViews: store/storeViews/
     websites: store/websites/
     storeGroups: store/storeGroups/
