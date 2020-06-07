@@ -2,6 +2,8 @@ package com.gfashion.data.repository.dynamodb.impl;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
+import com.amazonaws.services.dynamodbv2.datamodeling.TransactionLoadRequest;
+import com.amazonaws.services.dynamodbv2.datamodeling.TransactionWriteRequest;
 import com.gfashion.data.GfProductEntity;
 import com.gfashion.data.repository.dynamodb.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,26 +17,34 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public GfProductEntity createGfProductEntity(GfProductEntity product) {
-        dynamoDBMapper.save(product);
+        TransactionWriteRequest transactionWriteRequest = new TransactionWriteRequest();
+        transactionWriteRequest.addPut(product);
+        DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
+                .withSaveBehavior(DynamoDBMapperConfig.SaveBehavior.CLOBBER)
+                .withConsistentReads(DynamoDBMapperConfig.ConsistentReads.CONSISTENT)
+                .build();
+        dynamoDBMapper.transactionWrite(transactionWriteRequest, config);
         return product;
     }
 
     @Override
-    public GfProductEntity readGfProductEntity(String productId) {
-        return dynamoDBMapper.load(GfProductEntity.class, productId);
+    public GfProductEntity readGfProductEntityById(String productId) {
+        TransactionLoadRequest request = new TransactionLoadRequest();
+        GfProductEntity entity = new GfProductEntity();
+        entity.setId(productId);
+        request.addLoad(entity);
+        return (GfProductEntity)dynamoDBMapper.transactionLoad(request).get(0);
     }
 
     @Override
-    /**
-     * updated by Candy:
-     * https://docs.aws.amazon.com/zh_cn/amazondynamodb/latest/developerguide/DynamoDBMapper.OptionalConfig.html
-     */
     public GfProductEntity updateGfProductEntity(GfProductEntity product) {
-//        Map<String, ExpectedAttributeValue> expectedAttributeValueMap = new HashMap<>();
-//        expectedAttributeValueMap.put(PRODUCT_KEY, new ExpectedAttributeValue(new AttributeValue().withS(product.getId())));
-//        DynamoDBSaveExpression saveExpression = new DynamoDBSaveExpression().withExpected(expectedAttributeValueMap);
-//        dynamoDBMapper.save(product, saveExpression);
-        dynamoDBMapper.save(product, DynamoDBMapperConfig.SaveBehavior.UPDATE_SKIP_NULL_ATTRIBUTES.config());
+        TransactionWriteRequest transactionWriteRequest = new TransactionWriteRequest();
+        transactionWriteRequest.addPut(product);
+        DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
+                .withSaveBehavior(DynamoDBMapperConfig.SaveBehavior.UPDATE)
+                .withConsistentReads(DynamoDBMapperConfig.ConsistentReads.CONSISTENT)
+                .build();
+        dynamoDBMapper.transactionWrite(transactionWriteRequest, config);
         return product;
     }
 
