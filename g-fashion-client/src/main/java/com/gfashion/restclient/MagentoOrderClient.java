@@ -26,12 +26,13 @@ public class MagentoOrderClient {
 
     private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
 
-    public void createShipment(Integer orderId, MagentoShipOrder magentoShipOrder) throws Exception {
+    public String createShipment(Integer orderId, MagentoShipOrder magentoShipOrder) throws Exception {
         String url = orderUrl + orderId + "/ship";
         try {
             validate(magentoShipOrder);
             ResponseEntity<String> responseEntity = this._restClient.postForEntity(url, magentoShipOrder, String.class, null);
-            log.info(responseEntity.toString());
+            log.info(responseEntity.getBody());
+            return responseEntity.getBody();
 //            Gson gson = new Gson();
 //            return gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
 //            return this._mapper.from(gson.fromJson(responseEntity.getBody(), Object.class));

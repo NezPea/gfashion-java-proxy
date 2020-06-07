@@ -1,6 +1,5 @@
 package com.gfashion.api;
 
-import com.gfashion.domain.sales.GfShipment;
 import com.gfashion.restclient.MagentoOrderClient;
 import com.gfashion.restclient.MagentoShipmentClient;
 import com.gfashion.restclient.magento.sales.MagentoShipOrder;
@@ -26,16 +25,20 @@ public class GfashionOrderResource {
 	private MagentoOrderClient magentoOrderClient;
 	private MagentoShipmentClient magentoShipmentClient;
 
-	@PostMapping("/{orderId}/ship")
-	public ResponseEntity<GfShipment> createShipment(@PathVariable Integer orderId, @RequestBody MagentoShipOrder magentoShipOrder) {
+	@PostMapping(value = "/{orderId}/ship", produces = {"text/plain"})
+	public ResponseEntity<String> createShipment(@PathVariable Integer orderId, @RequestBody MagentoShipOrder magentoShipOrder) {
 		try {
-			magentoOrderClient.createShipment(orderId, magentoShipOrder);
-			return ResponseEntity.status(HttpStatus.CREATED).build();
+			String shipmentId = magentoOrderClient.createShipment(orderId, magentoShipOrder);
+			return ResponseEntity.status(HttpStatus.OK).body(shipmentId);
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
 		}
 	}
 
+	/**
+	 * 根据 orderid 来查询 tracks
+	 * 订单页面需要
+	 */
 	@GetMapping("/{orderId}/tracks")
 	public ResponseEntity<List<MagentoShipmentTrack>> getTracksByOrderId(@PathVariable Integer orderId) {
 		try {

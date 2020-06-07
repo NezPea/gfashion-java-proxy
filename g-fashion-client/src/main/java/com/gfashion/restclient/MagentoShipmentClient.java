@@ -60,9 +60,8 @@ public class MagentoShipmentClient {
 	 * @param searchCriteria field1=a or field2=b and field3=c
 	 */
 	public MagentoShipmentResp queryShipments(String searchCriteria, String fileds) {
-		searchCriteria = getSearchCriteria(searchCriteria, fileds);
-		log.info(searchCriteria);
-		String url = shipmentUrl.substring(0, shipmentUrl.length() - 1) + "s" + searchCriteria;// /shipments?....
+		String url = "shipments" + getSearchCriteria(searchCriteria, fileds);// /shipments?....
+		log.info(url);
 		try {
 			ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, null);
 			Gson gson = new Gson();
@@ -73,6 +72,13 @@ public class MagentoShipmentClient {
 		}
 	}
 
+	/**
+	 * 仅支持magento支持的逻辑表达式。举例
+	 * 1 全是or，field1=a [or fiedl2=b]*
+	 * 2 全是and，field1=a [and fiedl2=b]*
+	 * 3 有or和and，field1=a or fiedl2=b and fiedl3=c and fiedl4=d
+	 * 日期格式请使用 2020-06-07T20:01:01，注意有T
+	 */
 	public static String getSearchCriteria(String searchCriteria, String fields) {
 		StringBuilder result = new StringBuilder(100);
 		result.append("?");
@@ -107,7 +113,7 @@ public class MagentoShipmentClient {
 			Matcher m1 = p1.matcher(expression);
 			while (m1.find()) {
 //				System.out.println(m1.group().trim());
-				System.out.println(m1.group(1).trim());
+//				System.out.println(m1.group(1).trim());
 //				System.out.println(m1.group(2).trim());
 //				System.out.println(m1.group(3).trim());
 				if (m1.group(1).trim().equals("&")) {
@@ -143,6 +149,7 @@ public class MagentoShipmentClient {
 	private static String getCondition(String condition) {
 		switch (condition) {
 			case "=":
+			case "==":
 				return "eq";
 			case ">":
 				return "gt";

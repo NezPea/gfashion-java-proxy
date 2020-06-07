@@ -1,7 +1,7 @@
 package com.gfashion.domain.sales;
 
-import com.sun.istack.internal.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class GfShipmentItem implements Serializable {
 
     /**
@@ -68,13 +69,13 @@ public class GfShipmentItem implements Serializable {
      * Order item ID.
      * 必填
      */
-    @NotNull
+//    @NotNull
     private Integer order_item_id;
 
     /**
      * Quantity.
      * 必填
      */
-    @NotNull
+//    @NotNull
     private Integer qty;
 }
