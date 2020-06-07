@@ -26,8 +26,6 @@ magento:
     customerToken: integration/customer/token
     customers: customers/
     carts: carts/mine/
-    cartItems: carts/mine/items/
-    cartEstimateShippingMethods: carts/mine/estimate-shipping-methods
     storeViews: store/storeViews/
     websites: store/websites/
     storeGroups: store/storeGroups/
@@ -50,6 +48,10 @@ magento:
     brandsParentId: 50
   username: admin
   password: 202064_Hh
+
+test:
+  email: testli@test.com
+  password: P@ssw0rd
 
 logging:
   level:
@@ -89,8 +91,6 @@ magento:
     customerToken: integration/customer/token
     customers: customers/
     carts: carts/mine/
-    cartItems: carts/mine/items/
-    cartEstimateShippingMethods: carts/mine/estimate-shipping-methods
     storeViews: store/storeViews/
     websites: store/websites/
     storeGroups: store/storeGroups/
@@ -114,6 +114,9 @@ magento:
   username: admin
   password: 202064_Hh
 
+test:
+  email: testli@test.com
+  password: P@ssw0rd
 
 logging:
   level:

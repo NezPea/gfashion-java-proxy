@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CartItemCreationException extends Exception {
+public class CartGetException extends Exception {
     private String errorMessage;
 }

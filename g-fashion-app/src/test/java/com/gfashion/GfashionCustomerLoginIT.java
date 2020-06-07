@@ -6,6 +6,8 @@ import io.restassured.RestAssured;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -23,17 +25,22 @@ public class GfashionCustomerLoginIT {
     @LocalServerPort
     private int port;
 
-    private Gson gson;
+    @Autowired
+    protected Gson gson;
+
+    @Value("${test.email}")
+    private String email;
+    @Value("${test.password}")
+    private String password;
 
     @Before
     public void setup() {
         RestAssured.port = port;
-        gson = new Gson();
     }
 
     @Test
     public void customerLoginSuccess() throws Exception {
-        GfCustomerLogin params = new GfCustomerLogin("testli@test.com", "P@ssw0rd");
+        GfCustomerLogin params = new GfCustomerLogin(email, password);
         given().header("Content-Type", "application/json")
                 .body(gson.toJson(params))
                 .post("/gfashion/v1/login/")
@@ -43,7 +50,7 @@ public class GfashionCustomerLoginIT {
 
     @Test
     public void customerLoginFailureWithErrorUsername() throws Exception {
-        GfCustomerLogin params = new GfCustomerLogin("errorUsername", "P@ssw0rd");
+        GfCustomerLogin params = new GfCustomerLogin("errorUsername", password);
         given().header("Content-Type", "application/json")
                 .body(gson.toJson(params))
                 .post("/gfashion/v1/login/")
@@ -53,7 +60,7 @@ public class GfashionCustomerLoginIT {
 
     @Test
     public void customerLoginFailureWithErrorPassword() throws Exception {
-        GfCustomerLogin params = new GfCustomerLogin("tesli@test.com", "errorPassword");
+        GfCustomerLogin params = new GfCustomerLogin(email, "errorPassword");
         given().header("Content-Type", "application/json")
                 .body(gson.toJson(params))
                 .post("/gfashion/v1/login/")
