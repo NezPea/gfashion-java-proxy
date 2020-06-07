@@ -11,10 +11,6 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.servlet.http.HttpServletRequest;
-
-import java.util.Map;
-
 import static org.hamcrest.Matchers.equalTo;
 
 /**

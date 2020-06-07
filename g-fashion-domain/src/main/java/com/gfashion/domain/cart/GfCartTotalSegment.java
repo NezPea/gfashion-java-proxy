@@ -1,22 +1,19 @@
 package com.gfashion.domain.cart;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.gfashion.domain.customer.GfCustomerRegion;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-
-import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GfShippingAddress {
+public class GfCartTotalSegment {
 
-    @NonNull
-    private String country_id;
-    private String postcode;
-    private Integer region_id;
+    private String code;
+    private String title;
+    private Integer value;
+    private GfCartTotalSegmentExtensionAttributes extension_attributes;
+    private String area;
 }
