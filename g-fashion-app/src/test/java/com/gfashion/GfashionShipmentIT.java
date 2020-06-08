@@ -9,6 +9,7 @@ import io.restassured.response.Response;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -37,20 +38,19 @@ public class GfashionShipmentIT {
 
     @Test
     public void getShipmentById() throws Exception {
-        int value = 39;
-        Response response = RestAssured.get("/gfashion/v1/shipment/{shipmentId}", value);
+        Response response = RestAssured.get("/gfashion/v1/shipment/{shipmentId}", shipment_id);
         response.then().assertThat()
                 .statusCode(200)
-                .body("entity_id", equalTo(value));
+                .body("entity_id", equalTo(shipment_id));
     }
 
     @Test
     public void updateShipment() throws Exception {
         String value = "wayne";
         GfShipment gfShipment = new GfShipment();
-        gfShipment.setOrder_id(44);
+        gfShipment.setOrder_id(order_id);
         List<GfShipmentItem> items = new ArrayList();
-        items.add(GfShipmentItem.builder().order_item_id(101).description(value).build());
+        items.add(GfShipmentItem.builder().order_item_id(order_item_id).description(value).build());
         gfShipment.setItems(items);
         //
         given().header("Content-Type", ContentType.JSON)
@@ -61,9 +61,18 @@ public class GfashionShipmentIT {
                 .body("items[0].description", equalTo(value));
     }
 
+    @Value("${test.GfashionShipmentIT.order_id}")
+    private Integer order_id;
+
+    @Value("${test.GfashionShipmentIT.order_item_id}")
+    private Integer order_item_id;
+
+    @Value("${test.GfashionShipmentIT.shipment_id}")
+    private Integer shipment_id;
+
     @Test
     public void queryShipments() throws Exception {
-        RestAssured.given().param("searchCriteria", "order_id=50")
+        given().param("searchCriteria", "order_id=" + order_id)
                 .param("fields", "items[tracks]").when()
                 .get("/gfashion/v1/shipments").then().assertThat()
                 .statusCode(200)

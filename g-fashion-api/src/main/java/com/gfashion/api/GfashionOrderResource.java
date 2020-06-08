@@ -1,11 +1,15 @@
 package com.gfashion.api;
 
+import com.gfashion.domain.sales.GfShipment;
+import com.gfashion.domain.sales.GfShipmentTrack;
+import com.gfashion.domain.sales.response.GfShipmentResp;
 import com.gfashion.restclient.MagentoOrderClient;
 import com.gfashion.restclient.MagentoShipmentClient;
+import com.gfashion.restclient.magento.exception.OrderNotFoundException;
+import com.gfashion.restclient.magento.exception.OrderUnknowException;
+import com.gfashion.restclient.magento.exception.ShipmentNotFoundException;
+import com.gfashion.restclient.magento.exception.ShipmentUnknowException;
 import com.gfashion.restclient.magento.sales.MagentoShipOrder;
-import com.gfashion.restclient.magento.sales.MagentoShipment;
-import com.gfashion.restclient.magento.sales.MagentoShipmentTrack;
-import com.gfashion.restclient.magento.sales.response.MagentoShipmentResp;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpStatus;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -25,34 +30,44 @@ public class GfashionOrderResource {
 	private MagentoOrderClient magentoOrderClient;
 	private MagentoShipmentClient magentoShipmentClient;
 
-	@PostMapping(value = "/{orderId}/ship", produces = {"text/plain"})
-	public ResponseEntity<String> createShipment(@PathVariable Integer orderId, @RequestBody MagentoShipOrder magentoShipOrder) {
+	@PostMapping(value = "/{orderId}/ship")
+	public ResponseEntity<GfShipment> shipOrder(@PathVariable Integer orderId, @RequestBody MagentoShipOrder magentoShipOrder) {
 		try {
-			String shipmentId = magentoOrderClient.createShipment(orderId, magentoShipOrder);
-			return ResponseEntity.status(HttpStatus.OK).body(shipmentId);
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+			String shipmentId = magentoOrderClient.shipOrder(orderId, magentoShipOrder);//返回的结果是\"79\"，需要删除前后双引号
+			shipmentId = shipmentId.substring(1, shipmentId.length() - 1);
+			return ResponseEntity.status(HttpStatus.OK).body(GfShipment.builder().entity_id(Integer.parseInt(shipmentId)).build());
+		} catch (OrderNotFoundException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
+		} catch (OrderUnknowException e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
 		}
 	}
 
 	/**
-	 * 根据 orderid 来查询 tracks
+	 * 根据 order id 来查询 tracks
 	 * 订单页面需要
 	 */
 	@GetMapping("/{orderId}/tracks")
-	public ResponseEntity<List<MagentoShipmentTrack>> getTracksByOrderId(@PathVariable Integer orderId) {
+	public ResponseEntity<List<GfShipmentTrack>> getTracksByOrderId(@PathVariable Integer orderId) {
 		try {
-			MagentoShipmentResp magentoShipmentResp = magentoShipmentClient.queryShipments("order_id=" + orderId, "items[tracks]");
-			List<MagentoShipmentTrack> tracks = new ArrayList<>(magentoShipmentResp.getItems().size() * 3);
-			for (MagentoShipment item : magentoShipmentResp.getItems()) {
+			GfShipmentResp gfShipmentResp = magentoShipmentClient.queryShipments("order_id=" + orderId, "items[tracks]");
+			if (CollectionUtils.isEmpty(gfShipmentResp.getItems())) {
+				return ResponseEntity.status(HttpStatus.OK).body(Collections.EMPTY_LIST);
+			}
+			List<GfShipmentTrack> tracks = new ArrayList<>(gfShipmentResp.getItems().size() * 3);
+			for (GfShipment item : gfShipmentResp.getItems()) {
 				if (CollectionUtils.isNotEmpty(item.getTracks())) {
 					tracks.addAll(item.getTracks());
 				}
 			}
-			tracks.sort(Comparator.comparing(MagentoShipmentTrack::getCreated_at));
+			if (tracks.size() > 1) {
+				tracks.sort(Comparator.comparing(GfShipmentTrack::getCreated_at));
+			}
 			return ResponseEntity.status(HttpStatus.OK).body(tracks);
-		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+		} catch (ShipmentNotFoundException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
+		} catch (ShipmentUnknowException e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
 		}
 	}
 

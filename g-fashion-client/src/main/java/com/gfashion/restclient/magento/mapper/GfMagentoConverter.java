@@ -16,6 +16,7 @@ import com.gfashion.domain.sales.GfShipment;
 import com.gfashion.domain.sales.GfShipmentComment;
 import com.gfashion.domain.sales.GfShipmentItem;
 import com.gfashion.domain.sales.GfShipmentTrack;
+import com.gfashion.domain.sales.response.GfShipmentResp;
 import com.gfashion.domain.store.GfStore;
 import com.gfashion.domain.store.GfStoreConfig;
 import com.gfashion.domain.store.GfStoreGroup;
@@ -31,6 +32,7 @@ import com.gfashion.restclient.magento.sales.MagentoShipment;
 import com.gfashion.restclient.magento.sales.MagentoShipmentComment;
 import com.gfashion.restclient.magento.sales.MagentoShipmentItem;
 import com.gfashion.restclient.magento.sales.MagentoShipmentTrack;
+import com.gfashion.restclient.magento.sales.response.MagentoShipmentResp;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -119,5 +121,7 @@ public interface GfMagentoConverter {
 
 //    @Mapping(target = "parentId",source = "parent_id")
     GfShipmentComment from(MagentoShipmentComment comment);
+
+    GfShipmentResp from(MagentoShipmentResp magentoShipmentResp);
     //--shipment
 }

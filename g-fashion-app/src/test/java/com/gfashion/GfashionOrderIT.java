@@ -9,14 +9,13 @@ import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 
 
 @RunWith(SpringRunner.class)
@@ -33,28 +32,37 @@ public class GfashionOrderIT {
         gson = new Gson();
     }
 
+    @Value("${test.GfashionOrderIT.order_id}")
+    private Integer order_id;
+
+    @Value("${test.GfashionOrderIT.order_item_id}")
+    private Integer order_item_id;
+
+    /**
+     * 如果执行失败，可能是订单的所有商品都已发货。
+     */
     @Test
-    public void createShipment() throws Exception {
+    public void shipOrder() throws Exception {
         List<GfShipmentItem> items = new ArrayList();
-        items.add(GfShipmentItem.builder().order_item_id(153).qty(1).build());
+        items.add(GfShipmentItem.builder().order_item_id(order_item_id).qty(1).build());
 
         GfShipment gfShipment = new GfShipment();
         gfShipment.setItems(items);
         //
-        RestAssured.given().response().contentType(ContentType.TEXT).request().contentType(ContentType.JSON)
+        RestAssured.given().request().contentType(ContentType.JSON)
                 .body(gson.toJson(gfShipment))
-                .post("/gfashion/v1/order/{orderId}/ship", 67)
+                .post("/gfashion/v1/order/{orderId}/ship", order_id)
                 .then().assertThat()
                 .statusCode(200)
-                .body(Matchers.matchesRegex("\"\\d+\""));//"67"
+                .body("entity_id", Matchers.greaterThan(0));//"67"
     }
 
     @Test
-    public void queryShipments() throws Exception {
-        RestAssured.given().param("searchCriteria", "order_id=50")
-                .param("fields", "items[tracks]").when()
-                .get("/gfashion/v1/shipments").then().assertThat()
+    public void getTracksByOrderId() throws Exception {
+        /*RestAssured.given().param("searchCriteria", "order_id=50")
+                .param("fields", "items[tracks]").when()*/
+        RestAssured.given().get("/gfashion/v1/order/{orderId}/tracks", order_id).then().assertThat()
                 .statusCode(200)
-                .body("items.size()", greaterThanOrEqualTo(0));
+                .body("items.size()", Matchers.greaterThanOrEqualTo(0));
     }
 }

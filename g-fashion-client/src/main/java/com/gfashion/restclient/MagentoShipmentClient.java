@@ -1,6 +1,9 @@
 package com.gfashion.restclient;
 
 import com.gfashion.domain.sales.GfShipment;
+import com.gfashion.domain.sales.response.GfShipmentResp;
+import com.gfashion.restclient.magento.exception.ShipmentNotFoundException;
+import com.gfashion.restclient.magento.exception.ShipmentUnknowException;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.gfashion.restclient.magento.sales.MagentoShipment;
 import com.gfashion.restclient.magento.sales.request.MagentoShipmentReq;
@@ -11,8 +14,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,7 +34,7 @@ public class MagentoShipmentClient {
 
 	private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
 
-	public GfShipment createShipment(GfShipment gfShipment) throws Exception {
+	public GfShipment updateShipment(GfShipment gfShipment) throws ShipmentNotFoundException, ShipmentUnknowException {
 		try {
 //            Integer totalQty = gfShipment.getItems().stream().mapToInt(GfShipmentItem::getQty).sum();
 //            gfShipment.setTotal_qty(totalQty);
@@ -39,46 +44,58 @@ public class MagentoShipmentClient {
 			Gson gson = new Gson();
 //            return gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
 			return this._mapper.from(gson.fromJson(responseEntity.getBody(), MagentoShipment.class));
-		} catch (Exception e) {
-			throw e;
+		} catch (HttpStatusCodeException e) {
+			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+				throw new ShipmentNotFoundException(e.getMessage());
+			}
+			throw new ShipmentUnknowException(e.getMessage());
 		}
-    }
+	}
 
-    public GfShipment getShipmentById(Integer id) throws Exception {
+	public GfShipment getShipmentById(Integer id) throws ShipmentNotFoundException, ShipmentUnknowException {
 		String url = shipmentUrl + id;
 		try {
 			ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, null);
 			Gson gson = new Gson();
 			MagentoShipment magentoShipment = gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
 			return this._mapper.from(magentoShipment);
-		} catch (Exception e) {
-			throw e;
+		} catch (HttpStatusCodeException e) {
+			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+				throw new ShipmentNotFoundException(e.getMessage());
+			}
+			throw new ShipmentUnknowException(e.getMessage());
 		}
 	}
 
 	/**
-	 * @param searchCriteria field1=a or field2=b and field3=c
+	 * @param searchCriteria 1 Logical OR search: &lt;field&gt;&lt;condition_type&gt;&lt;value&gt;[ | &lt;field&gt;&lt;condition_type&gt;&lt;value&gt;]*<br/>
+	 *                       2 Logical AND search: &lt;field&gt;&lt;condition_type&gt;&lt;value&gt;[ & &lt;field&gt;&lt;condition_type&gt;&lt;value&gt;]*<br/>
+	 *                       3 Logical AND and OR search: &lt;field&gt;&lt;condition_type&gt;&lt;value&gt; | &lt;field&gt;&lt;condition_type&gt;&lt;value&gt; & &lt;field&gt;&lt;condition_type&gt;&lt;value&gt;<br/>
+	 *                       &lt;condition_type&gt;: = == != > < >= <= in like nin null notnull from to<br/>
+	 *                       Examples:<br/>
+	 *                       field1=a | field2!=b | field3>c<br/>
+	 *                       field1=a & field2!=b & field3>c<br/>
+	 *                       field1=a | field2!=b | field3==c & field4=2020-06-08T11:20:00 & price from 10 & price to 20<br/>
+	 *                       Please use 2020-06-07T20:01:00 for the timestamp.<br/>
+	 *                       Be cautious when using too complicated expressions, whether it meets expectations.<br/>
+	 * @param fileds         Attributes to return in the response. If you do not specify this parameter, all attributes will be returned.
 	 */
-	public MagentoShipmentResp queryShipments(String searchCriteria, String fileds) {
-		String url = "shipments" + getSearchCriteria(searchCriteria, fileds);// /shipments?....
+	public GfShipmentResp queryShipments(String searchCriteria, String fileds) throws ShipmentNotFoundException, ShipmentUnknowException {
+		String url = "shipments" + getSearchCriteria(searchCriteria, fileds);// /shipments?searchCriteria...
 		log.info(url);
 		try {
 			ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, null);
 			Gson gson = new Gson();
 			MagentoShipmentResp magentoShipmentResp = gson.fromJson(responseEntity.getBody(), MagentoShipmentResp.class);
-			return magentoShipmentResp;
-		} catch (Exception e) {
-			throw e;
+			return _mapper.from(magentoShipmentResp);
+		} catch (HttpStatusCodeException e) {
+			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+				throw new ShipmentNotFoundException(e.getMessage());
+			}
+			throw new ShipmentUnknowException(e.getMessage());
 		}
 	}
 
-	/**
-	 * 仅支持magento支持的逻辑表达式。举例
-	 * 1 全是or，field1=a [or fiedl2=b]*
-	 * 2 全是and，field1=a [and fiedl2=b]*
-	 * 3 有or和and，field1=a or fiedl2=b and fiedl3=c and fiedl4=d
-	 * 日期格式请使用 2020-06-07T20:01:01，注意有T
-	 */
 	public static String getSearchCriteria(String searchCriteria, String fields) {
 		StringBuilder result = new StringBuilder(100);
 		result.append("?");
@@ -99,7 +116,7 @@ public class MagentoShipmentClient {
 				result.append("searchCriteria[filter_groups][0][filters][0][condition_type]=").append(getCondition(condition)).append("&");
 				value = expression.substring(expression.indexOf(condition) + condition.length()).trim();
 				if (value.length() > 0) {
-					if (value.matches("\\d10T\\d8")) {
+					if (value.matches("\\d4-\\d2-\\d2T\\d2:\\d2:\\d2")) {
 						value.replace('T', ' ');
 					}
 					result.append("searchCriteria[filter_groups][0][filters][0][value]=").append(value).append("&");
@@ -129,7 +146,7 @@ public class MagentoShipmentClient {
 
 				value = expression.substring(expression.indexOf(condition) + condition.length()).trim();
 				if (value.length() > 0) {
-					if (value.matches("\\d10T\\d8")) {
+					if (value.matches("\\d4-\\d2-\\d2T\\d2:\\d2:\\d2")) {
 						value.replace('T', ' ');
 					}
 					result.append("searchCriteria[filter_groups][").append(group).append("][filters][").append(filters).append("][value]=").append(value).append("&");
@@ -141,10 +158,9 @@ public class MagentoShipmentClient {
 			result.append("fields=").append(fields);
 		}
 		return result.toString();
-//		throw new IllegalArgumentException("formatt error:" + searchCriteria);
 	}
 
-	public static String CONDITION = "=|!=|>|<|>=|<=|in|like|nin|null|notnull|from|to";
+	public static String CONDITION = "=|==|!=|>|<|>=|<=|in|like|nin|null|notnull|from|to";
 
 	private static String getCondition(String condition) {
 		switch (condition) {

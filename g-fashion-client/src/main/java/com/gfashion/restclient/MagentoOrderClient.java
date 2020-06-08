@@ -1,13 +1,17 @@
 package com.gfashion.restclient;
 
+import com.gfashion.restclient.magento.exception.OrderNotFoundException;
+import com.gfashion.restclient.magento.exception.OrderUnknowException;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.gfashion.restclient.magento.sales.MagentoShipOrder;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -26,7 +30,7 @@ public class MagentoOrderClient {
 
     private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
 
-    public String createShipment(Integer orderId, MagentoShipOrder magentoShipOrder) throws Exception {
+    public String shipOrder(Integer orderId, MagentoShipOrder magentoShipOrder) throws OrderNotFoundException, OrderUnknowException {
         String url = orderUrl + orderId + "/ship";
         try {
             validate(magentoShipOrder);
@@ -36,8 +40,11 @@ public class MagentoOrderClient {
 //            Gson gson = new Gson();
 //            return gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
 //            return this._mapper.from(gson.fromJson(responseEntity.getBody(), Object.class));
-        } catch (Exception e) {
-            throw e;
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new OrderNotFoundException(e.getMessage());
+            }
+            throw new OrderUnknowException(e.getMessage());
         }
     }
 
