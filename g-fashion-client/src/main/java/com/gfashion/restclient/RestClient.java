@@ -56,14 +56,15 @@ public class RestClient {
         return restTemplate.postForEntity(baseUrl + customerTokenUrl, request, String.class);
     }
 
-    public HttpHeaders getDefaultHeaders(MultiValueMap<String, String> extraHeaders) {
+    public HttpHeaders getHeaders(MultiValueMap<String, String> customerHeaders) {
 
         HttpHeaders headers = new HttpHeaders();
-        if (extraHeaders != null) {
-            headers.addAll(extraHeaders);
-        }else{
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        if (customerHeaders != null) {
+            headers.addAll(customerHeaders);
+        } else {
             String adminToken = getAdminToken();
-            headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setBearerAuth(adminToken);
         }
         return headers;
@@ -79,28 +80,28 @@ public class RestClient {
         return headers;
     }
 
-    public <T> ResponseEntity<T> postForEntity(String relativeUrl, Object entity, Class<T> responseType, MultiValueMap<String, String> extraHeaders) {
-        HttpHeaders headers = getDefaultHeaders(extraHeaders);
+    public <T> ResponseEntity<T> postForEntity(String relativeUrl, Object entity, Class<T> responseType, MultiValueMap<String, String> customerHeaders) {
+        HttpHeaders headers = getHeaders(customerHeaders);
 
         Gson gson = new Gson();
         HttpEntity<String> request = new HttpEntity<>(gson.toJson(entity), headers);
         return restTemplate.postForEntity(baseUrl + relativeUrl, request, responseType);
     }
 
-    public <T> ResponseEntity<T> exchangeGet(String relativeUrl, Class<T> responseType, MultiValueMap<String, String> extraHeaders) {
-        HttpHeaders headers = getDefaultHeaders(extraHeaders);
+    public <T> ResponseEntity<T> exchangeGet(String relativeUrl, Class<T> responseType, MultiValueMap<String, String> customerHeaders) {
+        HttpHeaders headers = getHeaders(customerHeaders);
         return restTemplate.exchange(baseUrl + relativeUrl, HttpMethod.GET, new HttpEntity<>(headers), responseType);
     }
 
-    public <T> ResponseEntity<T> exchangePut(String relativeUrl, Object entity, Class<T> responseType, MultiValueMap<String, String> extraHeaders) {
-        HttpHeaders headers = getDefaultHeaders(extraHeaders);
+    public <T> ResponseEntity<T> exchangePut(String relativeUrl, Object entity, Class<T> responseType, MultiValueMap<String, String> customerHeaders) {
+        HttpHeaders headers = getHeaders(customerHeaders);
 
         Gson gson = new Gson();
         return restTemplate.exchange(baseUrl + relativeUrl, HttpMethod.PUT, new HttpEntity<>(gson.toJson(entity), headers), responseType);
     }
 
-    public <T> ResponseEntity<T> exchangeDelete(String relativeUrl, Class<T> responseType, MultiValueMap<String, String> extraHeaders) {
-        HttpHeaders headers = getDefaultHeaders(extraHeaders);
+    public <T> ResponseEntity<T> exchangeDelete(String relativeUrl, Class<T> responseType, MultiValueMap<String, String> customerHeaders) {
+        HttpHeaders headers = getHeaders(customerHeaders);
         return restTemplate.exchange(baseUrl + relativeUrl, HttpMethod.DELETE, new HttpEntity<>(headers), responseType);
     }
 
