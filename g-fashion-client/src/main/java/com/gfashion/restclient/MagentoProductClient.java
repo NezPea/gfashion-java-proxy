@@ -125,7 +125,7 @@ public class MagentoProductClient {
             } else {
                 secureBaseMediaUrl = "https://www.gfashion2020.tk/media/" + productFilePath;
             }
-            HttpHeaders headers = magentoRestClient.getDefaultHeaders(null);
+            HttpHeaders headers = magentoRestClient.getHeaders(null);
             ResponseEntity<String> responseEntityProduct = magentoRestClient.exchangeGet(getProductUrl, String.class, headers);
             Gson gson = new Gson();
             GfProduct gfProduct = gfMagentoConverter.convertMagentoProductToGfProduct(gson.fromJson(responseEntityProduct.getBody(), MagentoProduct.class));
@@ -329,7 +329,7 @@ public class MagentoProductClient {
 
         try {
 
-            HttpHeaders headers = magentoRestClient.getDefaultHeaders(null);
+            HttpHeaders headers = magentoRestClient.getHeaders(null);
             Map<String, GfAvilableFlter> filters = new HashMap<>();
             Map<String, Map<String, String>> attributesOption = getAttributesOption(headers);
 

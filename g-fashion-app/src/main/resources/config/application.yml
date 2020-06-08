@@ -25,6 +25,7 @@ magento:
     adminToken: integration/admin/token
     customerToken: integration/customer/token
     customers: customers/
+    customerChangePassword: me/password
     carts: carts/mine/
     storeViews: store/storeViews/
     websites: store/websites/
@@ -90,6 +91,7 @@ magento:
     adminToken: integration/admin/token
     customerToken: integration/customer/token
     customers: customers/
+    changePassword: customers/me/password
     carts: carts/mine/
     storeViews: store/storeViews/
     websites: store/websites/

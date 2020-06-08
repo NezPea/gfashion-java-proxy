@@ -1,10 +1,12 @@
 package com.gfashion.api;
 
 import com.gfashion.domain.customer.GfCustomer;
+import com.gfashion.domain.customer.GfCustomerNewPassword;
 import com.gfashion.domain.customer.GfCustomerRegistration;
 import com.gfashion.restclient.MagentoCustomerClient;
 import com.gfashion.restclient.magento.exception.CustomerCreationException;
 import com.gfashion.restclient.magento.exception.CustomerNotFoundException;
+import com.gfashion.restclient.magento.exception.CustomerUnauthorizedException;
 import com.gfashion.restclient.magento.exception.CustomerUnknowException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -51,6 +53,18 @@ public class GfashionCustomerResource {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.updateCustomerById(gfCustomer, customerId));
         } catch (CustomerNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
+        } catch (CustomerUnknowException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
+        }
+
+    }
+
+    @PutMapping("/customers/changePassword")
+    public ResponseEntity<Boolean> changePassword(@RequestBody GfCustomerNewPassword newPassword, @RequestHeader(name = "Authorization") String token) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.changePassword(newPassword, token));
+        } catch (CustomerUnauthorizedException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
         } catch (CustomerUnknowException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
         }
