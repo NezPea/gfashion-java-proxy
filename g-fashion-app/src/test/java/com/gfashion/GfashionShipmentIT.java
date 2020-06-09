@@ -51,7 +51,7 @@ public class GfashionShipmentIT {
 
         }
     }
-
+    public static String adminAuth = "Bearer klp5d2dsvdxyipz79046t4rpctjqt0z5";
     @Test
     public void getShipmentById() throws Exception {
         Response response = RestAssured.given().header("Authorization", adminAuth)
