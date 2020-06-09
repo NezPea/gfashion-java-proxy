@@ -6,6 +6,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -78,6 +79,7 @@ public class GfashionCartEstimateShippingMethodIT extends GfashionCartBaseIT {
     }
 
     @Test
+    @Ignore
     public void getEstimateShippingMethodsWithPostcode() throws Exception {
         GfCartAddress address = new GfCartAddress();
         address.setCountryId("US");
