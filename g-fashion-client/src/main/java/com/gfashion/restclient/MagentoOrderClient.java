@@ -3,9 +3,10 @@ package com.gfashion.restclient;
 import com.gfashion.domain.sales.GfShipOrder;
 import com.gfashion.restclient.magento.exception.OrderNotFoundException;
 import com.gfashion.restclient.magento.exception.OrderUnknowException;
+import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.gfashion.restclient.magento.sales.MagentoShipOrder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -28,21 +29,18 @@ public class MagentoOrderClient {
     @Autowired
     private RestClient _restClient;
 
-//    private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
+    private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
 
     public String shipOrder(Integer orderId, GfShipOrder gfShipOrder) throws OrderNotFoundException, OrderUnknowException {
         String url = orderUrl + orderId + "/ship";
         try {
             validate(gfShipOrder);
-            MagentoShipOrder magentoShipOrder = new MagentoShipOrder();
-            BeanUtils.copyProperties(gfShipOrder, magentoShipOrder);
-//            _mapper.from(gfShipOrder);
-            ResponseEntity<String> responseEntity = this._restClient.postForEntity(url, magentoShipOrder, String.class, null);
-            log.info(responseEntity.getBody());
-            return responseEntity.getBody();
-//            Gson gson = new Gson();
-//            return gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
-//            return this._mapper.from(gson.fromJson(responseEntity.getBody(), Object.class));
+            MagentoShipOrder magentoShipOrder = _mapper.convertGfShipOrderToMagentoShipOrder(gfShipOrder);
+            ResponseEntity<String> responseEntity = _restClient.postForEntity(url, magentoShipOrder, String.class, null);
+//            log.info(responseEntity.getBody());
+            String shipmentId = responseEntity.getBody();//example: \"67\"
+            shipmentId = shipmentId.substring(1, shipmentId.length() - 1);
+            return shipmentId;
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new OrderNotFoundException(e.getMessage());

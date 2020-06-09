@@ -9,6 +9,8 @@ import com.gfashion.domain.homepage.GfCategory;
 import com.gfashion.domain.homepage.HomepageBrand;
 import com.gfashion.domain.homepage.HomepageDesigner;
 import com.gfashion.domain.product.*;
+import com.gfashion.domain.sales.*;
+import com.gfashion.domain.sales.response.GfShipmentResp;
 import com.gfashion.domain.store.GfStore;
 import com.gfashion.domain.store.GfStoreConfig;
 import com.gfashion.domain.store.GfStoreGroup;
@@ -24,6 +26,8 @@ import com.gfashion.restclient.magento.customer.MagentoCustomerExtensionAttribut
 import com.gfashion.restclient.magento.customer.MagentoCustomerRegion;
 import com.gfashion.restclient.magento.homepage.MagentoCategory;
 import com.gfashion.restclient.magento.product.*;
+import com.gfashion.restclient.magento.sales.*;
+import com.gfashion.restclient.magento.sales.response.MagentoShipmentResp;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -129,34 +133,32 @@ public interface GfMagentoConverter {
     }
 
     //--shipment
-//    MagentoShipment from(GfShipment shipment);
-//
-//    MagentoShipmentItem from(GfShipmentItem shipmentItem);
-//
-//    MagentoShipmentTrack from(GfShipmentTrack shipmentTrack);
-//
-//    MagentoShipmentComment from(GfShipmentComment gfShipmentComment);
-//
-//    MagentoShipOrder from(GfShipOrder gfShipOrder);
-//
-//    MagentoShipmentItemCreation from(GfShipmentItemCreation gfShipmentItemCreation);
-//
-//    MagentoShipmentCommentCreation from(GfShipmentCommentCreation gfShipmentCommentCreation);
-//
-//    MagentoShipmentTrackCreation from(GfShipmentTrackCreation gfShipmentTrackCreation);
-//
-//    MagentoShipmentPackageCreation from(GfShipmentPackageCreation gfShipmentPackageCreation);
+    MagentoShipment convertGfShipmentToMagentoShipment(GfShipment gfShipment);
 
+    MagentoShipmentItem convertGfShipmentItemToMagentoShipmentItem(GfShipmentItem gfShipmentItem);
 
-    //
-//    GfShipment from(MagentoShipment shipment);
-//
-//    GfShipmentItem from(MagentoShipmentItem shipmentItem);
-//
-//    GfShipmentTrack from(MagentoShipmentTrack shipmentTrack);
-//
-//    GfShipmentComment from(MagentoShipmentComment comment);
-//
-//    GfShipmentResp from(MagentoShipmentResp magentoShipmentResp);
+    MagentoShipmentTrack convertGfShipmentTrackToMagentoShipmentTrack(GfShipmentTrack gfShipmentTrack);
+
+    MagentoShipmentComment convertGfShipmentCommentToMagentoShipmentComment(GfShipmentComment gfShipmentComment);
+
+    MagentoShipOrder convertGfShipOrderToMagentoShipOrder(GfShipOrder gfShipOrder);
+
+    MagentoShipmentItemCreation convertGfShipmentItemCreationToMagentoShipmentItemCreation(GfShipmentItemCreation gfShipmentItemCreation);
+
+    MagentoShipmentCommentCreation convertGfGfShipmentCommentCreationToMagentoShipmentCommentCreation(GfShipmentCommentCreation gfShipmentCommentCreation);
+
+    MagentoShipmentTrackCreation convertGfShipmentTrackCreationToMagentoShipmentTrackCreation(GfShipmentTrackCreation gfShipmentTrackCreation);
+
+    MagentoShipmentPackageCreation convertGfShipmentPackageCreationToMagentoShipmentPackageCreation(GfShipmentPackageCreation gfShipmentPackageCreation);
+
+    GfShipment convertMagentoShipmentToGfShipment(MagentoShipment magentoShipment);
+
+    GfShipmentItem convertMagentoShipmentItemToGfShipmentItem(MagentoShipmentItem magentoShipmentItem);
+
+    GfShipmentTrack convertMagentoShipmentTrackToGfShipmentTrack(MagentoShipmentTrack magentoShipmentTrack);
+
+    GfShipmentComment convertMagentoShipmentCommentToGfShipmentComment(MagentoShipmentComment magentoShipmentComment);
+
+    GfShipmentResp convertMagentoShipmentRespToGfShipmentResp(MagentoShipmentResp magentoShipmentResp);
     //--shipment
 }

@@ -1,7 +1,7 @@
 package com.gfashion;
 
-import com.gfashion.domain.sales.GfShipment;
-import com.gfashion.domain.sales.GfShipmentItem;
+import com.gfashion.domain.sales.GfShipOrder;
+import com.gfashion.domain.sales.GfShipmentItemCreation;
 import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -34,8 +34,8 @@ public class GfashionOrderIT {
         gson = new Gson();
         switch (profile) {
             case "dev":
-                order_id = 85;
-                order_item_id = 190;
+                order_id = 96;
+                order_item_id = 215;
                 break;
             case "test":
             case "qa":
@@ -53,18 +53,18 @@ public class GfashionOrderIT {
      */
     @Test
     public void shipOrder() throws Exception {
-        List<GfShipmentItem> items = new ArrayList();
-        items.add(GfShipmentItem.builder().orderItemId(order_item_id).qty(1).build());
+        List<GfShipmentItemCreation> items = new ArrayList();
+        items.add(GfShipmentItemCreation.builder().orderItemId(order_item_id).qty(1).build());
 
-        GfShipment gfShipment = new GfShipment();
-        gfShipment.setItems(items);
+        GfShipOrder gfShipOrder = new GfShipOrder();
+        gfShipOrder.setItems(items);
         //
         RestAssured.given().request().contentType(ContentType.JSON)
-                .body(gson.toJson(gfShipment))
+                .body(gson.toJson(gfShipOrder))
                 .post("/gfashion/v1/order/{orderId}/ship", order_id)
                 .then().assertThat()
                 .statusCode(200)
-                .body("entity_id", Matchers.greaterThan(0));//"67"
+                .body("entityId", Matchers.greaterThan(0));//"67"
     }
 
     @Test

@@ -38,9 +38,9 @@ public class GfashionShipmentIT {
         gson = new Gson();
         switch (profile) {
             case "dev":
-                order_id = 50;
-                order_item_id = 101;
-                shipment_id = 39;
+                order_id = 96;
+                order_item_id = 215;
+                shipment_id = 124;
                 break;
             case "test":
             case "qa":
@@ -57,7 +57,7 @@ public class GfashionShipmentIT {
         Response response = RestAssured.get("/gfashion/v1/shipment/{shipmentId}", shipment_id);
         response.then().assertThat()
                 .statusCode(200)
-                .body("entity_id", equalTo(shipment_id));
+                .body("entityId", equalTo(shipment_id));
     }
 
     @Test
@@ -79,10 +79,8 @@ public class GfashionShipmentIT {
 
     private Integer order_id;
 
-    @Value("${test.GfashionShipmentIT.order_item_id}")
     private Integer order_item_id;
 
-    @Value("${test.GfashionShipmentIT.shipment_id}")
     private Integer shipment_id;
 
     @Test

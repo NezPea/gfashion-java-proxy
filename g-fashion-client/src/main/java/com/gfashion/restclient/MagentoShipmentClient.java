@@ -12,7 +12,6 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -39,15 +38,12 @@ public class MagentoShipmentClient {
 		try {
 //            Integer totalQty = gfShipment.getItems().stream().mapToInt(GfShipmentItem::getQty).sum();
 //            gfShipment.setTotal_qty(totalQty);
-			MagentoShipment magentoShipment = new MagentoShipment();
-			BeanUtils.copyProperties(gfShipment, magentoShipment);
+			MagentoShipment magentoShipment = _mapper.convertGfShipmentToMagentoShipment(gfShipment);
 			MagentoShipmentReq magentoShipmentReq = new MagentoShipmentReq(magentoShipment);
-			ResponseEntity<String> responseEntity = this._restClient.postForEntity(shipmentUrl, magentoShipmentReq, String.class, null);
+			ResponseEntity<String> responseEntity = _restClient.postForEntity(shipmentUrl, magentoShipmentReq, String.class, null);
 			Gson gson = new Gson();
-//            return gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
-			gfShipment = new GfShipment();
-			BeanUtils.copyProperties(gson.fromJson(responseEntity.getBody(), MagentoShipment.class), gfShipment);
-			return gfShipment;
+			magentoShipment = gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
+			return _mapper.convertMagentoShipmentToGfShipment(magentoShipment);
 		} catch (HttpStatusCodeException e) {
 			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
 				throw new ShipmentNotFoundException(e.getMessage());
@@ -62,8 +58,7 @@ public class MagentoShipmentClient {
 			ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, null);
 			Gson gson = new Gson();
 			MagentoShipment magentoShipment = gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
-			GfShipment gfShipment = new GfShipment();
-			BeanUtils.copyProperties(magentoShipment, gfShipment);
+			GfShipment gfShipment = _mapper.convertMagentoShipmentToGfShipment(magentoShipment);
 			return gfShipment;
 		} catch (HttpStatusCodeException e) {
 			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
@@ -93,9 +88,7 @@ public class MagentoShipmentClient {
 			ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, null);
 			Gson gson = new Gson();
 			MagentoShipmentResp magentoShipmentResp = gson.fromJson(responseEntity.getBody(), MagentoShipmentResp.class);
-//			return _mapper.from(magentoShipmentResp);
-			GfShipmentResp gfShipmentResp = new GfShipmentResp();
-			BeanUtils.copyProperties(magentoShipmentResp, gfShipmentResp);
+			GfShipmentResp gfShipmentResp = _mapper.convertMagentoShipmentRespToGfShipmentResp(magentoShipmentResp);
 			return gfShipmentResp;
 		} catch (HttpStatusCodeException e) {
 			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
@@ -125,8 +118,8 @@ public class MagentoShipmentClient {
 				result.append("searchCriteria[filter_groups][0][filters][0][condition_type]=").append(getCondition(condition)).append("&");
 				value = expression.substring(expression.indexOf(condition) + condition.length()).trim();
 				if (value.length() > 0) {
-					if (value.matches("\\d4-\\d2-\\d2T\\d2:\\d2:\\d2")) {
-						value.replace('T', ' ');
+					if (value.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")) {
+						value = value.replace('T', ' ');
 					}
 					result.append("searchCriteria[filter_groups][0][filters][0][value]=").append(value).append("&");
 				}
@@ -155,8 +148,8 @@ public class MagentoShipmentClient {
 
 				value = expression.substring(expression.indexOf(condition) + condition.length()).trim();
 				if (value.length() > 0) {
-					if (value.matches("\\d4-\\d2-\\d2T\\d2:\\d2:\\d2")) {
-						value.replace('T', ' ');
+					if (value.matches("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")) {
+						value = value.replace('T', ' ');
 					}
 					result.append("searchCriteria[filter_groups][").append(group).append("][filters][").append(filters).append("][value]=").append(value).append("&");
 				}

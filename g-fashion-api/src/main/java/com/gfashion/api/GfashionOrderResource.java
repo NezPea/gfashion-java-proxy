@@ -34,7 +34,6 @@ public class GfashionOrderResource {
 	public ResponseEntity<GfShipment> shipOrder(@PathVariable Integer orderId, @RequestBody GfShipOrder gfShipOrder) {
 		try {
 			String shipmentId = magentoOrderClient.shipOrder(orderId, gfShipOrder);//返回的结果是\"79\"，需要删除前后双引号
-			shipmentId = shipmentId.substring(1, shipmentId.length() - 1);
 			return ResponseEntity.status(HttpStatus.OK).body(GfShipment.builder().entityId(Integer.parseInt(shipmentId)).build());
 		} catch (OrderNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
