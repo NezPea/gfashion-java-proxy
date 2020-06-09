@@ -53,16 +53,16 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
 
     private final GfDynamodbConverter _mapper = Mappers.getMapper(GfDynamodbConverter.class);
 
-    public CustomizedHomepage getDefaultCustomizedHomepageBatchQuery(String lang) {
+    public CustomizedHomepage getDefaultCustomizedHomepageBatchQuery(String locale) {
         CustomizedHomepage customizedHomepage = new CustomizedHomepage();
 
         // Construct the batch query
         Map<Class<?>, String[]> keyMap = new HashMap<>();
-        if (lang == null || lang.equalsIgnoreCase("en")) {
+        if (locale == null || locale.equalsIgnoreCase("en")) {
             keyMap.put(GfBrandEntity.class, brands.split(","));
             keyMap.put(GfDesignerEntity.class, designers.split(","));
             keyMap.put(GfProductEntity.class, products.split(","));
-        } else if (lang.equalsIgnoreCase("cn")) {
+        } else if (locale.equalsIgnoreCase("cn")) {
             // Batch load the corresponding records in Chinese
             keyMap.put(GfBrandEntity.class, brandsCn.split(","));
             keyMap.put(GfDesignerEntity.class, designersCn.split(","));
@@ -109,25 +109,25 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
         return customizedHomepage;
     }
 
-    public CustomizedHomepage getDefaultCustomizedHomepageReflection(String lang) {
-        lang = lang == null ? "en" : lang;
+    public CustomizedHomepage getDefaultCustomizedHomepageReflection(String locale) {
+        locale = locale == null ? "en" : locale;
 
         // get recommended brands
         List<HomepageBrand> recommendedBrands = new ArrayList<>();
-        getResults(HomepageBrand.class, GfBrandEntity.class, 5, lang)
+        getResults(HomepageBrand.class, GfBrandEntity.class, 5, locale)
                 .parallelStream().forEach(b ->
                 recommendedBrands.add(this._mapper.convertDynamodbBrandToHomeBrand((GfBrandEntity) b)));
 
         // get recommended designers
         List<HomepageDesigner> recommendedDesigners = new ArrayList<>();
-        getResults(HomepageDesigner.class, GfDesignerEntity.class, 8, lang)
+        getResults(HomepageDesigner.class, GfDesignerEntity.class, 8, locale)
                 .parallelStream().forEach(d ->
                 recommendedDesigners.add(this._mapper
                         .convertDynamodbDesignerToHomeDesigner((GfDesignerEntity) d)));
 
         // get recommended products
         List<HomepageProduct> recommendedProducts = new ArrayList<>();
-        getResults(HomepageProduct.class, GfProductEntity.class, 6, lang)
+        getResults(HomepageProduct.class, GfProductEntity.class, 6, locale)
                 .parallelStream().forEach(p ->
                 recommendedProducts.add(this._mapper.convertDynamodbProductToHomeProduct((GfProductEntity) p)));
 
@@ -140,7 +140,7 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
                 .build();
     }
 
-    private <T> PaginatedScanList<T> getResults(Class<?> source, Class<T> target, int limit, String lang) {
+    private <T> PaginatedScanList<T> getResults(Class<?> source, Class<T> target, int limit, String locale) {
         DynamoDBScanExpression brandScanExpression = new DynamoDBScanExpression();
         Map<String, Condition> brandConditions = new HashMap<>();
         for (Field field : source.getDeclaredFields()) {
@@ -152,7 +152,7 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
         Condition languageCondition = new Condition();
         languageCondition.setComparisonOperator(ComparisonOperator.EQ);
         List<AttributeValue> valueList = new ArrayList<AttributeValue>();
-        valueList.add(new AttributeValue(lang));
+        valueList.add(new AttributeValue(locale));
         languageCondition.setAttributeValueList(valueList);
         brandConditions.put("language", languageCondition);
 

@@ -9,12 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
@@ -37,6 +35,15 @@ public class GfashionHomepageResource {
     public ResponseEntity<List<GfCategory>> getCategoriesUnderParentId(@PathVariable String categoryId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoHomepageClient.getCategoriesUnderParentId(categoryId));
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+        }
+    }
+
+    @GetMapping(value = "/homepage/categories", produces = "application/json;charset=utf-8")
+    public ResponseEntity<List<GfCategory>> getCategories(@RequestParam(required = true) @Min(1) Integer fromLevel, @RequestParam(required = true) @Min(1) Integer toLevel, @RequestParam(required = false, defaultValue = "en") String locale) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(magentoHomepageClient.getCategories(fromLevel, toLevel, locale));
         } catch (CustomerException e) {
             throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
