@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping(path = "/gfashion/v1", produces = {MediaType.APPLICATION_JSON_VALUE})
 //@CrossOrigin(origins = "*")
 @AllArgsConstructor
-public class GfashionPorductDynamodbResource {
+public class GfashionProductDynamodbResource {
 
     private ProductRepository productRepository;
 
