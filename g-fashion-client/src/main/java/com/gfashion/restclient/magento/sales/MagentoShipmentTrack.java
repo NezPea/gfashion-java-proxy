@@ -1,5 +1,6 @@
 package com.gfashion.restclient.magento.sales;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,28 +15,33 @@ public class MagentoShipmentTrack implements Serializable {
      * The order_id for the shipment package.
      * 必填
      */
-    private Integer order_id;
+    @SerializedName("order_id")
+    private Integer orderId;
 
     /**
      * Created-at timestamp.
      */
-    private String created_at;
+    @SerializedName("created_at")
+    private String createdAt;
 
     /**
      * Shipment package ID.
      */
-    private Integer entity_id;
+    @SerializedName("entity_id")
+    private Integer entityId;
 
     /**
      * Parent ID.
      * 必填
      */
-    private Integer parent_id;
+    @SerializedName("parent_id")
+    private Integer parentId;
 
     /**
      * Updated-at timestamp.
      */
-    private String updated_at;
+    @SerializedName("updated_at")
+    private String updatedAt;
 
     /**
      * Weight.
@@ -55,13 +61,15 @@ public class MagentoShipmentTrack implements Serializable {
      */
     private String description;
 
+    //    @SerializedName("extension_attributes")
 //    private sales-data-shipment-track-extension-interface extension_attributes;
 
     /**
      * Track number.
      * 必填
      */
-    private String track_number;
+    @SerializedName("track_number")
+    private String trackNumber;
 
     /**
      * Title.
@@ -73,5 +81,6 @@ public class MagentoShipmentTrack implements Serializable {
      * Carrier code.
      * 必填
      */
-    private String carrier_code;
+    @SerializedName("carrier_code")
+    private String carrierCode;
 }

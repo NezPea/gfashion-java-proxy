@@ -11,6 +11,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class GfShipmentPackage implements Serializable {
 
-    private GfShipmentPackageExtension extension_attributes;
+    private GfShipmentPackageExtension extensionAttributes;
     
 }

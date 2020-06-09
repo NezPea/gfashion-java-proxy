@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.factory.Mappers;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -38,12 +39,15 @@ public class MagentoShipmentClient {
 		try {
 //            Integer totalQty = gfShipment.getItems().stream().mapToInt(GfShipmentItem::getQty).sum();
 //            gfShipment.setTotal_qty(totalQty);
-			MagentoShipment magentoShipment = _mapper.from(gfShipment);
+			MagentoShipment magentoShipment = new MagentoShipment();
+			BeanUtils.copyProperties(gfShipment, magentoShipment);
 			MagentoShipmentReq magentoShipmentReq = new MagentoShipmentReq(magentoShipment);
 			ResponseEntity<String> responseEntity = this._restClient.postForEntity(shipmentUrl, magentoShipmentReq, String.class, null);
 			Gson gson = new Gson();
 //            return gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
-			return this._mapper.from(gson.fromJson(responseEntity.getBody(), MagentoShipment.class));
+			gfShipment = new GfShipment();
+			BeanUtils.copyProperties(gson.fromJson(responseEntity.getBody(), MagentoShipment.class), gfShipment);
+			return gfShipment;
 		} catch (HttpStatusCodeException e) {
 			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
 				throw new ShipmentNotFoundException(e.getMessage());
@@ -58,7 +62,9 @@ public class MagentoShipmentClient {
 			ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, null);
 			Gson gson = new Gson();
 			MagentoShipment magentoShipment = gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
-			return this._mapper.from(magentoShipment);
+			GfShipment gfShipment = new GfShipment();
+			BeanUtils.copyProperties(magentoShipment, gfShipment);
+			return gfShipment;
 		} catch (HttpStatusCodeException e) {
 			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
 				throw new ShipmentNotFoundException(e.getMessage());
@@ -87,7 +93,10 @@ public class MagentoShipmentClient {
 			ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, null);
 			Gson gson = new Gson();
 			MagentoShipmentResp magentoShipmentResp = gson.fromJson(responseEntity.getBody(), MagentoShipmentResp.class);
-			return _mapper.from(magentoShipmentResp);
+//			return _mapper.from(magentoShipmentResp);
+			GfShipmentResp gfShipmentResp = new GfShipmentResp();
+			BeanUtils.copyProperties(magentoShipmentResp, gfShipmentResp);
+			return gfShipmentResp;
 		} catch (HttpStatusCodeException e) {
 			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
 				throw new ShipmentNotFoundException(e.getMessage());

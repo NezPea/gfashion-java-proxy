@@ -9,9 +9,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GfShipmentExtension implements Serializable {
-    /**
-     *
-     */
-    private String sourceCode;
+public class GfShipmentPackageCreation implements Serializable {
+    private GfShipmentPackageExtension extensionAttributes;
+
 }

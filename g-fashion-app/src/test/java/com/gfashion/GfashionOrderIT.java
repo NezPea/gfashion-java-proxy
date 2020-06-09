@@ -21,6 +21,8 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class GfashionOrderIT {
+    @Value("${spring.profiles.active}")
+    private String profile;
 
     @LocalServerPort
     private int port;
@@ -30,12 +32,20 @@ public class GfashionOrderIT {
     public void setup() {
         RestAssured.port = port;
         gson = new Gson();
+        switch (profile) {
+            case "dev":
+                order_id = 85;
+                order_item_id = 190;
+                break;
+            case "test":
+            case "qa":
+                order_id = 1;
+                order_item_id = 1;
+                break;
+        }
     }
 
-    @Value("${test.GfashionOrderIT.order_id}")
     private Integer order_id;
-
-    @Value("${test.GfashionOrderIT.order_item_id}")
     private Integer order_item_id;
 
     /**
@@ -44,7 +54,7 @@ public class GfashionOrderIT {
     @Test
     public void shipOrder() throws Exception {
         List<GfShipmentItem> items = new ArrayList();
-        items.add(GfShipmentItem.builder().order_item_id(order_item_id).qty(1).build());
+        items.add(GfShipmentItem.builder().orderItemId(order_item_id).qty(1).build());
 
         GfShipment gfShipment = new GfShipment();
         gfShipment.setItems(items);
