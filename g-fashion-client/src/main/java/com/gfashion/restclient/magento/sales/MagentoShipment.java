@@ -1,5 +1,6 @@
 package com.gfashion.restclient.magento.sales;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,75 +16,89 @@ public class MagentoShipment implements Serializable {
     /**
      * Billing address ID.
      */
-    private Integer billing_address_id;
+    @SerializedName("billing_address_id")
+    private Integer billingAddressId;
 
     /**
      * Created-at timestamp.
      */
-    private String created_at;
+    @SerializedName("created_at")
+    private String createdAt;
 
     /**
      * Customer ID.
      */
-    private Integer customer_id;
+    @SerializedName("customer_id")
+    private Integer customerId;
 
     /**
      * Email-sent flag value.
      */
-    private Integer email_sent;
+    @SerializedName("email_sent")
+    private Integer emailSent;
 
     /**
      * Shipment ID.
      */
-    private Integer entity_id;
+    @SerializedName("entity_id")
+    private Integer entityId;
 
     /**
      * Increment ID.
      */
-    private String increment_id;
+    @SerializedName("increment_id")
+    private String incrementId;
 
     /**
      * Order ID.
      * 必填
      */
-    private Integer order_id;
+    @SerializedName("order_id")
+    private Integer orderId;
 
     private List<MagentoShipmentPackage> packages;
 
     /**
      * Shipment status.
      */
-    private Integer shipment_status;
+    @SerializedName("shipment_status")
+    private Integer shipmentStatus;
 
     /**
      * Shipping address ID.
      */
-    private Integer shipping_address_id;
+    @SerializedName("shipping_address_id")
+    private Integer shippingAddressId;
 
     /**
      * Shipping label.
      */
-    private String shipping_label;
+    @SerializedName("shipping_label")
+    private String shippingLabel;
 
     /**
      * Store ID.
      */
-    private Integer store_id;
+    @SerializedName("store_id")
+    private Integer storeId;
 
     /**
      * Total quantity.
      */
-    private Integer total_qty;
+    @SerializedName("total_qty")
+    private Integer totalQty;
 
     /**
      * Total weight.
      */
-    private Integer total_weight;
+    @SerializedName("total_weight")
+    private Integer totalWeight;
 
     /**
      * Updated-at timestamp.
      */
-    private String updated_at;
+    @SerializedName("updated_at")
+    private String updatedAt;
 
     /**
      * 必填
@@ -100,6 +115,7 @@ public class MagentoShipment implements Serializable {
      */
     private List<MagentoShipmentComment> comments;
 
+    //    @SerializedName("extension_attributes")
 //    private sales-data-shipment-extension-interface extension_attributes;
 
 

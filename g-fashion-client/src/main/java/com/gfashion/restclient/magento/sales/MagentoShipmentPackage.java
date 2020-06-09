@@ -1,5 +1,6 @@
 package com.gfashion.restclient.magento.sales;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MagentoShipmentPackage implements Serializable {
-
-    private MagentoShipmentPackageExtension extension_attributes;
+    @SerializedName("extension_attributes")
+    private MagentoShipmentPackageExtension extensionAttributes;
 
 }

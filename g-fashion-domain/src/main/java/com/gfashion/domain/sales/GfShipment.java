@@ -21,76 +21,76 @@ public class GfShipment implements Serializable {
     /**
      * Billing address ID.
      */
-    private Integer billing_address_id;
+    private Integer billingAddressId;
 
     /**
      * Created-at timestamp.
      */
-    private String created_at;
+    private String createdAt;
 
     /**
      * Customer ID.
      */
-    private Integer customer_id;
+    private Integer customerId;
 
     /**
      * Email-sent flag value.
      */
-    private Integer email_sent;
+    private Integer emailSent;
 
     /**
      * Shipment ID.
      */
-    private Integer entity_id;
+    private Integer entityId;
 
     /**
      * Increment ID.
      */
-    private String increment_id;
+    private String incrementId;
 
     /**
      * Order ID.
      * 必填
      */
     @NotNull
-    private Integer order_id;
+    private Integer orderId;
 
     private List<GfShipmentPackage> packages;
 
     /**
      * Shipment status.
      */
-    private Integer shipment_status;
+    private Integer shipmentStatus;
 
     /**
      * Shipping address ID.
      */
-    private Integer shipping_address_id;
+    private Integer shippingAddressId;
 
     /**
      * Shipping label.
      */
-    private String shipping_label;
+    private String shippingLabel;
 
     /**
      * Store ID.
      */
-    private Integer store_id;
+    private Integer storeId;
 
     /**
      * Total quantity.
      */
-    private Integer total_qty;
+    private Integer totalQty;
 
     /**
      * Total weight.
      */
-    private Integer total_weight;
+    private Integer totalWeight;
 
     /**
      * Updated-at timestamp.
      */
-    private String updated_at;
+    private String updatedAt;
 
     /**
      * 必填
@@ -108,7 +108,7 @@ public class GfShipment implements Serializable {
      */
     private List<GfShipmentComment> comments;
 
-    private GfShipmentExtension extension_attributes;
+    private GfShipmentExtension extensionAttributes;
 
 
 }

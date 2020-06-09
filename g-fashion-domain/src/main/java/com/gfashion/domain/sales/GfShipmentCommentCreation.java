@@ -1,6 +1,5 @@
-package com.gfashion.restclient.magento.sales;
+package com.gfashion.domain.sales;
 
-import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MagentoShipmentCommentCreation implements Serializable {
+public class GfShipmentCommentCreation implements Serializable {
 
     /**
      * Comment.
@@ -23,7 +22,6 @@ public class MagentoShipmentCommentCreation implements Serializable {
      * Is-visible-on-storefront flag value.
      * 必填
      */
-    @SerializedName("is_visible_on_front")
     private Integer isVisibleOnFront;
 
 }

@@ -14,28 +14,28 @@ public class GfShipmentTrack implements Serializable {
      * The order_id for the shipment package.
      * 必填
      */
-    private Integer order_id;
+    private Integer orderId;
 
     /**
      * Created-at timestamp.
      */
-    private String created_at;
+    private String createdAt;
 
     /**
      * Shipment package ID.
      */
-    private Integer entity_id;
+    private Integer entityId;
 
     /**
      * Parent ID.
      * 必填
      */
-    private Integer parent_id;
+    private Integer parentId;
 
     /**
      * Updated-at timestamp.
      */
-    private String updated_at;
+    private String updatedAt;
 
     /**
      * Weight.
@@ -61,7 +61,7 @@ public class GfShipmentTrack implements Serializable {
      * Track number.
      * 必填
      */
-    private String track_number;
+    private String trackNumber;
 
     /**
      * Title.
@@ -73,5 +73,5 @@ public class GfShipmentTrack implements Serializable {
      * Carrier code.
      * 必填
      */
-    private String carrier_code;
+    private String carrierCode;
 }
