@@ -5,10 +5,7 @@ import com.gfashion.domain.sales.GfShipmentTrack;
 import com.gfashion.domain.sales.response.GfShipmentResp;
 import com.gfashion.restclient.MagentoOrderClient;
 import com.gfashion.restclient.MagentoShipmentClient;
-import com.gfashion.restclient.magento.exception.OrderNotFoundException;
-import com.gfashion.restclient.magento.exception.OrderUnknowException;
-import com.gfashion.restclient.magento.exception.ShipmentNotFoundException;
-import com.gfashion.restclient.magento.exception.ShipmentUnknowException;
+import com.gfashion.restclient.magento.exception.*;
 import com.gfashion.restclient.magento.sales.MagentoShipOrder;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -36,6 +33,8 @@ public class GfashionOrderResource {
 			String shipmentId = magentoOrderClient.shipOrder(orderId, magentoShipOrder);//返回的结果是\"79\"，需要删除前后双引号
 			shipmentId = shipmentId.substring(1, shipmentId.length() - 1);
 			return ResponseEntity.status(HttpStatus.OK).body(GfShipment.builder().entity_id(Integer.parseInt(shipmentId)).build());
+		} catch (UnauthorizedException e) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
 		} catch (OrderNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
 		} catch (OrderUnknowException e) {
@@ -64,6 +63,8 @@ public class GfashionOrderResource {
 				tracks.sort(Comparator.comparing(GfShipmentTrack::getCreated_at));
 			}
 			return ResponseEntity.status(HttpStatus.OK).body(tracks);
+		} catch (UnauthorizedException e) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
 		} catch (ShipmentNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
 		} catch (ShipmentUnknowException e) {

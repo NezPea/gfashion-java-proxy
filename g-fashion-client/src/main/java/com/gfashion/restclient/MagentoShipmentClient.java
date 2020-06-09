@@ -4,6 +4,7 @@ import com.gfashion.domain.sales.GfShipment;
 import com.gfashion.domain.sales.response.GfShipmentResp;
 import com.gfashion.restclient.magento.exception.ShipmentNotFoundException;
 import com.gfashion.restclient.magento.exception.ShipmentUnknowException;
+import com.gfashion.restclient.magento.exception.UnauthorizedException;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.gfashion.restclient.magento.sales.MagentoShipment;
 import com.gfashion.restclient.magento.sales.request.MagentoShipmentReq;
@@ -34,7 +35,7 @@ public class MagentoShipmentClient {
 
 	private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
 
-	public GfShipment updateShipment(GfShipment gfShipment) throws ShipmentNotFoundException, ShipmentUnknowException {
+	public GfShipment updateShipment(GfShipment gfShipment) throws UnauthorizedException, ShipmentNotFoundException, ShipmentUnknowException {
 		try {
 //            Integer totalQty = gfShipment.getItems().stream().mapToInt(GfShipmentItem::getQty).sum();
 //            gfShipment.setTotal_qty(totalQty);
@@ -45,14 +46,17 @@ public class MagentoShipmentClient {
 //            return gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
 			return this._mapper.from(gson.fromJson(responseEntity.getBody(), MagentoShipment.class));
 		} catch (HttpStatusCodeException e) {
-			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+			if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+				throw new UnauthorizedException(e.getMessage());
+			} else if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
 				throw new ShipmentNotFoundException(e.getMessage());
+			} else {
+				throw new ShipmentUnknowException(e.getMessage());
 			}
-			throw new ShipmentUnknowException(e.getMessage());
 		}
 	}
 
-	public GfShipment getShipmentById(Integer id) throws ShipmentNotFoundException, ShipmentUnknowException {
+	public GfShipment getShipmentById(Integer id) throws UnauthorizedException, ShipmentNotFoundException, ShipmentUnknowException {
 		String url = shipmentUrl + id;
 		try {
 			ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, null);
@@ -60,10 +64,13 @@ public class MagentoShipmentClient {
 			MagentoShipment magentoShipment = gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
 			return this._mapper.from(magentoShipment);
 		} catch (HttpStatusCodeException e) {
-			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+			if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+				throw new UnauthorizedException(e.getMessage());
+			} else if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
 				throw new ShipmentNotFoundException(e.getMessage());
+			} else {
+				throw new ShipmentUnknowException(e.getMessage());
 			}
-			throw new ShipmentUnknowException(e.getMessage());
 		}
 	}
 
@@ -80,7 +87,7 @@ public class MagentoShipmentClient {
 	 *                       Be cautious when using too complicated expressions, whether it meets expectations.<br/>
 	 * @param fileds         Attributes to return in the response. If you do not specify this parameter, all attributes will be returned.
 	 */
-	public GfShipmentResp queryShipments(String searchCriteria, String fileds) throws ShipmentNotFoundException, ShipmentUnknowException {
+	public GfShipmentResp queryShipments(String searchCriteria, String fileds) throws UnauthorizedException, ShipmentNotFoundException, ShipmentUnknowException {
 		String url = "shipments" + getSearchCriteria(searchCriteria, fileds);// /shipments?searchCriteria...
 		log.info(url);
 		try {
@@ -89,10 +96,13 @@ public class MagentoShipmentClient {
 			MagentoShipmentResp magentoShipmentResp = gson.fromJson(responseEntity.getBody(), MagentoShipmentResp.class);
 			return _mapper.from(magentoShipmentResp);
 		} catch (HttpStatusCodeException e) {
-			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+			if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+				throw new UnauthorizedException(e.getMessage());
+			} else if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
 				throw new ShipmentNotFoundException(e.getMessage());
+			} else {
+				throw new ShipmentUnknowException(e.getMessage());
 			}
-			throw new ShipmentUnknowException(e.getMessage());
 		}
 	}
 

@@ -5,6 +5,7 @@ import com.gfashion.domain.sales.response.GfShipmentResp;
 import com.gfashion.restclient.MagentoShipmentClient;
 import com.gfashion.restclient.magento.exception.ShipmentNotFoundException;
 import com.gfashion.restclient.magento.exception.ShipmentUnknowException;
+import com.gfashion.restclient.magento.exception.UnauthorizedException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,8 @@ public class GfashionShipmentResource {
 		try {
 			gfShipment = magentoShipmentClient.updateShipment(gfShipment);
 			return ResponseEntity.status(HttpStatus.OK).body(gfShipment);
+		} catch (UnauthorizedException e) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
 		} catch (ShipmentNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
 		} catch (ShipmentUnknowException e) {
@@ -35,6 +38,8 @@ public class GfashionShipmentResource {
 	public ResponseEntity<GfShipment> getShipmentById(@PathVariable Integer shipmentId) {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(magentoShipmentClient.getShipmentById(shipmentId));
+		} catch (UnauthorizedException e) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
 		} catch (ShipmentNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
 		} catch (ShipmentUnknowException e) {
@@ -46,6 +51,8 @@ public class GfashionShipmentResource {
 	public ResponseEntity<GfShipmentResp> queryShipments(String searchCriteria, String fields) {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(magentoShipmentClient.queryShipments(searchCriteria, fields));
+		} catch (UnauthorizedException e) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
 		} catch (ShipmentNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
 		} catch (ShipmentUnknowException e) {

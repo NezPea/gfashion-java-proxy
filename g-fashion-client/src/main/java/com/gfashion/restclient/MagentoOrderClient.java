@@ -2,6 +2,7 @@ package com.gfashion.restclient;
 
 import com.gfashion.restclient.magento.exception.OrderNotFoundException;
 import com.gfashion.restclient.magento.exception.OrderUnknowException;
+import com.gfashion.restclient.magento.exception.UnauthorizedException;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.gfashion.restclient.magento.sales.MagentoShipOrder;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ public class MagentoOrderClient {
 
     private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
 
-    public String shipOrder(Integer orderId, MagentoShipOrder magentoShipOrder) throws OrderNotFoundException, OrderUnknowException {
+    public String shipOrder(Integer orderId, MagentoShipOrder magentoShipOrder) throws UnauthorizedException, OrderNotFoundException, OrderUnknowException {
         String url = orderUrl + orderId + "/ship";
         try {
             validate(magentoShipOrder);
@@ -41,10 +42,13 @@ public class MagentoOrderClient {
 //            return gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
 //            return this._mapper.from(gson.fromJson(responseEntity.getBody(), Object.class));
         } catch (HttpStatusCodeException e) {
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new UnauthorizedException(e.getMessage());
+            } else if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new OrderNotFoundException(e.getMessage());
+            } else {
+                throw new OrderUnknowException(e.getMessage());
             }
-            throw new OrderUnknowException(e.getMessage());
         }
     }
 
