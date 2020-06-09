@@ -26,8 +26,8 @@ public class GfashionCartResource {
     public ResponseEntity<GfCart> getCart(@RequestHeader(name = "Authorization") String customerToken) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.getCart(customerToken));
-        } catch (CustomerTokenNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         } catch (CartNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
         } catch (CartUnknownException e) {
@@ -40,8 +40,8 @@ public class GfashionCartResource {
             @RequestHeader(name = "Authorization") String customerToken) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.getCartItemList(customerToken));
-        } catch (CustomerTokenNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         } catch (CartNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
         } catch (CartUnknownException e) {
@@ -55,8 +55,8 @@ public class GfashionCartResource {
             @RequestBody GfCartItem cartItem) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.addCartItem(customerToken, cartItem));
-        } catch (CustomerTokenNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         } catch (CartCreationException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getErrorMessage());
         } catch (CartUnknownException e) {
@@ -70,8 +70,8 @@ public class GfashionCartResource {
             @PathVariable Integer cartItemId, @RequestBody GfCartItem cartItem) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.updateCartItem(customerToken, cartItemId, cartItem));
-        } catch (CustomerTokenNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         } catch (CartNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
         } catch (CartUnknownException e) {
@@ -85,8 +85,8 @@ public class GfashionCartResource {
             @PathVariable Integer cartItemId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.deleteCartItem(customerToken, cartItemId));
-        } catch (CustomerTokenNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         } catch (CartNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
         } catch (CartUnknownException e) {
@@ -100,8 +100,8 @@ public class GfashionCartResource {
             @RequestBody GfCartAddress address) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.getEstimateShippingMethods(customerToken, address));
-        } catch (CustomerTokenNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         } catch (CartGetException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getErrorMessage());
         } catch (CartUnknownException e) {
@@ -115,8 +115,8 @@ public class GfashionCartResource {
             @RequestBody GfCartAddressInformation addressInformation) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.setShippingInformation(customerToken, addressInformation));
-        } catch (CustomerTokenNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         } catch (CartUnknownException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
         } catch (CartCreationException e) {
@@ -131,8 +131,8 @@ public class GfashionCartResource {
             @RequestHeader(name = "Authorization") String customerToken) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.getPaymentMethods(customerToken));
-        } catch (CustomerTokenNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         } catch (CartUnknownException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
         }
@@ -144,8 +144,8 @@ public class GfashionCartResource {
             @RequestBody GfCartPaymentInformation paymentInformation) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.createOrder(customerToken, paymentInformation));
-        } catch (CustomerTokenNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         } catch (CartUnknownException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
         } catch (CartCreationException e) {

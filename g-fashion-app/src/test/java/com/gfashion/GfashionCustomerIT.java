@@ -48,6 +48,14 @@ public class GfashionCustomerIT {
     }
 
     @Test
+    public void getCustomerVerificationCodeWithBadAuthShouldReturnUnauthorizedException() throws Exception {
+        Response response = RestAssured.given().header("Authorization", "Bearer 9v595tv71ajdacyjzk74uyfuvrfoyqnn")
+                .body("{\"email\": \"andrewluo.us@gmail.com\"}").post("/gfashion/v1/customers/{customerId}/getVerificationCode", 22);
+        response.then().assertThat().
+                statusCode(401);
+    }
+
+    @Test
     @Ignore
     public void createCustomerByIdShouldReturnBadRequestException() throws Exception {
         GfCustomerRegistration newCustomerRegistration = new GfCustomerRegistration();
