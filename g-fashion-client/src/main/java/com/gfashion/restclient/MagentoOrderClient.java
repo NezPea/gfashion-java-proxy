@@ -41,7 +41,7 @@ public class MagentoOrderClient {
             MagentoShipOrder magentoShipOrder = _mapper.convertGfShipOrderToMagentoShipOrder(gfShipOrder);
             ResponseEntity<String> responseEntity = _restClient.postForEntity(url, magentoShipOrder, String.class, headers);
 //            log.info(responseEntity.getBody());
-            String shipmentId = responseEntity.getBody();//example: \"67\"
+            String shipmentId = responseEntity.getBody();// example: \"67\"
             shipmentId = shipmentId.substring(1, shipmentId.length() - 1);
             return shipmentId;
         } catch (HttpStatusCodeException e) {

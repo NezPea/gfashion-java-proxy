@@ -73,7 +73,7 @@ public class GfashionShipmentIT {
         RestAssured.given().header("Authorization", adminAuth)
                 .header("Content-Type", ContentType.JSON)
                 .body(gson.toJson(gfShipment))
-                .post("/gfashion/v1/shipment")
+                .post("/gfashion/v1/shipment")//
                 .then().assertThat()
                 .statusCode(200)
                 .body("items[0].description", equalTo(value));

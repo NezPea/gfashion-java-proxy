@@ -67,7 +67,7 @@ public class GfashionOrderIT {
                 .post("/gfashion/v1/order/{orderId}/ship", order_id)
                 .then().assertThat()
                 .statusCode(200)
-                .body("entityId", Matchers.greaterThan(0));//"67"
+                .body("entityId", Matchers.greaterThan(0));// \"67\"
     }
 
     @Test

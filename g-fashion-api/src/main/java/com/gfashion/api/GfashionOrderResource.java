@@ -30,7 +30,7 @@ public class GfashionOrderResource {
 	@PostMapping(value = "/{orderId}/ship")
 	public ResponseEntity<GfShipment> shipOrder(@RequestHeader(name = "Authorization") String customerToken, @PathVariable Integer orderId, @RequestBody GfShipOrder gfShipOrder) {
 		try {
-			String shipmentId = magentoOrderClient.shipOrder(customerToken, orderId, gfShipOrder);//返回的结果是\"79\"，需要删除前后双引号
+			String shipmentId = magentoOrderClient.shipOrder(customerToken, orderId, gfShipOrder);// 返回的结果是 \"79\"，需要删除前后双引号
 			return ResponseEntity.status(HttpStatus.OK).body(GfShipment.builder().entityId(Integer.parseInt(shipmentId)).build());
 		} catch (CustomerException e) {
 			throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());

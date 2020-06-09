@@ -39,7 +39,6 @@ public class MagentoShipmentClient {
 	public GfShipment updateShipment(String customerToken, GfShipment gfShipment) throws CustomerException, ShipmentNotFoundException, ShipmentUnknowException {
 		try {
 //            Integer totalQty = gfShipment.getItems().stream().mapToInt(GfShipmentItem::getQty).sum();
-//            gfShipment.setTotal_qty(totalQty);
 			HttpHeaders headers = _restClient.getCustomerHeaders(customerToken);
 			MagentoShipment magentoShipment = _mapper.convertGfShipmentToMagentoShipment(gfShipment);
 			MagentoShipmentReq magentoShipmentReq = new MagentoShipmentReq(magentoShipment);

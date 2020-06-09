@@ -23,7 +23,7 @@ public class GfashionShipmentResource {
 	@PostMapping("/shipment")
 	public ResponseEntity<GfShipment> updateShipment(@RequestHeader(name = "Authorization") String customerToken, @RequestBody @Validated GfShipment gfShipment) {
 		try {
-			gfShipment = magentoShipmentClient.updateShipment(customerToken, gfShipment);
+			gfShipment = magentoShipmentClient.updateShipment(customerToken, gfShipment);//
 			return ResponseEntity.status(HttpStatus.OK).body(gfShipment);
 		} catch (CustomerException e) {
 			throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
