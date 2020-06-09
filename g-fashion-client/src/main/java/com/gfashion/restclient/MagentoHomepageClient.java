@@ -1,10 +1,8 @@
 package com.gfashion.restclient;
 
 import com.gfashion.domain.homepage.GfCategory;
-import com.gfashion.domain.homepage.HomepageBrand;
-import com.gfashion.restclient.magento.exception.CustomerUnknowException;
+import com.gfashion.restclient.magento.exception.CustomerException;
 import com.gfashion.restclient.magento.homepage.MagentoCategories;
-import com.gfashion.restclient.magento.homepage.MagentoCategory;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.google.gson.Gson;
 import org.mapstruct.factory.Mappers;
@@ -38,7 +36,7 @@ public class MagentoHomepageClient {
 
     private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
 
-    public List<GfCategory> getCategoriesUnderParentId(String parentId) throws CustomerUnknowException {
+    public List<GfCategory> getCategoriesUnderParentId(String parentId) throws CustomerException {
 
         String getDefaultHomepageBrandsUrl = listCategories + "?" +
                 String.join("&", new ArrayList<>(Arrays.asList(new String[]{field + parentIdField, value + parentId})));
@@ -48,7 +46,7 @@ public class MagentoHomepageClient {
             Gson gson = new Gson();
             return this._mapper.convertMagentoCategoriesToGfCategories(gson.fromJson(responseEntity.getBody(), MagentoCategories.class).getItems());
         } catch (HttpStatusCodeException e) {
-            throw new CustomerUnknowException(e.getMessage());
+            throw new CustomerException(e.getStatusCode(), e.getMessage());
         }
     }
 }

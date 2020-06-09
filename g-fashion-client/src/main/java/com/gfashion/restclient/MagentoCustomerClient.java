@@ -30,24 +30,27 @@ public class MagentoCustomerClient {
     @Value("${magento.url.customerChangePassword}")
     private String customerChangePasswordUrl;
 
+    @Value("${magento.url.customerMe}")
+    private String customerMeUrl;
+
     @Autowired
     private RestClient _restClient;
 
     private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
 
-    public String customerLogin(GfCustomerLogin customerLogin) throws CustomerTokenNotFoundException, CustomerUnknowException {
+    public String customerLogin(GfCustomerLogin customerLogin) throws CustomerException {
         try {
             ResponseEntity<String> responseEntity = _restClient.getCustomerToken(customerLogin);
             return responseEntity.getBody();
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                throw new CustomerTokenNotFoundException(e.getMessage());
+                throw new CustomerException(e.getStatusCode(), e.getMessage());
             }
-            throw new CustomerUnknowException(e.getMessage());
+            throw new CustomerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
-    public GfCustomer createCustomer(GfCustomerRegistration customerRegistration) throws CustomerCreationException, CustomerUnknowException {
+    public GfCustomer createCustomer(GfCustomerRegistration customerRegistration) throws CustomerException {
 
         try {
             ResponseEntity<String> responseEntity = this._restClient.postForEntity(customersUrl, customerRegistration, String.class, null);
@@ -56,13 +59,13 @@ public class MagentoCustomerClient {
             return this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntity.getBody(), MagentoCustomer.class));
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                throw new CustomerCreationException(e.getMessage());
+                throw new CustomerException(e.getStatusCode(), e.getMessage());
             }
-            throw new CustomerUnknowException(e.getMessage());
+            throw new CustomerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
-    public GfCustomer getCustomerById(Integer customerId) throws CustomerUnknowException, CustomerNotFoundException {
+    public GfCustomer getCustomerById(Integer customerId) throws CustomerException {
         String getCustomerUrl = customersUrl + customerId;
 
         try {
@@ -72,13 +75,13 @@ public class MagentoCustomerClient {
             return this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntity.getBody(), MagentoCustomer.class));
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new CustomerNotFoundException(e.getMessage());
+                throw new CustomerException(e.getStatusCode(), e.getMessage());
             }
-            throw new CustomerUnknowException(e.getMessage());
+            throw new CustomerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
-    public GfCustomer updateCustomerById(GfCustomerRegistration gfCustomer, Integer customerId) throws CustomerUnknowException, CustomerNotFoundException {
+    public GfCustomer updateCustomerById(GfCustomerRegistration gfCustomer, Integer customerId) throws CustomerException {
         String getCustomerUrl = customersUrl + customerId;
 
         try {
@@ -88,13 +91,13 @@ public class MagentoCustomerClient {
             return this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntity.getBody(), MagentoCustomer.class));
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new CustomerNotFoundException(e.getMessage());
+                throw new CustomerException(e.getStatusCode(), e.getMessage());
             }
-            throw new CustomerUnknowException(e.getMessage());
+            throw new CustomerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
-    public Boolean changePassword(GfCustomerNewPassword newPassword, String token) throws CustomerUnknowException, CustomerUnauthorizedException {
+    public Boolean changePassword(GfCustomerNewPassword newPassword, String token) throws CustomerException {
         String changePasswordUrl = customersUrl + customerChangePasswordUrl;
 
         HttpHeaders tokenHeader = new HttpHeaders();
@@ -105,10 +108,35 @@ public class MagentoCustomerClient {
             return Boolean.valueOf(responseEntity.getBody());
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                throw new CustomerUnauthorizedException(e.getMessage());
+                throw new CustomerException(e.getStatusCode(), e.getMessage());
             }
-            throw new CustomerUnknowException(e.getMessage());
+            throw new CustomerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
+
+    public void verifyCustomerToken(String customerId, String token) throws CustomerException {
+        if (token==null){
+            throw new CustomerException(HttpStatus.UNAUTHORIZED, "Please include customer token in the header.");
+        }
+
+        HttpHeaders tokenHeader = new HttpHeaders();
+        tokenHeader.put("Authorization", Arrays.asList((new String[]{token})));
+
+        try {
+            ResponseEntity<String> responseEntity = this._restClient.exchangeGet(customerMeUrl, String.class, tokenHeader);
+
+            Gson gson = new Gson();
+            GfCustomer res = this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntity.getBody(), MagentoCustomer.class));
+            if(res.getId() != Integer.valueOf(customerId)){
+                throw new CustomerException(HttpStatus.UNAUTHORIZED, "The token passed in id not validate for customer " +  customerId);
+            }
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new CustomerException(e.getStatusCode(), e.getMessage());
+            }
+            throw new CustomerException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
+
 }
 
