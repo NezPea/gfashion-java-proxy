@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CustomerUnknowException extends Throwable {
+public class CartUnknownException extends Exception {
     private String errorMessage;
 }

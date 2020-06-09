@@ -8,10 +8,15 @@ import com.gfashion.restclient.magento.exception.ProductNotFoundException;
 import com.gfashion.restclient.magento.exception.ProductUnknowException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -37,16 +42,70 @@ public class GfashionProductResource {
         }
     }
 
+
+
     /**
      * {@code GET  /channelProducts} : get all the channel products with given query string.
      *
      * @param @PathVariable String query
      * @return the {@link GfProductSearchResponse} with status {@code 200 (OK)} and the list of transactions in body.
      */
-    @GetMapping("/channelProducts/{query}")
-    public ResponseEntity<GfProductSearchResponseFix> searchChannelProducts(@PathVariable String query) {
+
+    @GetMapping(value = "/channelProducts", produces = "application/json;charset=utf-8")
+    public ResponseEntity<GfProductSearchResponseFix> searchTrxTransactions(HttpServletRequest httpServletRequest) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(magentoProductClient.searchProducts(query));
+            StringBuilder url = new StringBuilder();
+            url.append("?");
+            Map<String, String[]> parameterMap = httpServletRequest.getParameterMap();
+            AtomicInteger i = new AtomicInteger();
+            AtomicInteger categoryId = new AtomicInteger();
+            parameterMap.forEach((key, value) -> {
+                if (key.equals("pageSize")) {
+                    url.append("searchCriteria[pageSize]=").append(value[0]).append("&");
+                } else if (key.equals("currentPage")) {
+                    url.append("searchCriteria[currentPage]=").append(value[0]).append("&");
+                } else if (key.equals("sortField")) {
+                    url.append("searchCriteria[sortOrders][0][field]=").append(value[0]).append("&");
+                } else if (key.equals("sortDirection")) {
+                    url.append("searchCriteria[sortOrders][0][direction]=").append(value[0]).append("&");
+                } else if (key.equals("locale")) {
+                    String storeId = "1";
+                    if (value[0].equals("en")) {
+                        storeId = "localeEn";
+                    } else if (value[0].equals("zh")) {
+                        storeId = "localeZh";
+                    }
+                    url.append("searchCriteria[filter_groups][").append(i).append("][filters][0][field]=store_id&");
+                    url.append("searchCriteria[filter_groups][").append(i).append("][filters][0][value]=").append(storeId).append("&");
+                    url.append("searchCriteria[filter_groups][").append(i).append("][filters][0][condition_type]=eq&");
+                    i.getAndIncrement();
+                } else if (key.split(",").length == 3) {
+                    if (key.split(",")[0].equals("category_id")) {
+                        categoryId.set(Integer.parseInt(key.split(",")[1]));
+                    }
+                    if (key.split(",")[1].contains("_")) {
+                        String[] filters = key.split(",")[1].split("_");
+                        for (int j = 0; j < filters.length; j++) {
+                            url.append("searchCriteria[filter_groups][").append(i).append("][filters][").append(j).append("][field]=").append(key.split(",")[0]).append("&");
+                            url.append("searchCriteria[filter_groups][").append(i).append("][filters][").append(j).append("][value]=").append(filters[j]).append("&");
+                            url.append("searchCriteria[filter_groups][").append(i).append("][filters][").append(j).append("][condition_type]=").append(key.split(",")[2]).append("&");
+                        }
+                        i.getAndIncrement();
+                    } else {
+                        url.append("searchCriteria[filter_groups][").append(i).append("][filters][0][field]=").append(key.split(",")[0]).append("&");
+                        url.append("searchCriteria[filter_groups][").append(i).append("][filters][0][value]=").append(key.split(",")[1]).append("&");
+                        url.append("searchCriteria[filter_groups][").append(i).append("][filters][0][condition_type]=").append(key.split(",")[2]).append("&");
+                        i.getAndIncrement();
+                    }
+                }
+            });
+            String resultUrl = url.subSequence(0, url.length() - 1).toString();
+
+
+            log.info("info:" + resultUrl);
+            String magentoSearchCriteria = "";
+            return ResponseEntity.status(HttpStatus.OK).body(magentoProductClient.searchProducts(resultUrl, categoryId.intValue()));
+
         } catch (ProductNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
         } catch (ProductUnknowException e) {

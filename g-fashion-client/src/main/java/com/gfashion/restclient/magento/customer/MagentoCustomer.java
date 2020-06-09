@@ -25,6 +25,6 @@ public class MagentoCustomer {
     private Integer website_id;
     private List<MagentoCustomerAddress> addresses;
     private Integer disable_auto_group_change;
-    private JSONObject extension_attributes;
+    private MagentoCustomerExtensionAttributes extension_attributes;
 
 }

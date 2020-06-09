@@ -16,4 +16,6 @@ public class GfProductSearchResponseFix {
     private GfSearchCriteria search_criteria;
     private Integer total_count;
     private List<GfAvilableFlter> avavilable_filters;
+    private Integer category_id;
+    private String category_name;
 }

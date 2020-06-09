@@ -1,10 +1,7 @@
 package com.gfashion.restclient;
 
-import com.gfashion.domain.homepage.CustomizedHomepage;
-import com.gfashion.domain.homepage.HomepageBrand;
-import com.gfashion.domain.homepage.HomepageDesigner;
-import com.gfashion.domain.homepage.HomepageProduct;
-import com.gfashion.restclient.magento.exception.CustomerUnknowException;
+import com.gfashion.domain.homepage.GfCategory;
+import com.gfashion.restclient.magento.exception.CustomerException;
 import com.gfashion.restclient.magento.homepage.MagentoCategories;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.google.gson.Gson;
@@ -15,9 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class MagentoHomepageClient {
@@ -34,87 +29,72 @@ public class MagentoHomepageClient {
     @Value("${magento.url.parameters.value}")
     private String value;
 
-    @Value("${magento.url.parameters.recommendedDesignersParentId}")
-    private String recommendedDesignersParentId;
+    @Value("${magento.url.parameters.conditionType}")
+    private String conditionType;
 
-    @Value("${magento.url.parameters.recommendedBrandsParentId}")
-    private String recommendedBrandsParentId;
+    @Value("${magento.url.parameters.chineseRootCategory}")
+    private String chineseRootCategory;
+
+    @Value("${magento.url.parameters.englishRootCategory}")
+    private String englishRootCategory;
+
+    @Value("${magento.url.parameters.supportLanguages}")
+    private String supportLanguages;
+
+    @Value("${magento.url.parameters.rootCategoryLevel}")
+    private String rootCategoryLevel;
 
     @Autowired
     private RestClient _restClient;
 
     private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
 
-    public CustomizedHomepage getCustomizedHomepage(Integer customerId) throws CustomerUnknowException {
-
-        // TODO： Get Data From Real Magento API; Create Corresponding Magento Objects; Change the Mapper
-        // get the default CustomerHomePage
-        return getDefaultCustomizedHomepage();
-
-    }
-
-    public CustomizedHomepage getDefaultCustomizedHomepage() throws CustomerUnknowException {
-
-        // TODO： Get Data From Real Magento API; Create Corresponding Magento Objects; Change the Mapper
-        // mock the default CustomerHomePage
-        CustomizedHomepage customizedHomepage = new CustomizedHomepage();
-
-        customizedHomepage.setId(-1);
-        customizedHomepage.setRecommendedProducts(getDefaultHomepageProducts());
-        customizedHomepage.setRecommendedDesigners(getDefaultHomepageDesigners());
-        customizedHomepage.setRecommendedBrands(getDefaultHomepageBrands());
-        customizedHomepage.setFollowingDesigners(getDefaultFollowingDesigners());
-        customizedHomepage.setFollowingBrands(getDefaultFollowingBrands());
-        return customizedHomepage;
-    }
-
-    private List<HomepageProduct> getDefaultHomepageProducts(){
-        List<HomepageProduct> homepageProducts = new ArrayList<HomepageProduct>();
-        HomepageProduct homepageProduct1 = new HomepageProduct(1, "shoe",
-                "https://www.google.com/aclk?sa=l&ai=DChcSEwiC66Dw58HpAhXkCX0KHXP7AkgYABAHGgJwdg&sig=AOD64_1pSaVMQUmT6DFg7tdDM6UARZbXOw&adurl&ctype=5&ved=2ahUKEwimlZbw58HpAhWD6J4KHVppDTkQvhd6BAgBEF0",
-                true);
-        HomepageProduct homepageProduct2 = new HomepageProduct(2, "hat",
-                "https://www.google.com/aclk?sa=l&ai=DChcSEwiI56WD6MHpAhViGH0KHZkSDzYYABAEGgJwdg&sig=AOD64_15E0SJt1kMywkoQWoxEV0KCrpDwA&adurl&ctype=5&ved=2ahUKEwibs5qD6MHpAhXYgZ4KHTD-AjUQwg96BAgBEFk",
-                false);
-        homepageProducts.add(homepageProduct1);
-        homepageProducts.add(homepageProduct2);
-        return homepageProducts;
-    }
-
-    private List<HomepageBrand> getDefaultHomepageBrands() throws CustomerUnknowException {
-
-        String getDefaultHomepageBrandsUrl = listCategories + "?" +
-                String.join("&", new ArrayList<String>(Arrays.asList(new String[]{field + parentIdField, value + recommendedBrandsParentId})));
+    public List<GfCategory> getCategoriesUnderParentId(String parentId) throws CustomerException {
+        String field0 = String.format(field, 0, 0);
+        String value0 = String.format(value, 0, 0);
+        String listCategoriesById = listCategories + "?" +
+                String.join("&", new ArrayList<>(Arrays.asList(new String[]{field0 + parentIdField, value0 + parentId})));
 
         try {
-            ResponseEntity<String> responseEntity = this._restClient.exchangeGet(getDefaultHomepageBrandsUrl, String.class, null);
+            ResponseEntity<String> responseEntity = this._restClient.exchangeGet(listCategoriesById, String.class, null);
             Gson gson = new Gson();
-            return this._mapper.convertMagentoCategoriesToHomeBrands(gson.fromJson(responseEntity.getBody(), MagentoCategories.class).getItems());
+            return this._mapper.convertMagentoCategoriesToGfCategories(gson.fromJson(responseEntity.getBody(), MagentoCategories.class).getItems());
         } catch (HttpStatusCodeException e) {
-            throw new CustomerUnknowException(e.getMessage());
+            throw new CustomerException(e.getStatusCode(), e.getMessage());
         }
     }
 
-    private List<HomepageDesigner> getDefaultHomepageDesigners() throws CustomerUnknowException {
+    public List<GfCategory> getCategories(Integer fromLevel, Integer toLevel, String locale) throws CustomerException {
+        Set<String> supportLanguageSet = new HashSet<>(Arrays.asList(supportLanguages.split(",")));
+        if (!supportLanguageSet.contains(locale)) {
+            throw new IllegalArgumentException("The input locale is not supported. Only en or cn is supported.");
+        }
 
-        String getDefaultHomepageDesignersUrl = listCategories + "?" +
-                String.join("&", new ArrayList<String>(Arrays.asList(new String[]{field + parentIdField, value + recommendedDesignersParentId})));
+        String rootCategoryId = locale.equalsIgnoreCase("en") ? englishRootCategory : chineseRootCategory;
+        Integer rootCategoryLevelInt = Integer.valueOf(rootCategoryLevel);
+        String field0 = String.format(field, 0, 0);
+        String value0 = String.format(value, 0, 0);
+        String conditionType0 = String.format(conditionType, 0, 0);
+        String field1 = String.format(field, 1, 0);
+        String value1 = String.format(value, 1, 0);
+        String conditionType1 = String.format(conditionType, 1, 0);
+        String field2 = String.format(field, 2, 0);
+        String value2 = String.format(value, 2, 0);
+        String conditionType2 = String.format(conditionType, 2, 0);
+
+        String listCategoriesByLevels = listCategories + "?" +
+                String.join("&", new ArrayList<>(Arrays.asList(new String[]{
+                        field0 + "path", value0 + "%" + rootCategoryId + "%", conditionType0 + "like",
+                        field1 + "level", value1 + (rootCategoryLevelInt + fromLevel), conditionType1 + "gteq",
+                        field2 + "level", value2 + (rootCategoryLevelInt + toLevel), conditionType2 + "lteq",
+                })));
 
         try {
-            ResponseEntity<String> responseEntity = this._restClient.exchangeGet(getDefaultHomepageDesignersUrl, String.class, null);
+            ResponseEntity<String> responseEntity = this._restClient.exchangeGet(listCategoriesByLevels, String.class, null);
             Gson gson = new Gson();
-            return this._mapper.convertMagentoCategoriesToHomeDesigners(gson.fromJson(responseEntity.getBody(), MagentoCategories.class).getItems());
+            return this._mapper.convertMagentoCategoriesToGfCategories(gson.fromJson(responseEntity.getBody(), MagentoCategories.class).getItems());
         } catch (HttpStatusCodeException e) {
-            throw new CustomerUnknowException(e.getMessage());
+            throw new CustomerException(e.getStatusCode(), e.getMessage());
         }
     }
-
-    private List<HomepageBrand> getDefaultFollowingBrands() throws CustomerUnknowException {
-        return getDefaultHomepageBrands();
-    }
-
-    private List<HomepageDesigner> getDefaultFollowingDesigners() throws CustomerUnknowException {
-        return getDefaultHomepageDesigners();
-    }
-
 }

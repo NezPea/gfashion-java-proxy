@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class CustomerCreationException extends Exception{
+public class OrderNotFoundException extends Exception {
     private String errorMessage;
 }

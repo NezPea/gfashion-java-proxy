@@ -2,12 +2,14 @@ package com.gfashion.restclient.magento.homepage;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class MagentoCategory {
     private Integer id;
     private Integer parent_id;
@@ -19,6 +21,7 @@ public class MagentoCategory {
     private String created_at;
     private String updated_at;
     private String path;
-    private Boolean include;
+    private List<String> available_sort_by;
+    private Boolean include_in_menu;
     private List<Map<String, String>> custom_attributes;
 }

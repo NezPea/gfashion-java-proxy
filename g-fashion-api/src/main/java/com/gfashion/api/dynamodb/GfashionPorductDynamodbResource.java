@@ -6,19 +6,20 @@ import com.gfashion.data.GfProductEntity;
 import com.gfashion.data.repository.dynamodb.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@RequestMapping(path = "/gfashion/v1", produces = {"application/json"})
+@RequestMapping(path = "/gfashion/v1", produces = {MediaType.APPLICATION_JSON_VALUE})
 //@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class GfashionPorductDynamodbResource {
 
     private ProductRepository productRepository;
 
-    @PostMapping("/dynamodb/products")
+    @PostMapping(value = "/dynamodb/products", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfProductEntity> createProduct(@RequestBody GfProductEntity product) {
         try {
             GfProductEntity response = productRepository.createGfProductEntity(product);
@@ -30,10 +31,10 @@ public class GfashionPorductDynamodbResource {
         }
     }
 
-    @GetMapping("/dynamodb/products/{productId}")
+    @GetMapping(value = "/dynamodb/products/{productId}", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfProductEntity> getProduct(@PathVariable String productId) {
         try {
-            GfProductEntity response = productRepository.readGfProductEntity(productId);
+            GfProductEntity response = productRepository.readGfProductEntityById(productId);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
@@ -42,9 +43,12 @@ public class GfashionPorductDynamodbResource {
         }
     }
 
-    @PutMapping("/dynamodb/products")
+    @PutMapping(value = "/dynamodb/products", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfProductEntity> updateProduct(@RequestBody GfProductEntity product) {
         try {
+            if (productRepository.readGfProductEntityById(product.getId()) == null) {
+                return ResponseEntity.status(HttpStatus.OK).body(null);
+            }
             GfProductEntity response = productRepository.updateGfProductEntity(product);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
@@ -54,9 +58,12 @@ public class GfashionPorductDynamodbResource {
         }
     }
 
-    @DeleteMapping("/dynamodb/products/{productId}")
+    @DeleteMapping(value = "/dynamodb/products/{productId}", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfProductEntity> deleteProduct(@PathVariable String productId) {
         try {
+            if (productRepository.readGfProductEntityById(productId) == null) {
+                return ResponseEntity.status(HttpStatus.OK).body(null);
+            }
             productRepository.deleteGfProductEntity(productId);
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (AmazonServiceException e) {

@@ -6,7 +6,7 @@ public interface ProductRepository {
 
     GfProductEntity createGfProductEntity(GfProductEntity GfProductEntity);
 
-    GfProductEntity readGfProductEntity(String GfProductEntityId);
+    GfProductEntity readGfProductEntityById(String GfProductEntityId);
 
     GfProductEntity updateGfProductEntity(GfProductEntity GfProductEntity);
 

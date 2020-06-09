@@ -1,5 +1,6 @@
 package com.gfashion.config;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
@@ -15,13 +16,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DynamoDBConfig {
 
-    @Value("${amazon.dynamodb.accesskey}")
+    @Value("${aws.dynamodb.accesskey}")
     private String accesskey;
 
-    @Value("${amazon.dynamodb.secretkey}")
+    @Value("${aws.dynamodb.secretkey}")
     private String secretkey;
 
-    @Value("${amazon.dynamodb.region}")
+    @Value("${aws.dynamodb.region}")
     private String region;
 
     @Bean

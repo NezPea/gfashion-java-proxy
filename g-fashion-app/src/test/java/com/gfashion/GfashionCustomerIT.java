@@ -5,7 +5,6 @@ import com.gfashion.domain.customer.GfCustomerRegistration;
 import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -46,6 +45,14 @@ public class GfashionCustomerIT {
         Response response = RestAssured.get("/gfashion/v1/customers/{customerId}", -1);
         response.then().assertThat().
                 statusCode(404);
+    }
+
+    @Test
+    public void getCustomerVerificationCodeWithBadAuthShouldReturnUnauthorizedException() throws Exception {
+        Response response = RestAssured.given().header("Authorization", "Bearer 9v595tv71ajdacyjzk74uyfuvrfoyqnn")
+                .body("{\"email\": \"andrewluo.us@gmail.com\"}").post("/gfashion/v1/customers/{customerId}/getVerificationCode", 22);
+        response.then().assertThat().
+                statusCode(401);
     }
 
     @Test

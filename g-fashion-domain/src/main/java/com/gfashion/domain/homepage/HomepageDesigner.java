@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class HomepageDesigner {
-    private Integer id;
+    private String id;
     private String name;
     private List<String> cooperatingBrands;
     private String country;
