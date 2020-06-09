@@ -17,6 +17,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.gfashion.GfashionShipmentIT.adminAuth;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -59,7 +61,8 @@ public class GfashionOrderIT {
         GfShipOrder gfShipOrder = new GfShipOrder();
         gfShipOrder.setItems(items);
         //
-        RestAssured.given().request().contentType(ContentType.JSON)
+        RestAssured.given().header("Authorization", adminAuth)
+                .request().contentType(ContentType.JSON)
                 .body(gson.toJson(gfShipOrder))
                 .post("/gfashion/v1/order/{orderId}/ship", order_id)
                 .then().assertThat()
@@ -71,7 +74,8 @@ public class GfashionOrderIT {
     public void getTracksByOrderId() throws Exception {
         /*RestAssured.given().param("searchCriteria", "order_id=50")
                 .param("fields", "items[tracks]").when()*/
-        RestAssured.given().get("/gfashion/v1/order/{orderId}/tracks", order_id).then().assertThat()
+        RestAssured.given().header("Authorization", adminAuth)
+                .get("/gfashion/v1/order/{orderId}/tracks", order_id).then().assertThat()
                 .statusCode(200)
                 .body("items.size()", Matchers.greaterThanOrEqualTo(0));
     }

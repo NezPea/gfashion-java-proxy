@@ -51,10 +51,11 @@ public class GfashionShipmentIT {
 
         }
     }
-
+    public static String adminAuth = "Bearer klp5d2dsvdxyipz79046t4rpctjqt0z5";
     @Test
     public void getShipmentById() throws Exception {
-        Response response = RestAssured.get("/gfashion/v1/shipment/{shipmentId}", shipment_id);
+        Response response = RestAssured.given().header("Authorization", adminAuth)
+                .get("/gfashion/v1/shipment/{shipmentId}", shipment_id);
         response.then().assertThat()
                 .statusCode(200)
                 .body("entityId", equalTo(shipment_id));
@@ -69,7 +70,8 @@ public class GfashionShipmentIT {
         items.add(GfShipmentItem.builder().orderItemId(order_item_id).description(value).build());
         gfShipment.setItems(items);
         //
-        given().header("Content-Type", ContentType.JSON)
+        RestAssured.given().header("Authorization", adminAuth)
+                .header("Content-Type", ContentType.JSON)
                 .body(gson.toJson(gfShipment))
                 .post("/gfashion/v1/shipment")
                 .then().assertThat()
@@ -85,7 +87,8 @@ public class GfashionShipmentIT {
 
     @Test
     public void queryShipments() throws Exception {
-        given().param("searchCriteria", "order_id=" + order_id)
+        given().header("Authorization", adminAuth)
+                .param("searchCriteria", "order_id=" + order_id)
                 .param("fields", "items[tracks]").when()
                 .get("/gfashion/v1/shipments").then().assertThat()
                 .statusCode(200)

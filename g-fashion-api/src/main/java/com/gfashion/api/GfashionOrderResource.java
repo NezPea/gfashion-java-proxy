@@ -6,10 +6,7 @@ import com.gfashion.domain.sales.GfShipmentTrack;
 import com.gfashion.domain.sales.response.GfShipmentResp;
 import com.gfashion.restclient.MagentoOrderClient;
 import com.gfashion.restclient.MagentoShipmentClient;
-import com.gfashion.restclient.magento.exception.OrderNotFoundException;
-import com.gfashion.restclient.magento.exception.OrderUnknowException;
-import com.gfashion.restclient.magento.exception.ShipmentNotFoundException;
-import com.gfashion.restclient.magento.exception.ShipmentUnknowException;
+import com.gfashion.restclient.magento.exception.*;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpStatus;
@@ -31,10 +28,12 @@ public class GfashionOrderResource {
 	private MagentoShipmentClient magentoShipmentClient;
 
 	@PostMapping(value = "/{orderId}/ship")
-	public ResponseEntity<GfShipment> shipOrder(@PathVariable Integer orderId, @RequestBody GfShipOrder gfShipOrder) {
+	public ResponseEntity<GfShipment> shipOrder(@RequestHeader(name = "Authorization") String customerToken, @PathVariable Integer orderId, @RequestBody GfShipOrder gfShipOrder) {
 		try {
-			String shipmentId = magentoOrderClient.shipOrder(orderId, gfShipOrder);//返回的结果是\"79\"，需要删除前后双引号
+			String shipmentId = magentoOrderClient.shipOrder(customerToken, orderId, gfShipOrder);//返回的结果是\"79\"，需要删除前后双引号
 			return ResponseEntity.status(HttpStatus.OK).body(GfShipment.builder().entityId(Integer.parseInt(shipmentId)).build());
+		} catch (CustomerException e) {
+			throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
 		} catch (OrderNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
 		} catch (OrderUnknowException e) {
@@ -47,9 +46,9 @@ public class GfashionOrderResource {
 	 * 订单页面需要
 	 */
 	@GetMapping("/{orderId}/tracks")
-	public ResponseEntity<List<GfShipmentTrack>> getTracksByOrderId(@PathVariable Integer orderId) {
+	public ResponseEntity<List<GfShipmentTrack>> getTracksByOrderId(@RequestHeader(name = "Authorization") String customerToken, @PathVariable Integer orderId) {
 		try {
-			GfShipmentResp gfShipmentResp = magentoShipmentClient.queryShipments("order_id=" + orderId, "items[tracks]");
+			GfShipmentResp gfShipmentResp = magentoShipmentClient.queryShipments(customerToken, "order_id=" + orderId, "items[tracks]");
 			if (CollectionUtils.isEmpty(gfShipmentResp.getItems())) {
 				return ResponseEntity.status(HttpStatus.OK).body(Collections.EMPTY_LIST);
 			}
@@ -63,6 +62,8 @@ public class GfashionOrderResource {
 				tracks.sort(Comparator.comparing(GfShipmentTrack::getCreatedAt));
 			}
 			return ResponseEntity.status(HttpStatus.OK).body(tracks);
+		} catch (CustomerException e) {
+			throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
 		} catch (ShipmentNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
 		} catch (ShipmentUnknowException e) {

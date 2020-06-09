@@ -2,6 +2,7 @@ package com.gfashion.restclient;
 
 import com.gfashion.domain.sales.GfShipment;
 import com.gfashion.domain.sales.response.GfShipmentResp;
+import com.gfashion.restclient.magento.exception.CustomerException;
 import com.gfashion.restclient.magento.exception.ShipmentNotFoundException;
 import com.gfashion.restclient.magento.exception.ShipmentUnknowException;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -34,41 +36,50 @@ public class MagentoShipmentClient {
 
 	private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
 
-	public GfShipment updateShipment(GfShipment gfShipment) throws ShipmentNotFoundException, ShipmentUnknowException {
+	public GfShipment updateShipment(String customerToken, GfShipment gfShipment) throws CustomerException, ShipmentNotFoundException, ShipmentUnknowException {
 		try {
 //            Integer totalQty = gfShipment.getItems().stream().mapToInt(GfShipmentItem::getQty).sum();
 //            gfShipment.setTotal_qty(totalQty);
+			HttpHeaders headers = _restClient.getCustomerHeaders(customerToken);
 			MagentoShipment magentoShipment = _mapper.convertGfShipmentToMagentoShipment(gfShipment);
 			MagentoShipmentReq magentoShipmentReq = new MagentoShipmentReq(magentoShipment);
-			ResponseEntity<String> responseEntity = _restClient.postForEntity(shipmentUrl, magentoShipmentReq, String.class, null);
+			ResponseEntity<String> responseEntity = _restClient.postForEntity(shipmentUrl, magentoShipmentReq, String.class, headers);
 			Gson gson = new Gson();
 			magentoShipment = gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
 			return _mapper.convertMagentoShipmentToGfShipment(magentoShipment);
 		} catch (HttpStatusCodeException e) {
-			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+			if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+				throw new CustomerException(e.getStatusCode(), e.getMessage());
+			} else if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
 				throw new ShipmentNotFoundException(e.getMessage());
+			} else {
+				throw new ShipmentUnknowException(e.getMessage());
 			}
-			throw new ShipmentUnknowException(e.getMessage());
 		}
 	}
 
-	public GfShipment getShipmentById(Integer id) throws ShipmentNotFoundException, ShipmentUnknowException {
+	public GfShipment getShipmentById(String customerToken, Integer id) throws CustomerException, ShipmentNotFoundException, ShipmentUnknowException {
 		String url = shipmentUrl + id;
 		try {
-			ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, null);
+			HttpHeaders headers = _restClient.getCustomerHeaders(customerToken);
+			ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, headers);
 			Gson gson = new Gson();
 			MagentoShipment magentoShipment = gson.fromJson(responseEntity.getBody(), MagentoShipment.class);
 			GfShipment gfShipment = _mapper.convertMagentoShipmentToGfShipment(magentoShipment);
 			return gfShipment;
 		} catch (HttpStatusCodeException e) {
-			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+			if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+				throw new CustomerException(e.getStatusCode(), e.getMessage());
+			} else if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
 				throw new ShipmentNotFoundException(e.getMessage());
+			} else {
+				throw new ShipmentUnknowException(e.getMessage());
 			}
-			throw new ShipmentUnknowException(e.getMessage());
 		}
 	}
 
 	/**
+	 * @param customerToken
 	 * @param searchCriteria 1 Logical OR search: &lt;field&gt;&lt;condition_type&gt;&lt;value&gt;[ | &lt;field&gt;&lt;condition_type&gt;&lt;value&gt;]*<br/>
 	 *                       2 Logical AND search: &lt;field&gt;&lt;condition_type&gt;&lt;value&gt;[ & &lt;field&gt;&lt;condition_type&gt;&lt;value&gt;]*<br/>
 	 *                       3 Logical AND and OR search: &lt;field&gt;&lt;condition_type&gt;&lt;value&gt; | &lt;field&gt;&lt;condition_type&gt;&lt;value&gt; & &lt;field&gt;&lt;condition_type&gt;&lt;value&gt;<br/>
@@ -81,20 +92,24 @@ public class MagentoShipmentClient {
 	 *                       Be cautious when using too complicated expressions, whether it meets expectations.<br/>
 	 * @param fileds         Attributes to return in the response. If you do not specify this parameter, all attributes will be returned.
 	 */
-	public GfShipmentResp queryShipments(String searchCriteria, String fileds) throws ShipmentNotFoundException, ShipmentUnknowException {
+	public GfShipmentResp queryShipments(String customerToken, String searchCriteria, String fileds) throws CustomerException, ShipmentNotFoundException, ShipmentUnknowException {
 		String url = "shipments" + getSearchCriteria(searchCriteria, fileds);// /shipments?searchCriteria...
 		log.info(url);
 		try {
-			ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, null);
+			HttpHeaders headers = _restClient.getCustomerHeaders(customerToken);
+			ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, headers);
 			Gson gson = new Gson();
 			MagentoShipmentResp magentoShipmentResp = gson.fromJson(responseEntity.getBody(), MagentoShipmentResp.class);
 			GfShipmentResp gfShipmentResp = _mapper.convertMagentoShipmentRespToGfShipmentResp(magentoShipmentResp);
 			return gfShipmentResp;
 		} catch (HttpStatusCodeException e) {
-			if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+			if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+				throw new CustomerException(e.getStatusCode(), e.getMessage());
+			} else if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
 				throw new ShipmentNotFoundException(e.getMessage());
+			} else {
+				throw new ShipmentUnknowException(e.getMessage());
 			}
-			throw new ShipmentUnknowException(e.getMessage());
 		}
 	}
 

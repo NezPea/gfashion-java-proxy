@@ -3,6 +3,7 @@ package com.gfashion.api;
 import com.gfashion.domain.sales.GfShipment;
 import com.gfashion.domain.sales.response.GfShipmentResp;
 import com.gfashion.restclient.MagentoShipmentClient;
+import com.gfashion.restclient.magento.exception.CustomerException;
 import com.gfashion.restclient.magento.exception.ShipmentNotFoundException;
 import com.gfashion.restclient.magento.exception.ShipmentUnknowException;
 import lombok.AllArgsConstructor;
@@ -20,10 +21,12 @@ public class GfashionShipmentResource {
 	private MagentoShipmentClient magentoShipmentClient;
 
 	@PostMapping("/shipment")
-	public ResponseEntity<GfShipment> updateShipment(@RequestBody @Validated GfShipment gfShipment) {
+	public ResponseEntity<GfShipment> updateShipment(@RequestHeader(name = "Authorization") String customerToken, @RequestBody @Validated GfShipment gfShipment) {
 		try {
-			gfShipment = magentoShipmentClient.updateShipment(gfShipment);
+			gfShipment = magentoShipmentClient.updateShipment(customerToken, gfShipment);
 			return ResponseEntity.status(HttpStatus.OK).body(gfShipment);
+		} catch (CustomerException e) {
+			throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
 		} catch (ShipmentNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
 		} catch (ShipmentUnknowException e) {
@@ -32,9 +35,11 @@ public class GfashionShipmentResource {
 	}
 
 	@GetMapping("/shipment/{shipmentId}")
-	public ResponseEntity<GfShipment> getShipmentById(@PathVariable Integer shipmentId) {
+	public ResponseEntity<GfShipment> getShipmentById(@RequestHeader(name = "Authorization") String customerToken, @PathVariable Integer shipmentId) {
 		try {
-			return ResponseEntity.status(HttpStatus.OK).body(magentoShipmentClient.getShipmentById(shipmentId));
+			return ResponseEntity.status(HttpStatus.OK).body(magentoShipmentClient.getShipmentById(customerToken, shipmentId));
+		} catch (CustomerException e) {
+			throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
 		} catch (ShipmentNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
 		} catch (ShipmentUnknowException e) {
@@ -43,9 +48,11 @@ public class GfashionShipmentResource {
 	}
 
 	@GetMapping("/shipments")
-	public ResponseEntity<GfShipmentResp> queryShipments(String searchCriteria, String fields) {
+	public ResponseEntity<GfShipmentResp> queryShipments(@RequestHeader(name = "Authorization") String customerToken, String searchCriteria, String fields) {
 		try {
-			return ResponseEntity.status(HttpStatus.OK).body(magentoShipmentClient.queryShipments(searchCriteria, fields));
+			return ResponseEntity.status(HttpStatus.OK).body(magentoShipmentClient.queryShipments(customerToken, searchCriteria, fields));
+		} catch (CustomerException e) {
+			throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
 		} catch (ShipmentNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
 		} catch (ShipmentUnknowException e) {
