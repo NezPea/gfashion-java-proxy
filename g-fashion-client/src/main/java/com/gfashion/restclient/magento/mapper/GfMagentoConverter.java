@@ -10,6 +10,11 @@ import com.gfashion.domain.product.*;
 import com.gfashion.domain.customer.GfCustomer;
 import com.gfashion.domain.customer.GfCustomerAddress;
 
+import com.gfashion.domain.sales.GfShipment;
+import com.gfashion.domain.sales.GfShipmentComment;
+import com.gfashion.domain.sales.GfShipmentItem;
+import com.gfashion.domain.sales.GfShipmentTrack;
+import com.gfashion.domain.sales.response.GfShipmentResp;
 import com.gfashion.domain.store.GfStore;
 import com.gfashion.domain.store.GfStoreConfig;
 import com.gfashion.domain.store.GfStoreGroup;
@@ -21,6 +26,11 @@ import com.gfashion.restclient.magento.*;
 
 import com.gfashion.restclient.magento.homepage.MagentoCategory;
 import com.gfashion.restclient.magento.product.*;
+import com.gfashion.restclient.magento.sales.MagentoShipment;
+import com.gfashion.restclient.magento.sales.MagentoShipmentComment;
+import com.gfashion.restclient.magento.sales.MagentoShipmentItem;
+import com.gfashion.restclient.magento.sales.MagentoShipmentTrack;
+import com.gfashion.restclient.magento.sales.response.MagentoShipmentResp;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -85,4 +95,32 @@ public interface GfMagentoConverter {
                 map(p -> p.get("value")).collect(Collectors.toList());
         return res != null && res.size() != 0 ? res.get(0) : null;
     }
+
+    //--shipment
+//    @Mapping(source = "orderId",target = "order_id")
+    MagentoShipment from(GfShipment shipment);
+
+//    @Mapping(source = "orderItemId",target = "order_item_id")
+    MagentoShipmentItem from(GfShipmentItem shipmentItem);
+
+//    @Mapping(source = "orderId",target = "order_id")
+    MagentoShipmentTrack from(GfShipmentTrack shipmentTrack);
+
+//    @Mapping(source = "parentId",target = "parent_id")
+    MagentoShipmentComment from(GfShipmentComment gfShipmentComment);
+    //
+//    @Mapping(target = "orderId",source = "order_id")
+    GfShipment from(MagentoShipment shipment);
+
+//    @Mapping(target = "orderItemId",source = "order_item_id")
+    GfShipmentItem from(MagentoShipmentItem shipmentItem);
+
+//    @Mapping(target = "orderId",source = "order_id")
+    GfShipmentTrack from(MagentoShipmentTrack shipmentTrack);
+
+//    @Mapping(target = "parentId",source = "parent_id")
+    GfShipmentComment from(MagentoShipmentComment comment);
+
+    GfShipmentResp from(MagentoShipmentResp magentoShipmentResp);
+    //--shipment
 }
