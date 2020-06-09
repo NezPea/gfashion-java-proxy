@@ -1,6 +1,7 @@
 package com.gfashion.domain.cart;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,5 @@ import java.util.List;
 @NoArgsConstructor
 public class GfCartTotalSegmentExtensionAttributes {
 
-    private List<JSONObject> tax_grandtotal_details;
+    private List<JSONObject> taxGrandTotalDetails;
 }

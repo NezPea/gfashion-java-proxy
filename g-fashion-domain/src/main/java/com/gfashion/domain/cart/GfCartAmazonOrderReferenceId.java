@@ -9,7 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GfConfigurableItemOption {
-    private String option_id;
-    private String option_value;
+public class GfCartAmazonOrderReferenceId {
+
+    private String id;
+    private String amazonOrderReferenceId;
+    private Integer quoteId;
+    private String sandboxSimulationReference;
+    private Boolean confirmed;
 }

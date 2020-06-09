@@ -1,15 +1,14 @@
 package com.gfashion.restclient.magento.mapper;
 
 import com.gfashion.domain.cart.*;
+import com.gfashion.domain.customer.GfCustomer;
+import com.gfashion.domain.customer.GfCustomerAddress;
 import com.gfashion.domain.customer.GfCustomerExtensionAttributes;
 import com.gfashion.domain.customer.GfCustomerRegion;
 import com.gfashion.domain.homepage.GfCategory;
 import com.gfashion.domain.homepage.HomepageBrand;
 import com.gfashion.domain.homepage.HomepageDesigner;
 import com.gfashion.domain.product.*;
-import com.gfashion.domain.customer.GfCustomer;
-import com.gfashion.domain.customer.GfCustomerAddress;
-
 import com.gfashion.domain.sales.GfShipment;
 import com.gfashion.domain.sales.GfShipmentComment;
 import com.gfashion.domain.sales.GfShipmentItem;
@@ -19,11 +18,15 @@ import com.gfashion.domain.store.GfStore;
 import com.gfashion.domain.store.GfStoreConfig;
 import com.gfashion.domain.store.GfStoreGroup;
 import com.gfashion.domain.store.GfWebsite;
-import com.gfashion.domain.product.GfProductSearchResponse;
-import com.gfashion.restclient.magento.customer.*;
-import com.gfashion.restclient.magento.product.MagentoEvaAttribute;
-import com.gfashion.restclient.magento.*;
-
+import com.gfashion.restclient.magento.MagentoStore;
+import com.gfashion.restclient.magento.MagentoStoreConfig;
+import com.gfashion.restclient.magento.MagentoStoreGroup;
+import com.gfashion.restclient.magento.MagentoWebsite;
+import com.gfashion.restclient.magento.cart.*;
+import com.gfashion.restclient.magento.customer.MagentoCustomer;
+import com.gfashion.restclient.magento.customer.MagentoCustomerAddress;
+import com.gfashion.restclient.magento.customer.MagentoCustomerExtensionAttributes;
+import com.gfashion.restclient.magento.customer.MagentoCustomerRegion;
 import com.gfashion.restclient.magento.homepage.MagentoCategory;
 import com.gfashion.restclient.magento.product.*;
 import com.gfashion.restclient.magento.sales.MagentoShipment;
@@ -42,52 +45,91 @@ import java.util.stream.Collectors;
 @Mapper
 public interface GfMagentoConverter {
     GfCustomer convertMagentoCustomerToGfCustomer(MagentoCustomer magentoCustomer);
+
     GfProduct convertMagentoProductToGfProduct(MagentoProduct magentoProduct);
+
     GfStockItem convertMagentoStockItemToGfStockItem(MagentoStockItem magentoStockItem);
+
     GfConfigurableProductOption convertMagentoConfigurableProductOptionToGfConfigurableProductOption(MagentoConfigurableProductOption magentoConfigurableProductOption);
+
     GfConfigurableProductOptionValue convertMagentoConfigurableProductOptionValueToGfConfigurableProductOptionValue(MagentoConfigurableProductOptionValue magentoConfigurableProductOptionValue);
+
     GfProductCategory convertMagentoProductCategoryToGfProductCategory(MagentoProductCategory magentoProductCategory);
+
     GfEvaAttribute convertMagentoEvaAttributeToGfEvaAttribute(MagentoEvaAttribute magentoEvaAttribute);
+
     GfProductLink convertMagentoProductLinkToGfProductLink(MagentoProductLink magentoProductLink);
+
     GfProductCustomAttribute convertMagentoProductCustomAttributeToGfProductCustomAttribute(MagentoProductCustomAttribute magentoProductCustomAttribute);
+
     GfExtensionAttribute convertMagentoExtensionAttributeToGfExtensionAttribute(MagentoExtensionAttribute magentoExtensionAttribute);
+
     GfMediaGalleryEntry convertMagentoMediaGalleryEntryToGfMediaGalleryEntry(MagentoMediaGalleryEntry magentoMediaGalleryEntry);
+
     GfProductSearchResponse convertMagentoProductSearchToGfProductSearch(MagentoProductSearchResponse magentoProductSearchResponse);
+
     MagentoCustomer convertGfCustomerToMagentoCustomer(GfCustomer gfCustomer);
+
     GfCustomerAddress convertMagentoCustomerAddressToGfCustomerAddress(MagentoCustomerAddress magentoCustomerAddress);
+
     MagentoCustomerAddress convertGfCustomerAddressToMagentoCustomerAddress(GfCustomerAddress gfCustomerAddress);
+
     GfCustomerExtensionAttributes convertMagentoCustomerExtensionAttributesToGfCustomerExtensionAttributes(MagentoCustomerExtensionAttributes magentoCustomerExtensionAttributes);
+
     MagentoCustomerExtensionAttributes convertGfCustomerExtensionAttributesToMagentoCustomerExtensionAttributes(GfCustomerExtensionAttributes gfCustomerExtensionAttributes);
+
     GfCustomerRegion convertMagentoCustomerRegionToGfCustomerRegion(MagentoCustomerRegion magentoCustomerRegion);
+
     MagentoCustomerRegion convertGfCustomerRegionToMagentoCustomerRegion(GfCustomerRegion gfCustomerRegion);
+
     GfStore[] convertMagentoStoreToGfStoreArray(MagentoStore[] magentoStore);
+
     GfWebsite[] convertMagentoWebsiteToGfWebsiteArray(MagentoWebsite[] magentoWebsites);
+
     GfStoreGroup[] convertMagentoStoreGroupToGfStoreGroupArray(MagentoStoreGroup[] magentoStoreGroups);
+
     GfStoreConfig[] convertMagentoStoreConfigToGfStoreConfigArray(MagentoStoreConfig[] magentoStoreConfigs);
+
     List<GfCategory> convertMagentoCategoriesToGfCategories(List<MagentoCategory> magentoCategories);
+
     GfCategory convertMagentoCategoryToGfCategory(MagentoCategory magentoCategory);
 
     GfCart convertMagentoCartToGfCart(MagentoCart cart);
+
     GfCartItem convertMagentoCartItemToGfCartItem(MagentoCartItem cartItem);
+
     GfCartEstimateShippingMethod convertMagentoCartEstimateShippingMethodToGfCartEstimateShippingMethod(MagentoCartEstimateShippingMethod estimateShippingMethod);
+
+    GfCartPaymentMethod convertMagentoCartPaymentMethodToGfCartPaymentMethod(MagentoCartPaymentMethod paymentMethod);
+
     GfCartShippingInformation convertMagentoCartShippingInformationToGfCartShippingInformation(MagentoCartShippingInformation shippingInformation);
 
+    MagentoCartItem convertGfCartItemToMagentoCartItem(GfCartItem cartItem);
+
+    MagentoCartAddress convertGfCartAddressToMagentoCartAddress(GfCartAddress cartAddress);
+
+    MagentoCartAddressInformation convertGfCartAddressInformationToMagentoCartAddressInformation(GfCartAddressInformation cartAddress);
+
+    MagentoCartPaymentInformation convertGfCartPaymentInformationToMagentoCartPaymentInformation(GfCartPaymentInformation cartAddress);
+
     public List<HomepageBrand> convertMagentoCategoriesToHomeBrands(List<MagentoCategory> magentoCategories);
+
     @Mapping(source = "custom_attributes", target = "link", qualifiedByName = "getLinkFromAttribute")
     @Mapping(source = "custom_attributes", target = "photoUrl", qualifiedByName = "getPhotoUrlFromAttribute")
     HomepageBrand convertMagentoCategoryToHomeBrand(MagentoCategory magentoCategory);
 
     List<HomepageDesigner> convertMagentoCategoriesToHomeDesigners(List<MagentoCategory> magentoCategories);
+
     @Mapping(source = "custom_attributes", target = "photoUrl", qualifiedByName = "getPhotoUrlFromAttribute")
     HomepageDesigner convertMagentoCategoryToHomeDesigner(MagentoCategory magentoCategory);
 
     @Named("getPhotoUrlFromAttribute")
-    static String getPhotoUrlFromAttribute(List<Map<String, String>> customerAttributes){
+    static String getPhotoUrlFromAttribute(List<Map<String, String>> customerAttributes) {
         return getCustomerAttributeValue(customerAttributes, "url_path");
     }
 
-    static String getCustomerAttributeValue(List<Map<String, String>> customerAttributes, String attributeName){
-        if (customerAttributes == null){
+    static String getCustomerAttributeValue(List<Map<String, String>> customerAttributes, String attributeName) {
+        if (customerAttributes == null) {
             return null;
         }
         List<String> res = customerAttributes.stream().
@@ -100,25 +142,26 @@ public interface GfMagentoConverter {
 //    @Mapping(source = "orderId",target = "order_id")
     MagentoShipment from(GfShipment shipment);
 
-//    @Mapping(source = "orderItemId",target = "order_item_id")
+    //    @Mapping(source = "orderItemId",target = "order_item_id")
     MagentoShipmentItem from(GfShipmentItem shipmentItem);
 
-//    @Mapping(source = "orderId",target = "order_id")
+    //    @Mapping(source = "orderId",target = "order_id")
     MagentoShipmentTrack from(GfShipmentTrack shipmentTrack);
 
-//    @Mapping(source = "parentId",target = "parent_id")
+    //    @Mapping(source = "parentId",target = "parent_id")
     MagentoShipmentComment from(GfShipmentComment gfShipmentComment);
+
     //
 //    @Mapping(target = "orderId",source = "order_id")
     GfShipment from(MagentoShipment shipment);
 
-//    @Mapping(target = "orderItemId",source = "order_item_id")
+    //    @Mapping(target = "orderItemId",source = "order_item_id")
     GfShipmentItem from(MagentoShipmentItem shipmentItem);
 
-//    @Mapping(target = "orderId",source = "order_id")
+    //    @Mapping(target = "orderId",source = "order_id")
     GfShipmentTrack from(MagentoShipmentTrack shipmentTrack);
 
-//    @Mapping(target = "parentId",source = "parent_id")
+    //    @Mapping(target = "parentId",source = "parent_id")
     GfShipmentComment from(MagentoShipmentComment comment);
 
     GfShipmentResp from(MagentoShipmentResp magentoShipmentResp);

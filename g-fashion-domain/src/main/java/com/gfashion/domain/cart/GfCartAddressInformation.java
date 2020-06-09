@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GfCartAddressInformation {
 
-    private GfCartAddress shipping_address;
-    private GfCartAddress billing_address;
-    private String shipping_carrier_code;
-    private String shipping_method_code;
+    private GfCartAddress shippingAddress;
+    private GfCartAddress billingAddress;
+    private String shippingCarrierCode;
+    private String shippingMethodCode;
 }

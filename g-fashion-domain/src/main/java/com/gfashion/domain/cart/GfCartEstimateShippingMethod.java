@@ -11,14 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GfCartEstimateShippingMethod {
 
-    private String carrier_code;
-    private String method_code;
-    private String carrier_title;
-    private String method_title;
+    private String carrierCode;
+    private String methodCode;
+    private String carrierTitle;
+    private String methodTitle;
     private Integer amount;
-    private Integer base_amount;
+    private Integer baseAmount;
     private Boolean available;
-    private String error_message;
-    private Integer price_excl_tax;
-    private Integer price_incl_tax;
+    private String errorMessage;
+    private Integer priceExclTax;
+    private Integer priceInclTax;
 }

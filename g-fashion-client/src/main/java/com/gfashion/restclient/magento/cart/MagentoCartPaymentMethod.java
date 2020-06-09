@@ -1,4 +1,4 @@
-package com.gfashion.restclient.magento.customer;
+package com.gfashion.restclient.magento.cart;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,4 +11,5 @@ public class MagentoCartPaymentMethod {
 
     private String code;
     private String title;
+    private String method;
 }

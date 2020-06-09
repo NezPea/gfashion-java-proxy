@@ -1,7 +1,7 @@
 package com.gfashion.restclient;
 
 import com.gfashion.domain.cart.*;
-import com.gfashion.restclient.magento.customer.*;
+import com.gfashion.restclient.magento.cart.*;
 import com.gfashion.restclient.magento.exception.*;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.google.gson.Gson;
@@ -31,6 +31,8 @@ public class MagentoCartClient {
 
     @Autowired
     private RestClient restClient;
+    @Autowired
+    private Gson gson;
 
     private final GfMagentoConverter mapper = Mappers.getMapper(GfMagentoConverter.class);
 
@@ -40,11 +42,9 @@ public class MagentoCartClient {
             restClient.postForEntity(cartsUrl, null, Integer.class, headers);
 
             ResponseEntity<String> responseEntity = restClient.exchangeGet(cartsUrl, String.class, headers);
-            Gson gson = new Gson();
             GfCart gfCart = mapper.convertMagentoCartToGfCart(gson.fromJson(responseEntity.getBody(), MagentoCart.class));
-            List<GfCartItem> cartItems = getCartItemList(customerToken);
-            gfCart.setItems(cartItems);
-            return mapper.convertMagentoCartToGfCart(gson.fromJson(responseEntity.getBody(), MagentoCart.class));
+            gfCart.setItems(getCartItemList(customerToken));
+            return gfCart;
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 throw new CustomerTokenNotFoundException(e.getMessage());
@@ -63,7 +63,6 @@ public class MagentoCartClient {
             HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
             ResponseEntity<String> responseEntity = restClient.exchangeGet(cartItemsUrl, String.class, headers);
 
-            Gson gson = new Gson();
             String body = responseEntity.getBody();
             Type listType = new TypeToken<List<MagentoCartItem>>() {}.getType();
             List<MagentoCartItem> cartItems = gson.fromJson(body, listType);
@@ -87,10 +86,9 @@ public class MagentoCartClient {
         try {
             HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
             Map<String, Object> body = new HashMap<>();
-            body.put("cartItem", cartItem);
+            body.put("cartItem", mapper.convertGfCartItemToMagentoCartItem(cartItem));
             ResponseEntity<String> responseEntity = restClient.postForEntity(cartItemsUrl, body, String.class, headers);
 
-            Gson gson = new Gson();
             return mapper.convertMagentoCartItemToGfCartItem(gson.fromJson(responseEntity.getBody(), MagentoCartItem.class));
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
@@ -112,10 +110,9 @@ public class MagentoCartClient {
         try {
             HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
             Map<String, Object> body = new HashMap<>();
-            body.put("cartItem", cartItem);
+            body.put("cartItem", mapper.convertGfCartItemToMagentoCartItem(cartItem));
             ResponseEntity<String> responseEntity = restClient.exchangePut(updateCartItemUrl, body, String.class, headers);
 
-            Gson gson = new Gson();
             return mapper.convertMagentoCartItemToGfCartItem(gson.fromJson(responseEntity.getBody(), MagentoCartItem.class));
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
@@ -152,10 +149,8 @@ public class MagentoCartClient {
         try {
             HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
             Map<String, Object> body = new HashMap<>();
-            body.put("address", address);
+            body.put("address", mapper.convertGfCartAddressToMagentoCartAddress(address));
             ResponseEntity<String> responseEntity = restClient.postForEntity(cartEstimateShippingMethodsUrl, body, String.class, headers);
-
-            Gson gson = new Gson();
 
             Type listType = new TypeToken<List<MagentoCartEstimateShippingMethod>>() {}.getType();
             List<MagentoCartEstimateShippingMethod> methods = gson.fromJson(responseEntity.getBody(), listType);
@@ -179,12 +174,52 @@ public class MagentoCartClient {
         try {
             HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
             Map<String, Object> body = new HashMap<>();
-            body.put("addressInformation", addressInformation);
+            body.put("addressInformation", mapper.convertGfCartAddressInformationToMagentoCartAddressInformation(addressInformation));
             ResponseEntity<String> responseEntity = restClient.postForEntity(cartPaymentMethodsUrl, body, String.class, headers);
 
-            Gson gson = new Gson();
             MagentoCartShippingInformation cartCheckout = gson.fromJson(responseEntity.getBody(), MagentoCartShippingInformation.class);
             return mapper.convertMagentoCartShippingInformationToGfCartShippingInformation(cartCheckout);
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new CustomerTokenNotFoundException(e.getMessage());
+            }
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new CartNotFoundException(e.getMessage());
+            }
+            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                throw new CartCreationException(e.getMessage());
+            }
+            throw new CartUnknownException(e.getMessage());
+        }
+    }
+
+    public List<GfCartPaymentMethod> getPaymentMethods(String customerToken) throws CustomerTokenNotFoundException, CartUnknownException {
+        String cartPaymentMethodsUrl = cartsUrl + "payment-methods/";
+        try {
+            HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
+            ResponseEntity<String> responseEntity = restClient.exchangeGet(cartPaymentMethodsUrl, String.class, headers);
+
+            Type listType = new TypeToken<List<MagentoCartPaymentMethod>>() {}.getType();
+            List<MagentoCartPaymentMethod> methods = gson.fromJson(responseEntity.getBody(), listType);
+            if (methods == null) {
+                throw new CartUnknownException("Response is null");
+            }
+            return methods.stream().map(mapper::convertMagentoCartPaymentMethodToGfCartPaymentMethod).collect(Collectors.toList());
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new CustomerTokenNotFoundException(e.getMessage());
+            }
+            throw new CartUnknownException(e.getMessage());
+        }
+    }
+
+    public String createOrder(String customerToken, GfCartPaymentInformation paymentInformation) throws CustomerTokenNotFoundException, CartUnknownException, CartNotFoundException, CartCreationException {
+        String cartPaymentMethodsUrl = cartsUrl + "payment-information/";
+        try {
+            HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
+            MagentoCartPaymentInformation information = mapper.convertGfCartPaymentInformationToMagentoCartPaymentInformation(paymentInformation);
+            ResponseEntity<String> responseEntity = restClient.postForEntity(cartPaymentMethodsUrl, information, String.class, headers);
+            return responseEntity.getBody();
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 throw new CustomerTokenNotFoundException(e.getMessage());

@@ -53,7 +53,7 @@ magento:
   password: 202064_Hh
 
 test:
-  email: testli@test.com
+  email: customer@test.com
   password: P@ssw0rd
 
 logging:
@@ -130,7 +130,7 @@ magento:
   password: 202064_Hh
 
 test:
-  email: testli@test.com
+  email: customer@test.com
   password: P@ssw0rd
 
 logging:

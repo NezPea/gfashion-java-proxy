@@ -36,7 +36,8 @@ public class GfashionCartResource {
     }
 
     @GetMapping("/carts/items")
-    public ResponseEntity<List<GfCartItem>> getCartItemList(@RequestHeader(name = "Authorization") String customerToken) {
+    public ResponseEntity<List<GfCartItem>> getCartItemList(
+            @RequestHeader(name = "Authorization") String customerToken) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.getCartItemList(customerToken));
         } catch (CustomerTokenNotFoundException e) {
@@ -49,7 +50,9 @@ public class GfashionCartResource {
     }
 
     @PostMapping("/carts/items")
-    public ResponseEntity<GfCartItem> addCartItem(@RequestHeader(name = "Authorization") String customerToken, @RequestBody GfCartItem cartItem) {
+    public ResponseEntity<GfCartItem> addCartItem(
+            @RequestHeader(name = "Authorization") String customerToken,
+            @RequestBody GfCartItem cartItem) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.addCartItem(customerToken, cartItem));
         } catch (CustomerTokenNotFoundException e) {
@@ -62,7 +65,9 @@ public class GfashionCartResource {
     }
 
     @PutMapping("/carts/items/{cartItemId}")
-    public ResponseEntity<GfCartItem> updateCartItem(@RequestHeader(name = "Authorization") String customerToken, @PathVariable Integer cartItemId, @RequestBody GfCartItem cartItem) {
+    public ResponseEntity<GfCartItem> updateCartItem(
+            @RequestHeader(name = "Authorization") String customerToken,
+            @PathVariable Integer cartItemId, @RequestBody GfCartItem cartItem) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.updateCartItem(customerToken, cartItemId, cartItem));
         } catch (CustomerTokenNotFoundException e) {
@@ -75,7 +80,9 @@ public class GfashionCartResource {
     }
 
     @DeleteMapping("/carts/items/{cartItemId}")
-    public ResponseEntity<Boolean> deleteCartItem(@RequestHeader(name = "Authorization") String customerToken, @PathVariable Integer cartItemId) {
+    public ResponseEntity<Boolean> deleteCartItem(
+            @RequestHeader(name = "Authorization") String customerToken,
+            @PathVariable Integer cartItemId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.deleteCartItem(customerToken, cartItemId));
         } catch (CustomerTokenNotFoundException e) {
@@ -88,7 +95,9 @@ public class GfashionCartResource {
     }
 
     @PostMapping("/carts/estimate-shipping")
-    public ResponseEntity<List<GfCartEstimateShippingMethod>> getEstimateShipping(@RequestHeader(name = "Authorization") String customerToken, @RequestBody GfCartAddress address) {
+    public ResponseEntity<List<GfCartEstimateShippingMethod>> getEstimateShipping(
+            @RequestHeader(name = "Authorization") String customerToken,
+            @RequestBody GfCartAddress address) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.getEstimateShippingMethods(customerToken, address));
         } catch (CustomerTokenNotFoundException e) {
@@ -101,9 +110,40 @@ public class GfashionCartResource {
     }
 
     @PostMapping("/carts/shipping-information")
-    public ResponseEntity<GfCartShippingInformation> setShippingInformation(@RequestHeader(name = "Authorization") String customerToken, @RequestBody GfCartAddressInformation addressInformation) {
+    public ResponseEntity<GfCartShippingInformation> setShippingInformation(
+            @RequestHeader(name = "Authorization") String customerToken,
+            @RequestBody GfCartAddressInformation addressInformation) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.setShippingInformation(customerToken, addressInformation));
+        } catch (CustomerTokenNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
+        } catch (CartUnknownException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
+        } catch (CartCreationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getErrorMessage());
+        } catch (CartNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
+        }
+    }
+
+    @GetMapping("/carts/payment-methods")
+    public ResponseEntity<List<GfCartPaymentMethod>> getPaymentMethods(
+            @RequestHeader(name = "Authorization") String customerToken) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.getPaymentMethods(customerToken));
+        } catch (CustomerTokenNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
+        } catch (CartUnknownException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
+        }
+    }
+
+    @PostMapping("/carts/payment-information")
+    public ResponseEntity<String> createOrder(
+            @RequestHeader(name = "Authorization") String customerToken,
+            @RequestBody GfCartPaymentInformation paymentInformation) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.createOrder(customerToken, paymentInformation));
         } catch (CustomerTokenNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
         } catch (CartUnknownException e) {

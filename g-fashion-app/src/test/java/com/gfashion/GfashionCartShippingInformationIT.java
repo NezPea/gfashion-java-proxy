@@ -50,18 +50,18 @@ public class GfashionCartShippingInformationIT extends GfashionCartBaseIT {
 
         response.then().assertThat()
                 .statusCode(HttpStatus.OK.value())
-                .body("totals.items_qty", any(Integer.class))
+                .body("totals.itemsQty", any(Integer.class))
                 .body("totals.items.size()", any(Integer.class))
-                .body("totals.total_segments.size()", any(Integer.class));
+                .body("totals.totalSegments.size()", any(Integer.class));
 
-        List<Map<String, Object>> paymentMethods = response.jsonPath().getList("payment_methods");
+        List<Map<String, Object>> paymentMethods = response.jsonPath().getList("paymentMethods");
         assertThat(paymentMethods.size(), any(Integer.class));
     }
 
     @Test
     public void setCartShippingInfoWithoutShippingAddress() throws Exception {
         GfCartAddressInformation params = createShippingInformationParams();
-        params.setShipping_address(null);
+        params.setShippingAddress(null);
         given().header("Content-Type", ContentType.JSON)
                 .body(gson.toJson(params))
                 .post("/gfashion/v1/carts/shipping-information")
@@ -72,7 +72,7 @@ public class GfashionCartShippingInformationIT extends GfashionCartBaseIT {
     @Test
     public void setCartShippingInfoWithoutShippingCarrierCode() throws Exception {
         GfCartAddressInformation params = createShippingInformationParams();
-        params.setShipping_carrier_code(null);
+        params.setShippingCarrierCode(null);
         given().header("Content-Type", ContentType.JSON)
                 .body(gson.toJson(params))
                 .post("/gfashion/v1/carts/shipping-information")
@@ -83,7 +83,7 @@ public class GfashionCartShippingInformationIT extends GfashionCartBaseIT {
     @Test
     public void setCartShippingInfoWithoutShippingMethodCode() throws Exception {
         GfCartAddressInformation params = createShippingInformationParams();
-        params.setShipping_carrier_code(null);
+        params.setShippingCarrierCode(null);
         given().header("Content-Type", ContentType.JSON)
                 .body(gson.toJson(params))
                 .post("/gfashion/v1/carts/shipping-information")

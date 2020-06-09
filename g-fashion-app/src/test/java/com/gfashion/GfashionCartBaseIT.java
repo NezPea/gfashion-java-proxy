@@ -46,11 +46,18 @@ public class GfashionCartBaseIT {
         Response response = given().header("Content-Type", ContentType.JSON)
                 .body(gson.toJson(params))
                 .post("/gfashion/v1/carts/items/");
-        return response.jsonPath().getInt("item_id");
+        return response.jsonPath().getInt("itemId");
     }
 
     protected int addCartItem() {
         return addCartItem(getCartId());
+    }
+
+    protected void setShippingInformation() {
+        GfCartAddressInformation params = createShippingInformationParams();
+        given().header("Content-Type", ContentType.JSON)
+                .body(gson.toJson(params))
+                .post("/gfashion/v1/carts/shipping-information");
     }
 
     public void deleteCartItem(int cartItemId) {
@@ -60,27 +67,71 @@ public class GfashionCartBaseIT {
         delete("/gfashion/v1/carts/items/{cartItemId}", cartItemId).then();
     }
 
-    private GfCartItem createCartItemParams(int cartId) {
-        List<GfConfigurableItemOption> options = new ArrayList<>();
-        options.add(new GfConfigurableItemOption("145", "5595"));
-        options.add(new GfConfigurableItemOption("93", "5487"));
-
-        GfExtensionAttributes attributes = new GfExtensionAttributes(options);
-        GfProductOption option = new GfProductOption(attributes);
-
+    protected GfCartItem createCartItemParams() {
         GfCartItem params = new GfCartItem();
         params.setSku("WT09");
         params.setQty(1);
-        params.setQuote_id(cartId);
-        params.setProduct_option(option);
+        params.setQuoteId(getCartId());
+        params.setProductOption(createCartItemProductOption());
+        return params;
+    }
+
+    protected GfCartItem createCartItemParams(int cartId) {
+        GfCartItem params = new GfCartItem();
+        params.setSku("WT09");
+        params.setQty(1);
+        params.setQuoteId(cartId);
+        params.setProductOption(createCartItemProductOption());
+        return params;
+    }
+
+    protected GfCartItemProductOption createCartItemProductOption() {
+        List<GfCartConfigurableItemOption> options = new ArrayList<>();
+        GfCartConfigurableItemOption itemOption = new GfCartConfigurableItemOption();
+        itemOption.setOptionId("145");
+        itemOption.setOptionValue("5595");
+        options.add(itemOption);
+        itemOption = new GfCartConfigurableItemOption();
+        itemOption.setOptionId("93");
+        itemOption.setOptionValue("5487");
+        options.add(itemOption);
+
+        GfCartItemProductOptionExtensionAttributes attributes = new GfCartItemProductOptionExtensionAttributes();
+        attributes.setConfigurableItemOptions(options);
+        return new GfCartItemProductOption(attributes);
+    }
+
+    protected GfCartItemProductOption updateCartItemProductOption() {
+        List<GfCartConfigurableItemOption> options = new ArrayList<>();
+        GfCartConfigurableItemOption itemOption = new GfCartConfigurableItemOption();
+        itemOption.setOptionId("145");
+        itemOption.setOptionValue("5595");
+        options.add(itemOption);
+        itemOption = new GfCartConfigurableItemOption();
+        itemOption.setOptionId("93");
+        itemOption.setOptionValue("5484");
+        options.add(itemOption);
+
+        GfCartItemProductOptionExtensionAttributes attributes = new GfCartItemProductOptionExtensionAttributes();
+        attributes.setConfigurableItemOptions(options);
+        return new GfCartItemProductOption(attributes);
+    }
+
+    protected GfCartPaymentInformation createPaymentInformationParams() {
+        GfCartPaymentMethod paymentMethod = new GfCartPaymentMethod();
+        paymentMethod.setMethod("banktransfer");
+
+        GfCartPaymentInformation params = new GfCartPaymentInformation();
+        params.setPaymentMethod(paymentMethod);
+        params.setBillingAddress(createCartAddress());
         return params;
     }
 
     protected GfCartAddressInformation createShippingInformationParams() {
         GfCartAddressInformation params = new GfCartAddressInformation();
-        params.setShipping_address(createCartAddress());
-        params.setShipping_carrier_code("tablerate");
-        params.setShipping_method_code("bestway");
+        params.setShippingAddress(createCartAddress());
+        params.setShippingCarrierCode("tablerate");
+        params.setShippingMethodCode("bestway");
         return params;
     }
 
@@ -89,15 +140,15 @@ public class GfashionCartBaseIT {
         street.add("123 Oak Ave");
 
         GfCartAddress address = new GfCartAddress();
-        address.setCountry_id("US");
-        address.setRegion_id(43);
+        address.setCountryId("US");
+        address.setRegionId(43);
         address.setRegion("New York");
-        address.setRegion_code("NY");
+        address.setRegionCode("NY");
         address.setPostcode("10577");
         address.setCity("Purchase");
         address.setStreet(street);
-        address.setFirstname("Jane");
-        address.setLastname("Doe");
+        address.setFirstName("Jane");
+        address.setLastName("Doe");
         address.setEmail("jdoe@example.com");
         address.setTelephone("512-555-1111");
         return address;
