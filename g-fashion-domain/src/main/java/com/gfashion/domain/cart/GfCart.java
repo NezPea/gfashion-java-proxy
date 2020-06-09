@@ -15,19 +15,25 @@ import java.util.List;
 public class GfCart {
 
     private Integer id;
-    private String created_at;
-    private String updated_at;
-    private Boolean is_active;
-    private Boolean is_virtual;
+    private String createdAt;
+    private String updatedAt;
+    private String convertedAt;
+    private Boolean isActive;
+    private Boolean isVirtual;
     private List<GfCartItem> items;
-    private Integer items_count;
-    private Integer items_qty;
+    private Integer itemsCount;
+    private Integer itemsQty;
     private GfCustomer customer;
-    private Integer orig_order_id;
-    private Boolean customer_is_guest;
-    private Boolean customer_note_notify;
-    private Integer customer_tax_class_id;
-    private Integer store_id;
-    private GfCartExtensionAttributes extension_attributes;
-
+    private GfCartAddress billingAddress;
+    private String reservedOrderId;
+    private Integer origOrderId;
+    private GfCartCurrency currency;
+    private Boolean customerIsGuest;
+    private String customerNote;
+    private Boolean customerNoteNotify;
+    private Integer customerTaxClassId;
+    private Integer storeId;
+    private GfCartExtensionAttributes extensionAttributes;
+    private GfCartNegotiableQuote negotiableQuote;
+    private GfCartAmazonOrderReferenceId amazonOrderReferenceId;
 }

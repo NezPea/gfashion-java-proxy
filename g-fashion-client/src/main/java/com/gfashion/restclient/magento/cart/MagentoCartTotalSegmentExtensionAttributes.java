@@ -1,5 +1,6 @@
-package com.gfashion.restclient.magento.customer;
+package com.gfashion.restclient.magento.cart;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,5 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class MagentoCartTotalSegmentExtensionAttributes {
 
-    private List<JSONObject> tax_grandtotal_details;
+    @SerializedName("tax_grandtotal_details")
+    private List<JSONObject> taxGrandTotalDetails;
 }

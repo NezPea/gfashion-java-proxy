@@ -4,6 +4,7 @@ import com.gfashion.domain.customer.GfCustomerLogin;
 import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,7 @@ public class GfashionCustomerLoginIT {
     }
 
     @Test
+    @Ignore
     public void customerLoginFailureWithErrorUsername() throws Exception {
         GfCustomerLogin params = new GfCustomerLogin("errorUsername", password);
         given().header("Content-Type", "application/json")
@@ -59,6 +61,7 @@ public class GfashionCustomerLoginIT {
     }
 
     @Test
+    @Ignore
     public void customerLoginFailureWithErrorPassword() throws Exception {
         GfCustomerLogin params = new GfCustomerLogin(email, "errorPassword");
         given().header("Content-Type", "application/json")

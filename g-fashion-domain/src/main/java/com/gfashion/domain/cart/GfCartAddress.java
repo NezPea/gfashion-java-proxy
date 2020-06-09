@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import java.util.List;
 
@@ -14,20 +13,28 @@ import java.util.List;
 @NoArgsConstructor
 public class GfCartAddress {
 
-    @NonNull
-    private String country_id;
-
-    private String postcode;
-
-    private Integer region_id;
+    private Integer id;
     private String region;
-    private String region_code;
-
-    private String city;
+    private Integer regionId;
+    private String regionCode;
+    private String countryId;
     private List<String> street;
-
-    private String firstname;
-    private String lastname;
-    private String email;
+    private String company;
     private String telephone;
+    private String fax;
+    private String postcode;
+    private String city;
+    private String firstName;
+    private String lastName;
+    private String middleName;
+    private String prefix;
+    private String suffix;
+    private String vatId;
+    private Integer customerId;
+    private String email;
+    private Integer sameAsBilling;
+    private Integer customerAddressId;
+    private Integer saveInAddressBook;
+    private GfCartAddressExtensionAttributes extensionAttributes;
+    private List<GfCartCustomAttribute> customAttributes;
 }

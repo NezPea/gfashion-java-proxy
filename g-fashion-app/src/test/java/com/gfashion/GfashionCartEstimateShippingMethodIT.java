@@ -39,7 +39,7 @@ public class GfashionCartEstimateShippingMethodIT extends GfashionCartBaseIT {
     @Test
     public void getEstimateShippingMethodsOnlyCountryId() throws Exception {
         GfCartAddress address = new GfCartAddress();
-        address.setCountry_id("US");
+        address.setCountryId("US");
 
         given().header("Content-Type", ContentType.JSON)
                 .body(gson.toJson(address))
@@ -52,7 +52,7 @@ public class GfashionCartEstimateShippingMethodIT extends GfashionCartBaseIT {
     @Test
     public void getEstimateShippingMethodsWithoutCountryId() throws Exception {
         GfCartAddress address = new GfCartAddress();
-        address.setRegion_id(43);
+        address.setRegionId(43);
         address.setPostcode("10577");
 
         given().header("Content-Type", ContentType.JSON)
@@ -66,8 +66,8 @@ public class GfashionCartEstimateShippingMethodIT extends GfashionCartBaseIT {
     @Test
     public void getEstimateShippingMethodsWithRegionId() throws Exception {
         GfCartAddress address = new GfCartAddress();
-        address.setCountry_id("US");
-        address.setRegion_id(43);
+        address.setCountryId("US");
+        address.setRegionId(43);
 
         given().header("Content-Type", ContentType.JSON)
                 .body(gson.toJson(address))
@@ -80,7 +80,7 @@ public class GfashionCartEstimateShippingMethodIT extends GfashionCartBaseIT {
     @Test
     public void getEstimateShippingMethodsWithPostcode() throws Exception {
         GfCartAddress address = new GfCartAddress();
-        address.setCountry_id("US");
+        address.setCountryId("US");
         address.setPostcode("10577");
 
         given().header("Content-Type", ContentType.JSON)

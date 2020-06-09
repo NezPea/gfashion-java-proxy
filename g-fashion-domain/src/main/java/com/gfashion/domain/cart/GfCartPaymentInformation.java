@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GfProductOption {
-    private GfExtensionAttributes extension_attributes;
+public class GfCartPaymentInformation {
+
+    private GfCartPaymentMethod paymentMethod;
+    private GfCartAddress billingAddress;
 }
