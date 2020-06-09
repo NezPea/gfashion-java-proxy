@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @AllArgsConstructor
@@ -12,22 +14,22 @@ import lombok.NoArgsConstructor;
 public class GfCartTotalItem {
 
     private Integer itemId;
-    private Integer price;
-    private Integer basePrice;
+    private BigDecimal price;
+    private BigDecimal basePrice;
     private Integer qty;
     private Integer rowTotal;
     private Integer baseRowTotal;
     private Integer rowTotalWithDiscount;
-    private Integer taxAmount;
-    private Integer baseTaxAmount;
+    private BigDecimal taxAmount;
+    private BigDecimal baseTaxAmount;
     private Integer taxPercent;
-    private Integer discountAmount;
-    private Integer baseDiscountAmount;
+    private BigDecimal discountAmount;
+    private BigDecimal baseDiscountAmount;
     private Integer discountPercent;
-    private Integer priceInclTax;
-    private Integer basePriceInclTax;
-    private Integer rowTotalInclTax;
-    private Integer baseRowTotalInclTax;
+    private BigDecimal priceInclTax;
+    private BigDecimal basePriceInclTax;
+    private BigDecimal rowTotalInclTax;
+    private BigDecimal baseRowTotalInclTax;
     private String options;
     private String name;
 }

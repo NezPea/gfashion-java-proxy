@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @AllArgsConstructor
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class GfCartGiftcardItemOption {
 
     private String giftcardAmount;
-    private Integer customGiftcardAmount;
+    private BigDecimal customGiftcardAmount;
     private String giftcardSenderName;
     private String giftcardRecipientName;
     private String giftcardSenderEmail;

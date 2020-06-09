@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -14,9 +15,9 @@ import java.util.List;
 public class MagentoCartTotals {
 
     @SerializedName("grand_total")
-    private Integer grandTotal;
+    private BigDecimal grandTotal;
     @SerializedName("base_grand_total")
-    private Integer baseGrandTotal;
+    private BigDecimal baseGrandTotal;
     private Integer subtotal;
     @SerializedName("base_subtotal")
     private Integer baseSubtotal;
@@ -29,9 +30,9 @@ public class MagentoCartTotals {
     @SerializedName("base_subtotal_with_discount")
     private Integer baseSubtotalWithDiscount;
     @SerializedName("shipping_amount")
-    private Integer shippingAmount;
+    private BigDecimal shippingAmount;
     @SerializedName("base_shipping_amount")
-    private Integer baseShippingAmount;
+    private BigDecimal baseShippingAmount;
     @SerializedName("shipping_discount_amount")
     private Integer shippingDiscountAmount;
     @SerializedName("base_shipping_discount_amount")
@@ -49,9 +50,9 @@ public class MagentoCartTotals {
     @SerializedName("subtotal_incl_tax")
     private Integer subtotalInclTax;
     @SerializedName("shipping_incl_tax")
-    private Integer shippingInclTax;
+    private BigDecimal shippingInclTax;
     @SerializedName("base_shipping_incl_tax")
-    private Integer baseShippingInclTax;
+    private BigDecimal baseShippingInclTax;
     @SerializedName("base_currency_code")
     private String baseCurrencyCode;
     @SerializedName("quote_currency_code")
