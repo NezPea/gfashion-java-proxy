@@ -9,10 +9,7 @@ import com.gfashion.domain.homepage.GfCategory;
 import com.gfashion.domain.homepage.HomepageBrand;
 import com.gfashion.domain.homepage.HomepageDesigner;
 import com.gfashion.domain.product.*;
-import com.gfashion.domain.sales.GfShipment;
-import com.gfashion.domain.sales.GfShipmentComment;
-import com.gfashion.domain.sales.GfShipmentItem;
-import com.gfashion.domain.sales.GfShipmentTrack;
+import com.gfashion.domain.sales.*;
 import com.gfashion.domain.sales.response.GfShipmentResp;
 import com.gfashion.domain.store.GfStore;
 import com.gfashion.domain.store.GfStoreConfig;
@@ -29,10 +26,7 @@ import com.gfashion.restclient.magento.customer.MagentoCustomerExtensionAttribut
 import com.gfashion.restclient.magento.customer.MagentoCustomerRegion;
 import com.gfashion.restclient.magento.homepage.MagentoCategory;
 import com.gfashion.restclient.magento.product.*;
-import com.gfashion.restclient.magento.sales.MagentoShipment;
-import com.gfashion.restclient.magento.sales.MagentoShipmentComment;
-import com.gfashion.restclient.magento.sales.MagentoShipmentItem;
-import com.gfashion.restclient.magento.sales.MagentoShipmentTrack;
+import com.gfashion.restclient.magento.sales.*;
 import com.gfashion.restclient.magento.sales.response.MagentoShipmentResp;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -139,31 +133,32 @@ public interface GfMagentoConverter {
     }
 
     //--shipment
-//    @Mapping(source = "orderId",target = "order_id")
-    MagentoShipment from(GfShipment shipment);
+    MagentoShipment convertGfShipmentToMagentoShipment(GfShipment gfShipment);
 
-    //    @Mapping(source = "orderItemId",target = "order_item_id")
-    MagentoShipmentItem from(GfShipmentItem shipmentItem);
+    MagentoShipmentItem convertGfShipmentItemToMagentoShipmentItem(GfShipmentItem gfShipmentItem);
 
-    //    @Mapping(source = "orderId",target = "order_id")
-    MagentoShipmentTrack from(GfShipmentTrack shipmentTrack);
+    MagentoShipmentTrack convertGfShipmentTrackToMagentoShipmentTrack(GfShipmentTrack gfShipmentTrack);
 
-    //    @Mapping(source = "parentId",target = "parent_id")
-    MagentoShipmentComment from(GfShipmentComment gfShipmentComment);
+    MagentoShipmentComment convertGfShipmentCommentToMagentoShipmentComment(GfShipmentComment gfShipmentComment);
 
-    //
-//    @Mapping(target = "orderId",source = "order_id")
-    GfShipment from(MagentoShipment shipment);
+    MagentoShipOrder convertGfShipOrderToMagentoShipOrder(GfShipOrder gfShipOrder);
 
-    //    @Mapping(target = "orderItemId",source = "order_item_id")
-    GfShipmentItem from(MagentoShipmentItem shipmentItem);
+    MagentoShipmentItemCreation convertGfShipmentItemCreationToMagentoShipmentItemCreation(GfShipmentItemCreation gfShipmentItemCreation);
 
-    //    @Mapping(target = "orderId",source = "order_id")
-    GfShipmentTrack from(MagentoShipmentTrack shipmentTrack);
+    MagentoShipmentCommentCreation convertGfGfShipmentCommentCreationToMagentoShipmentCommentCreation(GfShipmentCommentCreation gfShipmentCommentCreation);
 
-    //    @Mapping(target = "parentId",source = "parent_id")
-    GfShipmentComment from(MagentoShipmentComment comment);
+    MagentoShipmentTrackCreation convertGfShipmentTrackCreationToMagentoShipmentTrackCreation(GfShipmentTrackCreation gfShipmentTrackCreation);
 
-    GfShipmentResp from(MagentoShipmentResp magentoShipmentResp);
+    MagentoShipmentPackageCreation convertGfShipmentPackageCreationToMagentoShipmentPackageCreation(GfShipmentPackageCreation gfShipmentPackageCreation);
+
+    GfShipment convertMagentoShipmentToGfShipment(MagentoShipment magentoShipment);
+
+    GfShipmentItem convertMagentoShipmentItemToGfShipmentItem(MagentoShipmentItem magentoShipmentItem);
+
+    GfShipmentTrack convertMagentoShipmentTrackToGfShipmentTrack(MagentoShipmentTrack magentoShipmentTrack);
+
+    GfShipmentComment convertMagentoShipmentCommentToGfShipmentComment(MagentoShipmentComment magentoShipmentComment);
+
+    GfShipmentResp convertMagentoShipmentRespToGfShipmentResp(MagentoShipmentResp magentoShipmentResp);
     //--shipment
 }

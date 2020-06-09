@@ -1,5 +1,6 @@
 package com.gfashion.restclient.magento.sales;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,8 @@ public class MagentoShipmentItem implements Serializable {
     /**
      * Additional data.
      */
-    private String additional_data;
+    @SerializedName("additional_data")
+    private String additionalData;
 
     /**
      * Description.
@@ -24,7 +26,8 @@ public class MagentoShipmentItem implements Serializable {
     /**
      * Shipment item ID.
      */
-    private Integer entity_id;
+    @SerializedName("entity_id")
+    private Integer entityId;
 
     /**
      * Name.
@@ -34,7 +37,8 @@ public class MagentoShipmentItem implements Serializable {
     /**
      * Parent ID.
      */
-    private Integer parent_id;
+    @SerializedName("parent_id")
+    private Integer parentId;
 
     /**
      * Price.
@@ -44,12 +48,14 @@ public class MagentoShipmentItem implements Serializable {
     /**
      * Product ID.
      */
-    private Integer product_id;
+    @SerializedName("product_id")
+    private Integer productId;
 
     /**
      * Row total.
      */
-    private Integer row_total;
+    @SerializedName("row_total")
+    private Integer rowTotal;
 
     /**
      * SKU.
@@ -61,13 +67,15 @@ public class MagentoShipmentItem implements Serializable {
      */
     private Integer weight;
 
+    //    @SerializedName("extension_attributes")
 //    private sales-data-shipment-item-extension-interface extension_attributes;
 
     /**
      * Order item ID.
      * 必填
      */
-    private Integer order_item_id;
+    @SerializedName("order_item_id")
+    private Integer orderItemId;
 
     /**
      * Quantity.

@@ -16,7 +16,7 @@ public class GfShipmentItem implements Serializable {
     /**
      * Additional data.
      */
-    private String additional_data;
+    private String additionalData;
 
     /**
      * Description.
@@ -26,7 +26,7 @@ public class GfShipmentItem implements Serializable {
     /**
      * Shipment item ID.
      */
-    private Integer entity_id;
+    private Integer entityId;
 
     /**
      * Name.
@@ -36,7 +36,7 @@ public class GfShipmentItem implements Serializable {
     /**
      * Parent ID.
      */
-    private Integer parent_id;
+    private Integer parentId;
 
     /**
      * Price.
@@ -46,12 +46,12 @@ public class GfShipmentItem implements Serializable {
     /**
      * Product ID.
      */
-    private Integer product_id;
+    private Integer productId;
 
     /**
      * Row total.
      */
-    private Integer row_total;
+    private Integer rowTotal;
 
     /**
      * SKU.
@@ -70,7 +70,7 @@ public class GfShipmentItem implements Serializable {
      * 必填
      */
 //    @NotNull
-    private Integer order_item_id;
+    private Integer orderItemId;
 
     /**
      * Quantity.
