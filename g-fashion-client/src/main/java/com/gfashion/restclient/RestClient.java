@@ -1,7 +1,7 @@
 package com.gfashion.restclient;
 
 import com.gfashion.domain.customer.GfCustomerLogin;
-import com.gfashion.restclient.magento.exception.CustomerTokenNotFoundException;
+import com.gfashion.restclient.magento.exception.CustomerException;
 import com.google.gson.Gson;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,9 +71,9 @@ public class RestClient {
         return headers;
     }
 
-    public HttpHeaders getCustomerHeaders(String customerToken) throws CustomerTokenNotFoundException {
+    public HttpHeaders getCustomerHeaders(String customerToken) throws CustomerException {
         if (customerToken == null) {
-            throw new CustomerTokenNotFoundException("Customer token not found");
+            throw new CustomerException(HttpStatus.NOT_FOUND, "Customer token not found");
         }
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

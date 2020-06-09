@@ -2,8 +2,7 @@ package com.gfashion.api;
 
 import com.gfashion.domain.customer.GfCustomerLogin;
 import com.gfashion.restclient.MagentoCustomerClient;
-import com.gfashion.restclient.magento.exception.CustomerTokenNotFoundException;
-import com.gfashion.restclient.magento.exception.CustomerUnknowException;
+import com.gfashion.restclient.magento.exception.CustomerException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +26,8 @@ public class GfashionLoginResource {
     public ResponseEntity<String> creatCustomer(@RequestBody GfCustomerLogin customerLogin) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.customerLogin(customerLogin));
-        } catch (CustomerTokenNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getErrorMessage());
-        } catch (CustomerUnknowException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
     }
 }

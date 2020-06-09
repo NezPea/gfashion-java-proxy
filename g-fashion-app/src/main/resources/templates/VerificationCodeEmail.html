@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Verification</title>
+    <style>
+        body {
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #main {
+            text-align: center;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+<div id="main">
+    <h3><span th:text="${project}"></span> - Your Verification Code for <span th:text="${type}"></span> is </h3>
+    <h2><span th:text="${code}"></span></h2>
+    <div>
+        ------------------<br>
+        This message was sent by an automated system. Please do not reply to this email. Thank you.
+    </div>
+</div>
+</body>
+</html>
