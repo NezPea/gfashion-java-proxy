@@ -22,9 +22,9 @@ public class GfashionHomepageDynamodbResource {
     private GfHomepageRepository gfHomepageRepository;
 
     @GetMapping(value = "/dynamodb/homepage", produces = "application/json;charset=utf-8")
-    public ResponseEntity<CustomizedHomepage> getDefaultCustomizedHomepage(@RequestParam(required = false) String lang) {
+    public ResponseEntity<CustomizedHomepage> getDefaultCustomizedHomepage(@RequestParam(required = false) String locale) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(gfHomepageRepository.getDefaultCustomizedHomepageBatchQuery(lang));
+            return ResponseEntity.status(HttpStatus.OK).body(gfHomepageRepository.getDefaultCustomizedHomepageBatchQuery(locale));
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
         } catch (AmazonClientException e) {

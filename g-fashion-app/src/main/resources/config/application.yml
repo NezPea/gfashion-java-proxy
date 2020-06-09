@@ -44,8 +44,13 @@ magento:
     listCategories: categories/list
     parameters:
       parentIdField: parent_id
-      field: searchCriteria[filterGroups][0][filters][0][field]=
-      value: searchCriteria[filterGroups][0][filters][0][value]=
+      field: searchCriteria[filterGroups][%d][filters][%d][field]=
+      value: searchCriteria[filterGroups][%d][filters][%d][value]=
+      conditionType: searchCriteria[filterGroups][%d][filters][%d][condition_type]=
+      englishRootCategory: 65
+      chineseRootCategory: 65
+      rootCategoryLevel: 1
+      supportLanguages: en,cn
       recommendedDesignersParentId: 62 # the category id for designers
       recommendedBrandsParentId: 59 # the category id for brands
     designersParentId: 46
@@ -122,8 +127,13 @@ magento:
     listCategories: categories/list
     parameters:
       parentIdField: parent_id
-      field: searchCriteria[filterGroups][0][filters][0][field]=
-      value: searchCriteria[filterGroups][0][filters][0][value]=
+      field: searchCriteria[filterGroups][%d][filters][%d][field]=
+      value: searchCriteria[filterGroups][%d][filters][%d][value]=
+      conditionType: searchCriteria[filterGroups][%d][filters][%d][condition_type]=
+      englishRootCategory: 65
+      chineseRootCategory: 65
+      rootCategoryLevel: 1
+      supportLanguages: en,cn
       recommendedDesignersParentId: 62 # the category id for designers
       recommendedBrandsParentId: 59 # the category id for brands
     designersParentId: 46
