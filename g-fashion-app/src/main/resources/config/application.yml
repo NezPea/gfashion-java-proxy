@@ -55,13 +55,6 @@ magento:
 test:
   email: customer@test.com
   password: P@ssw0rd
-  GfashionShipmentIT:
-    order_id: 50
-    order_item_id: 101
-    shipment_id: 39
-  GfashionOrderIT:
-    order_id: 67
-    order_item_id: 153
 
 logging:
   level:
