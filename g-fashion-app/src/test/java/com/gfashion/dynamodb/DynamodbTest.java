@@ -27,17 +27,17 @@ public class DynamodbTest {
         System.out.println("create table.");
 
         CreateTableRequest request = new CreateTableRequest()
-                .withTableName("gfShipment")
-                .withAttributeDefinitions(new AttributeDefinition("id", ScalarAttributeType.S))
-                .withKeySchema(new KeySchemaElement("id", KeyType.HASH))
+                .withTableName("gfProduct")
+                .withAttributeDefinitions(new AttributeDefinition("magentoId", ScalarAttributeType.S))
+                .withKeySchema(new KeySchemaElement("magentoId", KeyType.HASH))
                 .withProvisionedThroughput(new ProvisionedThroughput(10L, 10L));
         dynamodbRepository.createTable(request);
     }
 
     @Test
     public void getTable() throws Exception{
-        String result = dynamodbRepository.getTable("gfShipment");
-        Assert.assertEquals(result, "gfShipment");
+        String result = dynamodbRepository.getTable("gfproduct");
+        Assert.assertEquals(result, "gfproduct");
     }
 
     /**
