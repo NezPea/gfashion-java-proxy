@@ -5,6 +5,7 @@ import com.gfashion.restclient.magento.exception.CustomerException;
 import com.gfashion.restclient.magento.homepage.MagentoCategories;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import com.google.gson.Gson;
+import lombok.AllArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Component
 public class MagentoHomepageClient {
@@ -70,6 +73,10 @@ public class MagentoHomepageClient {
             throw new IllegalArgumentException("The input locale is not supported. Only en or cn is supported.");
         }
 
+        if (fromLevel > toLevel) {
+            throw new IllegalArgumentException("The fromLevel should be not smaller than or equal to toLevel.");
+        }
+
         String rootCategoryId = locale.equalsIgnoreCase("en") ? englishRootCategory : chineseRootCategory;
         Integer rootCategoryLevelInt = Integer.valueOf(rootCategoryLevel);
         String field0 = String.format(field, 0, 0);
@@ -92,7 +99,43 @@ public class MagentoHomepageClient {
         try {
             ResponseEntity<String> responseEntity = this._restClient.exchangeGet(listCategoriesByLevels, String.class, null);
             Gson gson = new Gson();
-            return this._mapper.convertMagentoCategoriesToGfCategories(gson.fromJson(responseEntity.getBody(), MagentoCategories.class).getItems());
+            // All Categories from Magento
+            List<GfCategory> allCategories = this._mapper.convertMagentoCategoriesToGfCategories(gson.fromJson(responseEntity.getBody(), MagentoCategories.class).getItems());
+
+            // the return parent categories;
+            List<GfCategory> parentCategories = allCategories.parallelStream().filter(gfCategory -> gfCategory.getLevel() == rootCategoryLevelInt + fromLevel).collect(Collectors.toList());
+
+
+            for (int delta = 0; delta < toLevel - fromLevel; delta++) {
+                int currentParentLevel = rootCategoryLevelInt + fromLevel + delta;
+
+                // get current parent categories
+                List<GfCategory> currentParentCategories = allCategories.parallelStream().filter(gfCategory -> gfCategory.getLevel() == currentParentLevel).collect(Collectors.toList());
+
+                // get all remaining non-parent categories
+                allCategories = allCategories.parallelStream().filter(gfCategory -> gfCategory.getLevel() != currentParentLevel).collect(Collectors.toList());
+
+                // build a mapping from id to parent category
+                Map<Integer, GfCategory> parentCategoriesMapping = new HashMap<>();
+                for (GfCategory gfParentCategory : currentParentCategories) {
+                    gfParentCategory.setSubCategories(new ArrayList<>());
+                    parentCategoriesMapping.put(gfParentCategory.getId(), gfParentCategory);
+                }
+
+                // insert other non-parent categories as the sub categories of parent categories
+                for (GfCategory gfOtherCategory : allCategories) {
+                    if (parentCategoriesMapping.containsKey(gfOtherCategory.getParent_id())) {
+                        parentCategoriesMapping.get(gfOtherCategory.getParent_id()).getSubCategories().add(gfOtherCategory);
+                    }
+                }
+
+                // break if no more categories to process
+                if (allCategories.isEmpty()) {
+                    break;
+                }
+            }
+
+            return parentCategories;
         } catch (HttpStatusCodeException e) {
             throw new CustomerException(e.getStatusCode(), e.getMessage());
         }
