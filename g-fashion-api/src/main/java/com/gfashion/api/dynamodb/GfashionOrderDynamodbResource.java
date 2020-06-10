@@ -22,7 +22,7 @@ public class GfashionOrderDynamodbResource {
     @PostMapping(value = "/dynamodb/orders", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfOrderEntity> createProduct(@RequestBody GfOrderEntity order) {
         try {
-            GfOrderEntity response = gfOrderRepository.createGfOrderEntity(order);
+            GfOrderEntity response = gfOrderRepository.addGfOrderEntity(order);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);

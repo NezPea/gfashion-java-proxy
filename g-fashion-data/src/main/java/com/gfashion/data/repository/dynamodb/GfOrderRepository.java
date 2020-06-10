@@ -4,7 +4,7 @@ import com.gfashion.data.GfOrderEntity;
 
 public interface GfOrderRepository {
 
-    GfOrderEntity createGfOrderEntity(GfOrderEntity GfOrderEntity);
+    GfOrderEntity addGfOrderEntity(GfOrderEntity GfOrderEntity);
 
     GfOrderEntity readGfOrderEntityById(String GfOrderEntityId);
 

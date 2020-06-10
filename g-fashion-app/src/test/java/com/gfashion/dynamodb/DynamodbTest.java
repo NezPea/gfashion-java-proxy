@@ -27,7 +27,7 @@ public class DynamodbTest {
         System.out.println("create table.");
 
         CreateTableRequest request = new CreateTableRequest()
-                .withTableName("gfProduct")
+                .withTableName("gfShipment")
                 .withAttributeDefinitions(new AttributeDefinition("id", ScalarAttributeType.S))
                 .withKeySchema(new KeySchemaElement("id", KeyType.HASH))
                 .withProvisionedThroughput(new ProvisionedThroughput(10L, 10L));
@@ -36,8 +36,8 @@ public class DynamodbTest {
 
     @Test
     public void getTable() throws Exception{
-        String result = dynamodbRepository.getTable("gfproduct");
-        Assert.assertEquals(result, "gfproduct");
+        String result = dynamodbRepository.getTable("gfShipment");
+        Assert.assertEquals(result, "gfShipment");
     }
 
     /**

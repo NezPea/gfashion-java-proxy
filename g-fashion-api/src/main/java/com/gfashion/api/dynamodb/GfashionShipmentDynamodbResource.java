@@ -22,7 +22,7 @@ public class GfashionShipmentDynamodbResource {
     @PostMapping(value = "/dynamodb/shipments", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfShipmentEntity> createShipment(@RequestBody GfShipmentEntity shipment) {
         try {
-            GfShipmentEntity response = gfShipmentRepository.createGfShipmentEntity(shipment);
+            GfShipmentEntity response = gfShipmentRepository.addGfShipmentEntity(shipment);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);

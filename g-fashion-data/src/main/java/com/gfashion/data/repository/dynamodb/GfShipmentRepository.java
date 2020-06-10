@@ -4,7 +4,7 @@ import com.gfashion.data.GfShipmentEntity;
 
 public interface GfShipmentRepository {
 
-    GfShipmentEntity createGfShipmentEntity(GfShipmentEntity GfShipmentEntity);
+    GfShipmentEntity addGfShipmentEntity(GfShipmentEntity GfShipmentEntity);
 
     GfShipmentEntity readGfShipmentEntityById(String GfShipmentEntityId);
 

@@ -16,7 +16,7 @@ public class GfShipmentRepositoryImpl implements GfShipmentRepository {
     public DynamoDBMapper dynamoDBMapper;
 
     @Override
-    public GfShipmentEntity createGfShipmentEntity(GfShipmentEntity shipment) {
+    public GfShipmentEntity addGfShipmentEntity(GfShipmentEntity shipment) {
         TransactionWriteRequest transactionWriteRequest = new TransactionWriteRequest();
         transactionWriteRequest.addPut(shipment);
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()

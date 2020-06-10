@@ -17,7 +17,7 @@ public class GfOrderRepositoryImpl implements GfOrderRepository {
     public DynamoDBMapper dynamoDBMapper;
 
     @Override
-    public GfOrderEntity createGfOrderEntity(GfOrderEntity order) {
+    public GfOrderEntity addGfOrderEntity(GfOrderEntity order) {
         TransactionWriteRequest transactionWriteRequest = new TransactionWriteRequest();
         transactionWriteRequest.addPut(order);
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
