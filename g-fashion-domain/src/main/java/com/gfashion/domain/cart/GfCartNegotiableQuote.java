@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @AllArgsConstructor
@@ -17,7 +19,7 @@ public class GfCartNegotiableQuote {
     private String status;
     private Integer negotiatedPriceType;
     private Integer negotiatedPriceValue;
-    private Integer shippingPrice;
+    private BigDecimal shippingPrice;
     private String quoteName;
     private String expirationPeriod;
     private Integer emailNotificationStatus;
@@ -30,9 +32,9 @@ public class GfCartNegotiableQuote {
     private String deletedSku;
     private Integer creatorId;
     private Integer creatorType;
-    private Integer originalTotalPrice;
-    private Integer baseOriginalTotalPrice;
-    private Integer negotiatedTotalPrice;
-    private Integer baseNegotiatedTotalPrice;
+    private BigDecimal originalTotalPrice;
+    private BigDecimal baseOriginalTotalPrice;
+    private BigDecimal negotiatedTotalPrice;
+    private BigDecimal baseNegotiatedTotalPrice;
     private JSONObject extensionAttributes;
 }

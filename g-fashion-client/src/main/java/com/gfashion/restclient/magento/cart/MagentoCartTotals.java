@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -14,44 +15,44 @@ import java.util.List;
 public class MagentoCartTotals {
 
     @SerializedName("grand_total")
-    private Integer grandTotal;
+    private BigDecimal grandTotal;
     @SerializedName("base_grand_total")
-    private Integer baseGrandTotal;
-    private Integer subtotal;
+    private BigDecimal baseGrandTotal;
+    private BigDecimal subtotal;
     @SerializedName("base_subtotal")
-    private Integer baseSubtotal;
+    private BigDecimal baseSubtotal;
     @SerializedName("discount_amount")
-    private Integer discountAmount;
+    private BigDecimal discountAmount;
     @SerializedName("base_discount_amount")
-    private Integer baseDiscountAmount;
+    private BigDecimal baseDiscountAmount;
     @SerializedName("subtotal_with_discount")
-    private Integer subtotalWithDiscount;
+    private BigDecimal subtotalWithDiscount;
     @SerializedName("base_subtotal_with_discount")
-    private Integer baseSubtotalWithDiscount;
+    private BigDecimal baseSubtotalWithDiscount;
     @SerializedName("shipping_amount")
-    private Integer shippingAmount;
+    private BigDecimal shippingAmount;
     @SerializedName("base_shipping_amount")
-    private Integer baseShippingAmount;
+    private BigDecimal baseShippingAmount;
     @SerializedName("shipping_discount_amount")
-    private Integer shippingDiscountAmount;
+    private BigDecimal shippingDiscountAmount;
     @SerializedName("base_shipping_discount_amount")
-    private Integer baseShippingDiscountAmount;
+    private BigDecimal baseShippingDiscountAmount;
     @SerializedName("tax_amount")
-    private Integer taxAmount;
+    private BigDecimal taxAmount;
     @SerializedName("base_tax_amount")
-    private Integer baseTaxAmount;
+    private BigDecimal baseTaxAmount;
     @SerializedName("weee_tax_applied_amount")
     private JSONObject weeeTaxAppliedAmount;
     @SerializedName("shipping_tax_amount")
-    private Integer shippingTaxAmount;
+    private BigDecimal shippingTaxAmount;
     @SerializedName("base_shipping_tax_amount")
-    private Integer baseShippingTaxAmount;
+    private BigDecimal baseShippingTaxAmount;
     @SerializedName("subtotal_incl_tax")
-    private Integer subtotalInclTax;
+    private BigDecimal subtotalInclTax;
     @SerializedName("shipping_incl_tax")
-    private Integer shippingInclTax;
+    private BigDecimal shippingInclTax;
     @SerializedName("base_shipping_incl_tax")
-    private Integer baseShippingInclTax;
+    private BigDecimal baseShippingInclTax;
     @SerializedName("base_currency_code")
     private String baseCurrencyCode;
     @SerializedName("quote_currency_code")
