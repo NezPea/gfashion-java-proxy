@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,7 +17,7 @@ public class MagentoCartItem {
     private String sku;
     private Integer qty;
     private String name;
-    private Integer price;
+    private BigDecimal price;
     @SerializedName("product_type")
     private String productType;
 

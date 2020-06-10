@@ -60,7 +60,16 @@ public class GfashionCartBaseIT {
                 .post("/gfashion/v1/carts/shipping-information");
     }
 
-    public void deleteCartItem(int cartItemId) {
+    protected int addCartItem(GfCartItem cartItem) {
+        Response response = given().header("Content-Type", ContentType.JSON)
+                .body(gson.toJson(cartItem))
+                .post("/gfashion/v1/carts/items/");
+        String json = response.getBody().asString();
+        GfCartItem item = gson.fromJson(json, GfCartItem.class);
+        return item.getItemId();
+    }
+
+    protected void deleteCartItem(int cartItemId) {
         if (cartItemId == 0) {
             return;
         }
@@ -68,18 +77,17 @@ public class GfashionCartBaseIT {
     }
 
     protected GfCartItem createCartItemParams() {
-        GfCartItem params = new GfCartItem();
-        params.setSku("WT09");
-        params.setQty(1);
-        params.setQuoteId(getCartId());
-        params.setProductOption(createCartItemProductOption());
-        return params;
+        return createCartItemParams(getCartId());
     }
 
     protected GfCartItem createCartItemParams(int cartId) {
+        return createCartItemParams(cartId, "WT09", 1);
+    }
+
+    protected GfCartItem createCartItemParams(int cartId, String sku, int qty) {
         GfCartItem params = new GfCartItem();
-        params.setSku("WT09");
-        params.setQty(1);
+        params.setSku(sku);
+        params.setQty(qty);
         params.setQuoteId(cartId);
         params.setProductOption(createCartItemProductOption());
         return params;
@@ -128,14 +136,18 @@ public class GfashionCartBaseIT {
     }
 
     protected GfCartAddressInformation createShippingInformationParams() {
+        return createShippingInformationParams("tablerate", "bestway");
+    }
+
+    protected GfCartAddressInformation createShippingInformationParams(String carrierCode, String methodCode) {
         GfCartAddressInformation params = new GfCartAddressInformation();
         params.setShippingAddress(createCartAddress());
-        params.setShippingCarrierCode("tablerate");
-        params.setShippingMethodCode("bestway");
+        params.setShippingCarrierCode(carrierCode);
+        params.setShippingMethodCode(methodCode);
         return params;
     }
 
-    private GfCartAddress createCartAddress() {
+    protected GfCartAddress createCartAddress() {
         List<String> street = new ArrayList<>();
         street.add("123 Oak Ave");
 

@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,11 +16,11 @@ public class MagentoCartNegotiableQuoteItem {
     @SerializedName("item_id")
     private Integer itemId;
     @SerializedName("original_price")
-    private Integer originalPrice;
+    private BigDecimal originalPrice;
     @SerializedName("original_tax_amount")
-    private Integer originalTaxAmount;
+    private BigDecimal originalTaxAmount;
     @SerializedName("original_discount_amount")
-    private Integer originalDiscountAmount;
+    private BigDecimal originalDiscountAmount;
     @SerializedName("extension_attributes")
     private JSONObject extensionAttributes;
 }

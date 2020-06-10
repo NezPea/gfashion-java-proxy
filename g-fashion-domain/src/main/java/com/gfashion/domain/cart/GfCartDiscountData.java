@@ -5,14 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class GfCartDiscountData {
 
-    private Integer amount;
-    private Integer base_amount;
-    private Integer original_amount;
-    private Integer base_original_amount;
+    private BigDecimal amount;
+    private BigDecimal baseAmount;
+    private BigDecimal originalAmount;
+    private BigDecimal baseOriginalAmount;
 }
