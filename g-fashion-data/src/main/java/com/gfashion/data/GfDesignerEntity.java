@@ -17,8 +17,8 @@ public class GfDesignerEntity {
     @DynamoDBAttribute(attributeName = "name")
     private String name;
 
-    @DynamoDBAttribute(attributeName = "country")
-    private String country;
+    @DynamoDBAttribute(attributeName = "bigCategory")
+    private String bigCategory;
 
     @DynamoDBAttribute(attributeName = "brief")
     private String brief;
@@ -26,22 +26,30 @@ public class GfDesignerEntity {
     @DynamoDBAttribute(attributeName = "photoUrl")
     private String photoUrl;
 
-    @DynamoDBAttribute(attributeName = "recommends")
-    private String recommends;
-
-    @DynamoDBAttribute(attributeName = "cooperatingBrands")
-    private String cooperatingBrands;
-
-    @DynamoDBAttribute(attributeName = "link")
-    private String link;
-
-    @DynamoDBAttribute(attributeName = "forMan")
-    private Boolean forMan;
-
-    @DynamoDBAttribute(attributeName = "forWoman")
-    private Boolean forWoman;
-
     @DynamoDBAttribute(attributeName = "language")
     private String language;
+
+    @DynamoDBAttribute(attributeName = "onsale")
+    private String onsale;
+
+//    @DynamoDBAttribute(attributeName = "country")
+    private String country;
+
+//    @DynamoDBAttribute(attributeName = "recommends")
+    private String recommends;
+
+//    @DynamoDBAttribute(attributeName = "cooperatingBrands")
+    private String cooperatingBrands;
+
+//    @DynamoDBAttribute(attributeName = "link")
+    private String link;
+
+//    @DynamoDBAttribute(attributeName = "forMan")
+    private Boolean forMan;
+
+//    @DynamoDBAttribute(attributeName = "forWoman")
+    private Boolean forWoman;
+
+
 
 }
