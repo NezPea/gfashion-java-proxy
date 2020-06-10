@@ -8,7 +8,7 @@ build:
   image: maven:ibmjava-alpine
   stage: build
   script:
-  - mvn clean install -Dmaven.test.skip=true
+  - mvn clean install
   artifacts:
     paths:
     - g-fashion-app/target
@@ -19,7 +19,7 @@ test:
   image: maven:ibmjava-alpine
   stage: test
   script:
-  - mvn test
+  - mvn integration-test -P integration
   artifacts:
     paths:
     - g-fashion-app/target
