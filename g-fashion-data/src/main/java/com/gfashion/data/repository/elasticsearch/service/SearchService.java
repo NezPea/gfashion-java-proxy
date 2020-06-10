@@ -82,11 +82,11 @@ public class SearchService {
     public Page<EsProduct> search(GfProductSearchRequest request) {
 
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-        if (request.getKeyword() != null && request.getKeyword().trim().length() != 0) {
+        if (!isEmpty(request.getKeyword())) {
             queryBuilder.should(multiMatchQuery(request.getKeyword(), "name", "brief"));
         }
 
-        if (request.getGender() != null && request.getGender().trim().length() != 0) {
+        if (!isEmpty(request.getGender())) {
             queryBuilder.must(matchQuery("gender", request.getGender()));
         }
 
@@ -94,26 +94,26 @@ public class SearchService {
             queryBuilder.must(matchQuery("sale", request.getSale()));
         }
 
-        if (request.getDesignerId() != null && request.getDesignerId().trim().length() != 0) {
+        if (!isEmpty(request.getDesignerId())) {
             queryBuilder.must(matchQuery("designerId", request.getDesignerId()));
         }
 
-        if (request.getCategoryId() != null && request.getCategoryId().trim().length() != 0) {
+        if (!isEmpty(request.getCategoryId())) {
             queryBuilder.must(termQuery("categories", request.getCategoryId()));
         }
 
-        if (request.getLanguage() != null && request.getLanguage().trim().length() != 0) {
+        if (!isEmpty(request.getLanguage())) {
             queryBuilder.must(matchQuery("language", request.getLanguage()));
         }
 
-        if (request.getSize() != null && request.getSize().trim().length() != 0) {
+        if (!isEmpty(request.getSize())) {
             queryBuilder.must(matchQuery("size", request.getSize()));
         }
 
         NativeSearchQueryBuilder nativeBuilder = new NativeSearchQueryBuilder();
         nativeBuilder.withIndices(Constants.INDEX_PRODUCT).withTypes(Constants.TYPE).withQuery(queryBuilder);
 
-        if (request.getSorting() != null && request.getSorting().trim().length() != 0) {
+        if (!isEmpty(request.getSorting())) {
             SortOrder sortOrder = SortOrder.ASC;
             if (SortOrder.ASC.toString().equals(request.getOrder()) || SortOrder.DESC.toString().equals(request.getOrder())) {
                 sortOrder = SortOrder.fromString(request.getOrder());
@@ -143,5 +143,9 @@ public class SearchService {
                 .totalPage(products.getTotalPages())
                 .items(items)
                 .build();
+    }
+
+    private boolean isEmpty(String txt) {
+        return txt == null || txt.trim().length() == 0;
     }
 }
