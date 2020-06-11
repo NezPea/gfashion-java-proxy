@@ -33,8 +33,8 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
     @Autowired
     public DynamoDBMapper dynamoDBMapper;
 
-    @Value("${aws.samples.brands}")
-    private String brands;
+    /*@Value("${aws.samples.brands}")
+    private String brands;*/
 
     @Value("${aws.samples.designers}")
     private String designers;
@@ -42,8 +42,8 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
     @Value("${aws.samples.products}")
     private String products;
 
-    @Value("${aws.samples.brandsCn}")
-    private String brandsCn;
+    /*@Value("${aws.samples.brandsCn}")
+    private String brandsCn;*/
 
     @Value("${aws.samples.designersCn}")
     private String designersCn;
@@ -113,10 +113,10 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
         locale = locale == null ? "en" : locale;
 
         // get recommended brands
-        List<HomepageBrand> recommendedBrands = new ArrayList<>();
+        /*List<HomepageBrand> recommendedBrands = new ArrayList<>();
         getResults(HomepageBrand.class, GfBrandEntity.class, 5, locale)
                 .parallelStream().forEach(b ->
-                recommendedBrands.add(this._mapper.convertDynamodbBrandToHomeBrand((GfBrandEntity) b)));
+                recommendedBrands.add(this._mapper.convertDynamodbBrandToHomeBrand((GfBrandEntity) b)));*/
 
         // get recommended designers
         List<HomepageDesigner> recommendedDesigners = new ArrayList<>();
@@ -132,10 +132,10 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
                 recommendedProducts.add(this._mapper.convertDynamodbProductToHomeProduct((GfProductEntity) p)));
 
         return CustomizedHomepage.builder()
-                .recommendedBrands(recommendedBrands)
+                //.recommendedBrands(recommendedBrands)
                 .recommendedDesigners(recommendedDesigners)
                 .recommendedProducts(recommendedProducts)
-                .followingBrands(recommendedBrands.subList(0, Math.min(1, recommendedBrands.size())))
+                //.followingBrands(recommendedBrands.subList(0, Math.min(1, recommendedBrands.size())))
                 .followingDesigners(recommendedDesigners.subList(0, Math.min(3, recommendedDesigners.size())))
                 .build();
     }

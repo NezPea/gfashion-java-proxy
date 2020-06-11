@@ -28,9 +28,9 @@ public class MagentoMockDataClient {
         customizedHomepage.setId(-1);
         customizedHomepage.setRecommendedProducts(getDefaultHomepageProducts());
         customizedHomepage.setRecommendedDesigners(getDefaultHomepageDesigners());
-        customizedHomepage.setRecommendedBrands(getDefaultHomepageBrands());
+        //customizedHomepage.setRecommendedBrands(getDefaultHomepageBrands());
         customizedHomepage.setFollowingDesigners(getDefaultFollowingDesigners());
-        customizedHomepage.setFollowingBrands(getDefaultFollowingBrands());
+        //customizedHomepage.setFollowingBrands(getDefaultFollowingBrands());
         return customizedHomepage;
     }
 
