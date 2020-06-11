@@ -42,7 +42,7 @@ public class GfashionCartTotalIT extends GfashionCartBaseIT {
         cartItemIds = new ArrayList<>();
 
         int cartId = getCartId();
-        GfCartItem cartItem = createCartItemParams(cartId, "WT09", 3);
+        GfCartItem cartItem = createCartItemParams(cartId, "WT08", 3);
         Integer cartItemId = addCartItem(cartItem);
         cartItemIds.add(cartItemId);
 

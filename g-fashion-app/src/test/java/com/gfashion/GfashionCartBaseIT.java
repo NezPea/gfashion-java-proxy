@@ -81,7 +81,7 @@ public class GfashionCartBaseIT {
     }
 
     protected GfCartItem createCartItemParams(int cartId) {
-        return createCartItemParams(cartId, "WT09", 1);
+        return createCartItemParams(cartId, "WT08", 1);
     }
 
     protected GfCartItem createCartItemParams(int cartId, String sku, int qty) {
