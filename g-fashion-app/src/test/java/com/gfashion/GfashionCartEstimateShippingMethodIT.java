@@ -22,19 +22,20 @@ import static org.hamcrest.Matchers.is;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Ignore
 public class GfashionCartEstimateShippingMethodIT extends GfashionCartBaseIT {
 
     @LocalServerPort
     private int port;
 
-    private int cartItemId;
+//    private int cartItemId;
 
     @Before
     public void setup() {
         RestAssured.port = port;
         super.setup();
 
-        cartItemId = addCartItem();
+//        cartItemId = addCartItem();
     }
 
     @Test
@@ -93,8 +94,8 @@ public class GfashionCartEstimateShippingMethodIT extends GfashionCartBaseIT {
                 .body("size()", is(2));
     }
 
-    @After
-    public void clearTestData() throws Exception {
-        deleteCartItem(cartItemId);
-    }
+//    @After
+//    public void clearTestData() throws Exception {
+//        deleteCartItem(cartItemId);
+//    }
 }

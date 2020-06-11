@@ -7,6 +7,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,19 +27,20 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Ignore
 public class GfashionCartShippingInformationIT extends GfashionCartBaseIT {
 
     @LocalServerPort
     private int port;
 
-    private int cartItemId;
+//    private int cartItemId;
 
     @Before
     public void setup() {
         RestAssured.port = port;
         super.setup();
 
-        cartItemId = addCartItem();
+//        cartItemId = addCartItem();
     }
 
     @Test
@@ -91,8 +93,8 @@ public class GfashionCartShippingInformationIT extends GfashionCartBaseIT {
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
-    @After
-    public void clearTestData() throws Exception {
-        deleteCartItem(cartItemId);
-    }
+//    @After
+//    public void clearTestData() throws Exception {
+//        deleteCartItem(cartItemId);
+//    }
 }

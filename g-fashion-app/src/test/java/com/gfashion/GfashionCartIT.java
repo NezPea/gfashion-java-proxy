@@ -125,6 +125,7 @@ public class GfashionCartIT extends GfashionCartBaseIT {
     }
 
     @Test
+    @Ignore
     public void updateCartItemReturnCartItem() throws Exception {
         int cartId = getCartId();
         cartItemId = addCartItem(cartId);
@@ -173,6 +174,7 @@ public class GfashionCartIT extends GfashionCartBaseIT {
     }
 
     @Test
+    @Ignore
     public void deleteCartItemReturnTrue() throws Exception {
         int cartItemId = addCartItem();
 
