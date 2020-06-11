@@ -6,6 +6,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,18 +29,19 @@ public class GfashionCartPaymentInformationIT extends GfashionCartBaseIT {
     @LocalServerPort
     private int port;
 
-    private int cartItemId;
+//    private int cartItemId;
 
     @Before
     public void setup() {
         RestAssured.port = port;
         super.setup();
 
-        cartItemId = addCartItem();
+//        cartItemId = addCartItem();
         setShippingInformation();
     }
 
     @Test
+    @Ignore
     public void createOrder() throws Exception {
         GfCartPaymentInformation params = createPaymentInformationParams();
         Response response = given().header("Content-Type", ContentType.JSON)
@@ -50,8 +52,6 @@ public class GfashionCartPaymentInformationIT extends GfashionCartBaseIT {
 
         String orderId = response.getBody().as(String.class);
         assertThat(orderId, is(any(String.class)));
-
-        cartItemId = 0;
     }
 
     @Test
@@ -74,8 +74,8 @@ public class GfashionCartPaymentInformationIT extends GfashionCartBaseIT {
                 .then().assertThat().statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    @After
-    public void clearTestData() throws Exception {
-        deleteCartItem(cartItemId);
-    }
+//    @After
+//    public void clearTestData() throws Exception {
+//        deleteCartItem(cartItemId);
+//    }
 }
