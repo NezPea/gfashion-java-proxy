@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,7 +15,7 @@ public class MagentoCartGiftcardItemOption {
     @SerializedName("giftcard_amount")
     private String giftcardAmount;
     @SerializedName("custom_giftcard_amount")
-    private Integer customGiftcardAmount;
+    private BigDecimal customGiftcardAmount;
     @SerializedName("giftcard_sender_name")
     private String giftcardSenderName;
     @SerializedName("giftcard_recipient_name")
