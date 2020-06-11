@@ -71,4 +71,13 @@ public class GfashionOrderResource {
 	}
 
 
+
+	@GetMapping("/{orderId}")
+	public ResponseEntity<String> getOrderInfoByOrderId(@PathVariable Integer orderId) {
+
+
+		return ResponseEntity.ok("");
+	}
+
+
 }
