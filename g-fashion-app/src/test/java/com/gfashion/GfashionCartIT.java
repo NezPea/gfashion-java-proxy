@@ -68,7 +68,7 @@ public class GfashionCartIT extends GfashionCartBaseIT {
         response.then().assertThat()
                 .statusCode(HttpStatus.OK.value())
                 .body("itemId", any(Integer.class))
-                .body("sku", startsWith("WT09"))
+                .body("sku", startsWith("WT08"))
                 .body("qty", any(Integer.class))
                 .body("name", any(String.class))
                 .body("price", any(Integer.class))
@@ -97,7 +97,7 @@ public class GfashionCartIT extends GfashionCartBaseIT {
     @Test
     public void addCartItemWithoutCartId() throws Exception {
         GfCartItem cartItem = new GfCartItem();
-        cartItem.setSku("WT09");
+        cartItem.setSku("WT08");
         cartItem.setQty(1);
         cartItem.setProductOption(createCartItemProductOption());
 
@@ -131,7 +131,7 @@ public class GfashionCartIT extends GfashionCartBaseIT {
         cartItemId = addCartItem(cartId);
 
         GfCartItem cartItem = new GfCartItem();
-        cartItem.setSku("WT09");
+        cartItem.setSku("WT08");
         cartItem.setQty(2);
         cartItem.setQuoteId(cartId);
         cartItem.setProductOption(updateCartItemProductOption());
@@ -142,7 +142,7 @@ public class GfashionCartIT extends GfashionCartBaseIT {
         response.then().assertThat()
                 .statusCode(HttpStatus.OK.value())
                 .body("itemId", any(Integer.class))
-                .body("sku", startsWith("WT09"))
+                .body("sku", startsWith("WT08"))
                 .body("qty", any(Integer.class))
                 .body("name", any(String.class))
                 .body("price", any(Integer.class))
@@ -160,7 +160,7 @@ public class GfashionCartIT extends GfashionCartBaseIT {
         int cartId = getCartId();
 
         GfCartItem cartItem = new GfCartItem();
-        cartItem.setSku("WT09");
+        cartItem.setSku("WT08");
         cartItem.setQty(2);
         cartItem.setQuoteId(cartId);
         cartItem.setProductOption(updateCartItemProductOption());
