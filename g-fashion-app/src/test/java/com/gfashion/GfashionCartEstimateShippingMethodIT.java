@@ -6,7 +6,6 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,20 +22,19 @@ import static org.hamcrest.Matchers.is;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Ignore
 public class GfashionCartEstimateShippingMethodIT extends GfashionCartBaseIT {
 
     @LocalServerPort
     private int port;
 
-//    private int cartItemId;
+    private int cartItemId;
 
     @Before
     public void setup() {
         RestAssured.port = port;
         super.setup();
 
-//        cartItemId = addCartItem();
+        cartItemId = addCartItem();
     }
 
     @Test
@@ -81,7 +79,6 @@ public class GfashionCartEstimateShippingMethodIT extends GfashionCartBaseIT {
     }
 
     @Test
-    @Ignore
     public void getEstimateShippingMethodsWithPostcode() throws Exception {
         GfCartAddress address = new GfCartAddress();
         address.setCountryId("US");
@@ -95,8 +92,8 @@ public class GfashionCartEstimateShippingMethodIT extends GfashionCartBaseIT {
                 .body("size()", any(Integer.class));
     }
 
-//    @After
-//    public void clearTestData() throws Exception {
-//        deleteCartItem(cartItemId);
-//    }
+    @After
+    public void clearTestData() throws Exception {
+        deleteCartItem(cartItemId);
+    }
 }
