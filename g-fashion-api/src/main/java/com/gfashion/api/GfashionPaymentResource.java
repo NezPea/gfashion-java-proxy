@@ -25,16 +25,6 @@ public class GfashionPaymentResource {
      */
     @PostMapping("/information")
     public ResponseEntity<String> paymentInformation(@RequestBody GfAdditonal gfAdditonal) {
-//        GfAdditonal gfAdditonal = new GfAdditonal();
-//        gfAdditonal.setMethod("adyen_cc");
-//        GfAdditionalData gfAdditionalData = new GfAdditionalData();
-//        gfAdditionalData.setCc_type("VI");
-//        gfAdditionalData.setNumber("4111111111111111");
-//        gfAdditionalData.setCvc("737");
-//        gfAdditionalData.setExpiryMonth("03");
-//        gfAdditionalData.setExpiryYear("2030");
-//        gfAdditionalData.setHolderName("John Smith");
-//        gfAdditonal.setGfAdditionalData(gfAdditionalData);
         try {
             String orderId = magentoPaymentClient.createPayment(gfAdditonal);
             return ResponseEntity.status(HttpStatus.OK).body(orderId);

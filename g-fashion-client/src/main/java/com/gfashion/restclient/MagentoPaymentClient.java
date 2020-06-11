@@ -26,43 +26,6 @@ public class MagentoPaymentClient {
 
     public String createPayment(GfAdditonal gfAdditonal) throws PaymentNotFoundException, PaymentUnknowException{
         try {
-
-            String data = "{\n" +
-                    "  \"amount\": {\n" +
-                    "    \"currency\": \"USD\",\n" +
-                    "    \"value\": 1000\n" +
-                    "  },\n" +
-                    "  \"reference\": \"2020061100110011\",\n" +
-                    "  \"paymentMethod\": {\n" +
-                    "    \"type\": \"scheme\",\n" +
-                    "    \"number\": \"4111111111111111\",\n" +
-                    "    \"expiryMonth\": \"03\",\n" +
-                    "    \"expiryYear\": \"2030\",\n" +
-                    "    \"holderName\": \"John Smith\",\n" +
-                    "    \"cvc\": \"737\"\n" +
-                    "  },\n" +
-                    "  \"returnUrl\": \"https://your-company.com/...\",\n" +
-                    "  \"merchantAccount\": \"VOICEOFGUOMEDIAINCECOM\"\n" +
-                    "}";
-            data = "{" +
-                    "   \"method\":\"adyen_cc\"," +
-                    "   \"additional_data\":{" +
-                    "        \"cc_type\":\"VI\"," +
-                    "        \"number\":\"4111111111111111\"," +
-                    "        \"cvc\":\"737\"," +
-                    "        \"expiryMonth\":\"03\"," +
-                    "        \"expiryYear\":\"2030\"," +
-                    "        \"holderName\":\"John Smith\"," +
-                    "        \"store_cc\":false," +
-                    "        \"java_enabled\":false," +
-                    "        \"screen_color_depth\":24," +
-                    "        \"screen_width\":1440," +
-                    "        \"screen_height\":900," +
-                    "        \"timezone_offset\":-120," +
-                    "        \"language\":\"en-US\"" +
-                    "    }" +
-                    "}";
-
             ResponseEntity<String> responseEntity = restClient.postForEntity(informationUrl, gfAdditonal, String.class, null);
             log.info(responseEntity.getBody());
             return responseEntity.getBody();
