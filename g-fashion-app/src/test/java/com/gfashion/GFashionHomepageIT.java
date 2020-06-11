@@ -30,12 +30,9 @@ public class GFashionHomepageIT {
         response.then().assertThat().
                 statusCode(200).
                 content(
-                        containsString("product2"),
                         containsString("Miles"),
                         containsString("Trump"),
-                        containsString("HERMES"),
-                        containsString("Pence"),
-                        containsString("Italy")
+                        containsString("Pence")
                 );
     }
 
@@ -60,12 +57,9 @@ public class GFashionHomepageIT {
         response.then().assertThat().
                 statusCode(200).
                 content(
-                        containsString("product2"),
                         containsString("Miles"),
                         containsString("Trump"),
-                        containsString("HERMES"),
-                        containsString("Pence"),
-                        containsString("Italy")
+                        containsString("Pence")
                 );
     }
 
@@ -76,12 +70,9 @@ public class GFashionHomepageIT {
         response.then().assertThat().
                 statusCode(200).
                 content(
-                        containsString("产品2"),
                         containsString("迈尔斯"),
                         containsString("川普"),
-                        containsString("爱马仕"),
-                        containsString("彭斯"),
-                        containsString("意大利")
+                        containsString("彭斯")
                 );
     }
 }

@@ -56,6 +56,7 @@ public class GfashionCartIT extends GfashionCartBaseIT {
     }
 
     @Test
+    @Ignore
     public void addCartItemReturnCartItem() throws Exception {
         int cartId = getCartId();
         GfCartItem cartItem = createCartItemParams(cartId);
