@@ -1,48 +1,48 @@
 stages:
   - build
-  - test 
+  - test
   - package
-  - deploy 
+  - deploy
 
 build:
   image: maven:ibmjava-alpine
   stage: build
   script:
-  - mvn clean install
+    - mvn clean install
   artifacts:
     paths:
-    - g-fashion-app/target
-  tags: 
-  - docker
+      - g-fashion-app/target
+  tags:
+    - docker
 
-#test:
-#  image: maven:ibmjava-alpine
-#  stage: test
-#  script:
-#  - mvn integration-test -P integration
-#  artifacts:
-#    paths:
-#    - g-fashion-app/target
-#  tags:
-#  - docker
+test:
+  image: maven:ibmjava-alpine
+  stage: test
+  script:
+    - mvn test #integration-test -P integration
+  artifacts:
+    paths:
+      - g-fashion-app/target
+  tags:
+    - docker
 
 .docker_build_tmpl: &docker_build_tmpl
   stage: package
   script:
-  - docker build -f ${DOCKERFILE_PATH} -t 939023048332.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY}:${CI_COMMIT_SHORT_SHA} .
-  - docker push 939023048332.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY}:${CI_COMMIT_SHORT_SHA}
-  - docker rmi 939023048332.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY}:${CI_COMMIT_SHORT_SHA}
+    - docker build -f ${DOCKERFILE_PATH} -t 939023048332.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY}:${CI_COMMIT_SHORT_SHA} .
+    - docker push 939023048332.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY}:${CI_COMMIT_SHORT_SHA}
+    - docker rmi 939023048332.dkr.ecr.us-east-1.amazonaws.com/${REPOSITORY}:${CI_COMMIT_SHORT_SHA}
 
 package:
   <<: *docker_build_tmpl
   variables:
     REPOSITORY: 'gfashion/magento-java-proxy'
     DOCKERFILE_PATH: 'docker/Dockerfile'
-  tags: 
-  - docker
+  tags:
+    - docker
   only:
-  - master
-  - develop
+    - master
+    - develop
 
 regversion:
   image: 939023048332.dkr.ecr.us-east-1.amazonaws.com/ops/regversion:059c89fb
@@ -53,20 +53,20 @@ regversion:
     ENDPOINT: 'http://api.chatops.dev2.gfashion2020.tk/version/record/add'
     TOKEN: 'aWTUTKfApdKiU4d'
   tags:
-  - docker
+    - docker
   only:
-  - master
-  - develop
+    - master
+    - develop
 
 
 deploy:
   image: curlimages/curl
   stage: deploy
   script:
-  - curl remotecall.dev2.gfashion2020.tk/upgrade_java_proxy/${CI_COMMIT_SHORT_SHA} -X POST -H TOKEN:aWTUTKfApdKiU4d -v
-  - curl -H TOKEN:aWTUTKfApdKiU4d http://api.chatops.dev2.gfashion2020.tk/msg/hook/707658190426341438 -d "----> New version deployed on dev2 project name ${CI_PROJECT_NAME} ${CI_BUILD_REF_NAME}:${CI_COMMIT_SHORT_SHA} thank you ${GITLAB_USER_LOGIN} <----" -v
+    - curl remotecall.dev2.gfashion2020.tk/upgrade_java_proxy/${CI_COMMIT_SHORT_SHA} -X POST -H TOKEN:aWTUTKfApdKiU4d -v
+    - curl -H TOKEN:aWTUTKfApdKiU4d http://api.chatops.dev2.gfashion2020.tk/msg/hook/707658190426341438 -d "----> New version deployed on dev2 project name ${CI_PROJECT_NAME} ${CI_BUILD_REF_NAME}:${CI_COMMIT_SHORT_SHA} thank you ${GITLAB_USER_LOGIN} <----" -v
   only:
-  - develop
-  tags: 
-  - docker
+    - develop
+  tags:
+    - docker
 
