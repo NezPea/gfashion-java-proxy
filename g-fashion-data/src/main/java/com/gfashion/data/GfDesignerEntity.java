@@ -29,27 +29,25 @@ public class GfDesignerEntity {
     @DynamoDBAttribute(attributeName = "language")
     private String language;
 
-    @DynamoDBAttribute(attributeName = "onsale")
-    private String onsale;
+    @DynamoDBAttribute(attributeName = "onSale")
+    private String onSale;
 
-//    @DynamoDBAttribute(attributeName = "country")
+    @DynamoDBAttribute(attributeName = "country")
     private String country;
 
-//    @DynamoDBAttribute(attributeName = "recommends")
+    @DynamoDBAttribute(attributeName = "recommends")
     private String recommends;
 
-//    @DynamoDBAttribute(attributeName = "cooperatingBrands")
+    @DynamoDBAttribute(attributeName = "cooperatingBrands")
     private String cooperatingBrands;
 
-//    @DynamoDBAttribute(attributeName = "link")
+    @DynamoDBAttribute(attributeName = "link")
     private String link;
 
-//    @DynamoDBAttribute(attributeName = "forMan")
+    @DynamoDBAttribute(attributeName = "forMan")
     private Boolean forMan;
 
-//    @DynamoDBAttribute(attributeName = "forWoman")
+    @DynamoDBAttribute(attributeName = "forWoman")
     private Boolean forWoman;
-
-
 
 }
