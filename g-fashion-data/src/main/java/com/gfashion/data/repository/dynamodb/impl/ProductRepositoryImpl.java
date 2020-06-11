@@ -31,7 +31,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     public GfProductEntity readGfProductEntityById(String productId) {
         TransactionLoadRequest request = new TransactionLoadRequest();
         GfProductEntity entity = new GfProductEntity();
-        entity.setMagentoId(productId);
+        entity.setId(productId);
         request.addLoad(entity);
         return (GfProductEntity)dynamoDBMapper.transactionLoad(request).get(0);
     }
