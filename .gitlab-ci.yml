@@ -15,16 +15,16 @@ build:
   tags: 
   - docker
 
-test:
-  image: maven:ibmjava-alpine
-  stage: test
-  script:
-  - mvn integration-test -P integration
-  artifacts:
-    paths:
-    - g-fashion-app/target
-  tags: 
-  - docker
+#test:
+#  image: maven:ibmjava-alpine
+#  stage: test
+#  script:
+#  - mvn integration-test -P integration
+#  artifacts:
+#    paths:
+#    - g-fashion-app/target
+#  tags:
+#  - docker
 
 .docker_build_tmpl: &docker_build_tmpl
   stage: package
