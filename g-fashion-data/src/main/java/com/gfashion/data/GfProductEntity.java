@@ -16,8 +16,8 @@ import java.math.BigDecimal;
 @DynamoDBTable(tableName = "gfProduct")
 public class GfProductEntity {
 
-    @DynamoDBHashKey(attributeName = "magentoId")
-    private String magentoId;
+    @DynamoDBHashKey(attributeName = "id")
+    private String id;
 
     @DynamoDBAttribute(attributeName = "name")
     private String name;
