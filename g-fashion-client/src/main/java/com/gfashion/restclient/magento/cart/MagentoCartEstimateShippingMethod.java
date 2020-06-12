@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,14 +20,14 @@ public class MagentoCartEstimateShippingMethod {
     private String carrierTitle;
     @SerializedName("method_title")
     private String methodTitle;
-    private Integer amount;
+    private BigDecimal amount;
     @SerializedName("base_amount")
-    private Integer baseAmount;
+    private BigDecimal baseAmount;
     private Boolean available;
     @SerializedName("error_message")
     private String errorMessage;
     @SerializedName("price_excl_tax")
-    private Integer priceExclTax;
+    private BigDecimal priceExclTax;
     @SerializedName("price_incl_tax")
-    private Integer priceInclTax;
+    private BigDecimal priceInclTax;
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -14,26 +15,26 @@ import java.util.List;
 @NoArgsConstructor
 public class GfCartTotals {
 
-    private Integer grandTotal;
-    private Integer baseGrandTotal;
-    private Integer subtotal;
-    private Integer baseSubtotal;
-    private Integer discountAmount;
-    private Integer baseDiscountAmount;
-    private Integer subtotalWithDiscount;
-    private Integer baseSubtotalWithDiscount;
-    private Integer shippingAmount;
-    private Integer baseShippingAmount;
-    private Integer shippingDiscountAmount;
-    private Integer baseShippingDiscountAmount;
-    private Integer taxAmount;
-    private Integer baseTaxAmount;
+    private BigDecimal grandTotal;
+    private BigDecimal baseGrandTotal;
+    private BigDecimal subtotal;
+    private BigDecimal baseSubtotal;
+    private BigDecimal discountAmount;
+    private BigDecimal baseDiscountAmount;
+    private BigDecimal subtotalWithDiscount;
+    private BigDecimal baseSubtotalWithDiscount;
+    private BigDecimal shippingAmount;
+    private BigDecimal baseShippingAmount;
+    private BigDecimal shippingDiscountAmount;
+    private BigDecimal baseShippingDiscountAmount;
+    private BigDecimal taxAmount;
+    private BigDecimal baseTaxAmount;
     private JSONObject weeeTaxAppliedAmount;
-    private Integer shippingTaxAmount;
-    private Integer baseShippingTaxAmount;
-    private Integer subtotalInclTax;
-    private Integer shippingInclTax;
-    private Integer baseShippingInclTax;
+    private BigDecimal shippingTaxAmount;
+    private BigDecimal baseShippingTaxAmount;
+    private BigDecimal subtotalInclTax;
+    private BigDecimal shippingInclTax;
+    private BigDecimal baseShippingInclTax;
     private String baseCurrencyCode;
     private String quoteCurrencyCode;
     private Integer itemsQty;

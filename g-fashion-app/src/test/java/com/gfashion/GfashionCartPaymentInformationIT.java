@@ -50,8 +50,6 @@ public class GfashionCartPaymentInformationIT extends GfashionCartBaseIT {
 
         String orderId = response.getBody().as(String.class);
         assertThat(orderId, is(any(String.class)));
-
-        cartItemId = 0;
     }
 
     @Test

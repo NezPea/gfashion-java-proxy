@@ -1,5 +1,6 @@
 stages:
   - build
+  - test 
   - package
   - deploy 
 
@@ -8,6 +9,17 @@ build:
   stage: build
   script:
   - mvn clean install
+  artifacts:
+    paths:
+    - g-fashion-app/target
+  tags: 
+  - docker
+
+test:
+  image: maven:ibmjava-alpine
+  stage: test
+  script:
+  - mvn integration-test -P integration
   artifacts:
     paths:
     - g-fashion-app/target
@@ -52,7 +64,7 @@ deploy:
   stage: deploy
   script:
   - curl remotecall.dev2.gfashion2020.tk/upgrade_java_proxy/${CI_COMMIT_SHORT_SHA} -X POST -H TOKEN:aWTUTKfApdKiU4d -v
-  - curl -H TOKEN:aWTUTKfApdKiU4d http://api.chatops.dev2.gfashion2020.tk/msg/hook/707658190426341438 -d "----> New version deployed on dev2 ${CI_COMMIT_BRANCH}:${CI_COMMIT_SHORT_SHA}<----" -v
+  - curl -H TOKEN:aWTUTKfApdKiU4d http://api.chatops.dev2.gfashion2020.tk/msg/hook/707658190426341438 -d "----> New version deployed on dev2 project name ${CI_PROJECT_NAME} ${CI_BUILD_REF_NAME}:${CI_COMMIT_SHORT_SHA} thank you ${GITLAB_USER_LOGIN} <----" -v
   only:
   - develop
   tags: 

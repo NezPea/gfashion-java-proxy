@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @AllArgsConstructor
@@ -15,10 +17,10 @@ public class GfCartEstimateShippingMethod {
     private String methodCode;
     private String carrierTitle;
     private String methodTitle;
-    private Integer amount;
-    private Integer baseAmount;
+    private BigDecimal amount;
+    private BigDecimal baseAmount;
     private Boolean available;
     private String errorMessage;
-    private Integer priceExclTax;
-    private Integer priceInclTax;
+    private BigDecimal priceExclTax;
+    private BigDecimal priceInclTax;
 }
