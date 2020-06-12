@@ -1,14 +1,10 @@
 package com.gfashion.restclient;
 
-import com.gfashion.domain.cart.GfCart;
-import com.gfashion.domain.payment.GfAdditonal;
 import com.gfashion.domain.payment.GfShipping;
-import com.gfashion.restclient.magento.cart.MagentoCart;
 import com.gfashion.restclient.magento.exception.CustomerException;
 import com.gfashion.restclient.magento.exception.PaymentNotFoundException;
 import com.gfashion.restclient.magento.exception.PaymentUnknowException;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
-import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
