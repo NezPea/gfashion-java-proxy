@@ -53,6 +53,16 @@ public class GfashionCustomerResource {
         }
     }
 
+    @DeleteMapping("/customers/{customerId}")
+    public ResponseEntity<String> deleteCustomerById(@PathVariable Integer customerId) {
+        try {
+            magentoCustomerClient.deleteCustomerById(customerId);
+            return ResponseEntity.status(HttpStatus.OK).body("The Customer " + customerId + " has been deleted.");
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+        }
+    }
+
     @PutMapping("/customers/changePassword")
     public ResponseEntity<Boolean> changePassword(@RequestBody GfCustomerNewPassword newPassword, @RequestHeader(name = "Authorization") String token) {
         try {
