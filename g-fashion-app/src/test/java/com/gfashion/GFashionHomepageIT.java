@@ -25,6 +25,7 @@ public class GFashionHomepageIT {
     }
 
     @Test
+    @Ignore
     public void getCustomerizedHomepageByCustomerIdShouldReturnOk() throws Exception {
         Response response = RestAssured.get("/gfashion/v1/homepage");
         response.then().assertThat().
@@ -37,6 +38,7 @@ public class GFashionHomepageIT {
     }
 
     @Test
+    @Ignore
     public void getCategoriesByLevelRange() throws Exception {
         Response response = RestAssured.get("/gfashion/v1/homepage/categories?fromLevel=1&toLevel=2");
         response.then().assertThat().

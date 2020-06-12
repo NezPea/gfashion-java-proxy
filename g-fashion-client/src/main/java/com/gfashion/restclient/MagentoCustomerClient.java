@@ -7,16 +7,13 @@ import com.gfashion.domain.customer.GfCustomerRegistration;
 import com.gfashion.restclient.magento.customer.MagentoCustomer;
 import com.gfashion.restclient.magento.exception.*;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
-import com.google.gson.Gson;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.*;
@@ -53,10 +50,9 @@ public class MagentoCustomerClient {
     public GfCustomer createCustomer(GfCustomerRegistration customerRegistration) throws CustomerException {
 
         try {
-            ResponseEntity<String> responseEntity = this._restClient.postForEntity(customersUrl, customerRegistration, String.class, null);
-
-            Gson gson = new Gson();
-            return this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntity.getBody(), MagentoCustomer.class));
+            return this._mapper.convertMagentoCustomerToGfCustomer(
+                    this._restClient.postForEntity(customersUrl, customerRegistration, MagentoCustomer.class, null).getBody()
+            );
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
                 throw new CustomerException(e.getStatusCode(), e.getMessage());
@@ -69,10 +65,9 @@ public class MagentoCustomerClient {
         String getCustomerUrl = customersUrl + customerId;
 
         try {
-            ResponseEntity<String> responseEntity = this._restClient.exchangeGet(getCustomerUrl, String.class, null);
-
-            Gson gson = new Gson();
-            return this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntity.getBody(), MagentoCustomer.class));
+            return this._mapper.convertMagentoCustomerToGfCustomer(
+                    this._restClient.exchangeGet(getCustomerUrl, MagentoCustomer.class, null).getBody()
+            );
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new CustomerException(e.getStatusCode(), e.getMessage());
@@ -85,10 +80,22 @@ public class MagentoCustomerClient {
         String getCustomerUrl = customersUrl + customerId;
 
         try {
-            ResponseEntity<String> responseEntity = this._restClient.exchangePut(getCustomerUrl, gfCustomer, String.class, null);
+            return this._mapper.convertMagentoCustomerToGfCustomer(
+                    this._restClient.exchangePut(getCustomerUrl, gfCustomer, MagentoCustomer.class, null).getBody()
+            );
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new CustomerException(e.getStatusCode(), e.getMessage());
+            }
+            throw new CustomerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
 
-            Gson gson = new Gson();
-            return this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntity.getBody(), MagentoCustomer.class));
+    public String deleteCustomerById(Integer customerId) throws CustomerException {
+        String deleteCustomerUrl = customersUrl + customerId;
+
+        try {
+            return this._restClient.exchangeDelete(deleteCustomerUrl, String.class, null).getBody();
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new CustomerException(e.getStatusCode(), e.getMessage());
@@ -115,7 +122,7 @@ public class MagentoCustomerClient {
     }
 
     public void verifyCustomerToken(String customerId, String token) throws CustomerException {
-        if (token==null){
+        if (token == null) {
             throw new CustomerException(HttpStatus.UNAUTHORIZED, "Please include customer token in the header.");
         }
 
@@ -123,12 +130,11 @@ public class MagentoCustomerClient {
         tokenHeader.put("Authorization", Arrays.asList((new String[]{token})));
 
         try {
-            ResponseEntity<String> responseEntity = this._restClient.exchangeGet(customerMeUrl, String.class, tokenHeader);
-
-            Gson gson = new Gson();
-            GfCustomer res = this._mapper.convertMagentoCustomerToGfCustomer(gson.fromJson(responseEntity.getBody(), MagentoCustomer.class));
-            if(res.getId() != Integer.valueOf(customerId)){
-                throw new CustomerException(HttpStatus.UNAUTHORIZED, "The token passed in id not validate for customer " +  customerId);
+            GfCustomer res = this._mapper.convertMagentoCustomerToGfCustomer(
+                    this._restClient.exchangeGet(customerMeUrl, MagentoCustomer.class, tokenHeader).getBody()
+            );
+            if (res.getId() != Integer.valueOf(customerId)) {
+                throw new CustomerException(HttpStatus.UNAUTHORIZED, "The token passed in id not validate for customer " + customerId);
             }
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
