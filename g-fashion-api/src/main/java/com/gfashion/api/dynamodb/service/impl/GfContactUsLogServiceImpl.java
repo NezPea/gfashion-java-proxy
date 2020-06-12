@@ -27,7 +27,7 @@ public class GfContactUsLogServiceImpl implements GfContactUsLogService {
 
     @Override
     public GfContactUsLogEntity saveGfContactUsLog(GfContactUsLogEntity gfContactUsLogEntity) {
-        final String gfContactUsLogSeq = sequenceService.getGfContactUsLogSeq(LocalDateTime.now());
+        final String gfContactUsLogSeq = sequenceService.getGfContactUsLogSeq(gfContactUsLogEntity.getGfContactUsId());
         gfContactUsLogEntity.setSeq(gfContactUsLogSeq);
 
         gfContactUsLogEntity.setCreateTime(Constant.yyyyMMddHHmmssDf.format(LocalDateTime.now()));

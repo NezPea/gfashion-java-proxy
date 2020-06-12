@@ -24,9 +24,8 @@ public class SequenceService {
 
     }
 
-    private RedisAtomicLong gfContactUsLogSeq(LocalDateTime date){
-        String yyyyMMddHHmmss = date.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        return new RedisAtomicLong("GCLS"+yyyyMMddHHmmss, factory);
+    private RedisAtomicLong gfContactUsLogSeq(String gfContactUsId){
+        return new RedisAtomicLong(gfContactUsId, factory);
     }
 
     /**
@@ -60,11 +59,11 @@ public class SequenceService {
      * gfContactUsLog.seq格式：GCLS+当天日期串+redis自增序号，比如GCLS20190918120000000001
      * @return
      */
-    public String getGfContactUsLogSeq(LocalDateTime date){
+    public String getGfContactUsLogSeq(String gfContactUsId){
 
         StringBuffer stringBuffer = new StringBuffer();
 
-        RedisAtomicLong redisAtomicLong = gfContactUsLogSeq(date);
+        RedisAtomicLong redisAtomicLong = gfContactUsLogSeq(gfContactUsId);
 
         stringBuffer.append(redisAtomicLong.getKey());
 
