@@ -15,8 +15,8 @@ public class CustomizedHomepage {
     private Integer id;
     private List<HomepageProduct> recommendedProducts;
     private List<HomepageDesigner> recommendedDesigners;
-    private List<HomepageBrand> recommendedBrands;
+    //private List<HomepageBrand> recommendedBrands;
 
     private List<HomepageDesigner> followingDesigners;
-    private List<HomepageBrand> followingBrands;
+    //private List<HomepageBrand> followingBrands;
 }

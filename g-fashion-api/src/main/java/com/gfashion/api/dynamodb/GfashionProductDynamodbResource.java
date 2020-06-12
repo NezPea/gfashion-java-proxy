@@ -2,6 +2,7 @@ package com.gfashion.api.dynamodb;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
+import com.gfashion.api.log.annotation.DDBLog;
 import com.gfashion.data.GfProductEntity;
 import com.gfashion.data.repository.dynamodb.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ public class GfashionProductDynamodbResource {
 
     private ProductRepository productRepository;
 
+    @DDBLog(operationType = "DDB_Post", operationEvent = "POST_EVENT")
     @PostMapping(value = "/dynamodb/products", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfProductEntity> createProduct(@RequestBody GfProductEntity product) {
         try {

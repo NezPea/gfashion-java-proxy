@@ -24,4 +24,5 @@ public class GfCategory {
     private List<String> available_sort_by;
     private Boolean include_in_menu;
     private List<Map<String, String>> custom_attributes;
+    private List<GfCategory> subCategories;
 }

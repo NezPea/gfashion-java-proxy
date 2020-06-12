@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -12,36 +14,36 @@ public class MagentoCartTotalItem {
 
     @SerializedName("item_id")
     private Integer itemId;
-    private Integer price;
+    private BigDecimal price;
     @SerializedName("base_price")
-    private Integer basePrice;
+    private BigDecimal basePrice;
     private Integer qty;
     @SerializedName("row_total")
-    private Integer rowTotal;
+    private BigDecimal rowTotal;
     @SerializedName("base_row_total")
-    private Integer baseRowTotal;
+    private BigDecimal baseRowTotal;
     @SerializedName("row_total_with_discount")
-    private Integer rowTotalWithDiscount;
+    private BigDecimal rowTotalWithDiscount;
     @SerializedName("tax_amount")
-    private Integer taxAmount;
+    private BigDecimal taxAmount;
     @SerializedName("base_tax_amount")
-    private Integer baseTaxAmount;
+    private BigDecimal baseTaxAmount;
     @SerializedName("tax_percent")
     private Integer taxPercent;
     @SerializedName("discount_amount")
-    private Integer discountAmount;
+    private BigDecimal discountAmount;
     @SerializedName("base_discount_amount")
-    private Integer baseDiscountAmount;
+    private BigDecimal baseDiscountAmount;
     @SerializedName("discount_percent")
     private Integer discountPercent;
     @SerializedName("price_incl_tax")
-    private Integer priceInclTax;
+    private BigDecimal priceInclTax;
     @SerializedName("base_price_incl_tax")
-    private Integer basePriceInclTax;
+    private BigDecimal basePriceInclTax;
     @SerializedName("row_total_incl_tax")
-    private Integer rowTotalInclTax;
+    private BigDecimal rowTotalInclTax;
     @SerializedName("base_row_total_incl_tax")
-    private Integer baseRowTotalInclTax;
+    private BigDecimal baseRowTotalInclTax;
     private String options;
     private String name;
 }

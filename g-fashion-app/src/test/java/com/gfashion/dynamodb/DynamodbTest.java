@@ -27,7 +27,7 @@ public class DynamodbTest {
         System.out.println("create table.");
 
         CreateTableRequest request = new CreateTableRequest()
-                .withTableName("gfProduct")
+                .withTableName("DDBOperationLog")
                 .withAttributeDefinitions(new AttributeDefinition("id", ScalarAttributeType.S))
                 .withKeySchema(new KeySchemaElement("id", KeyType.HASH))
                 .withProvisionedThroughput(new ProvisionedThroughput(10L, 10L));

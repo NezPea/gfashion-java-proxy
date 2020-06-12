@@ -54,6 +54,24 @@ public class GfashionProductResource {
     @GetMapping(value = "/channelProducts", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfProductSearchResponseFix> searchTrxTransactions(HttpServletRequest httpServletRequest) {
         try {
+            /* 前端url
+            http://localhost:8080/gfashion/v1/channelProducts/?category_id,23,eq&price,150,lt&sku,%WJ04%,like&locale=zh
+            转换以后
+            ?searchCriteria[filter_groups][0][filters][0][field]=category_id&
+            searchCriteria[filter_groups][0][filters][0][value]=23&
+            searchCriteria[filter_groups][0][filters][0][condition_type]=eq&
+            searchCriteria[filter_groups][1][filters][0][field]=price&
+            searchCriteria[filter_groups][1][filters][0][value]=150&
+            searchCriteria[filter_groups][1][filters][0][condition_type]=lt&
+            searchCriteria[filter_groups][2][filters][0][field]=sku&
+            searchCriteria[filter_groups][2][filters][0][value]=%WJ04%&
+            searchCriteria[filter_groups][2][filters][0][condition_type]=like&
+            searchCriteria[filter_groups][3][filters][0][field]=store_id&
+            searchCriteria[filter_groups][3][filters][0][value]=localeEn&
+            searchCriteria[filter_groups][3][filters][0][condition_type]=eq
+            store_id会替换成 application.yml 里边的 magento.url.locale en=1 zh=6
+
+             */
             StringBuilder url = new StringBuilder();
             url.append("?");
             Map<String, String[]> parameterMap = httpServletRequest.getParameterMap();
@@ -79,10 +97,13 @@ public class GfashionProductResource {
                     url.append("searchCriteria[filter_groups][").append(i).append("][filters][0][value]=").append(storeId).append("&");
                     url.append("searchCriteria[filter_groups][").append(i).append("][filters][0][condition_type]=eq&");
                     i.getAndIncrement();
+                    //对于magento search条件 https://devdocs.magento.com/guides/v2.3/rest/performing-searches.html
+                    //category_id,23,eq&price,150,lt& 拆分成2个 filter_group ，每个filter_group多个filter
                 } else if (key.split(",").length == 3) {
                     if (key.split(",")[0].equals("category_id")) {
                         categoryId.set(Integer.parseInt(key.split(",")[1]));
                     }
+                    // 多选支持 color,5487_5477_5485,eq 将颜色代码拆分成多个filters
                     if (key.split(",")[1].contains("_")) {
                         String[] filters = key.split(",")[1].split("_");
                         for (int j = 0; j < filters.length; j++) {

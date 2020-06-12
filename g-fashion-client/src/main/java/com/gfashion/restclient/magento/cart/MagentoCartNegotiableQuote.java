@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +23,7 @@ public class MagentoCartNegotiableQuote {
     @SerializedName("negotiated_price_value")
     private Integer negotiatedPriceValue;
     @SerializedName("shipping_price")
-    private Integer shippingPrice;
+    private BigDecimal shippingPrice;
     @SerializedName("quote_name")
     private String quoteName;
     @SerializedName("expiration_period")
@@ -46,13 +48,13 @@ public class MagentoCartNegotiableQuote {
     @SerializedName("creatorType")
     private Integer creatorType;
     @SerializedName("original_total_price")
-    private Integer originalTotalPrice;
+    private BigDecimal originalTotalPrice;
     @SerializedName("base_original_total_price")
-    private Integer baseOriginalTotalPrice;
+    private BigDecimal baseOriginalTotalPrice;
     @SerializedName("negotiated_total_price")
-    private Integer negotiatedTotalPrice;
+    private BigDecimal negotiatedTotalPrice;
     @SerializedName("base_negotiated_total_price")
-    private Integer baseNegotiatedTotalPrice;
+    private BigDecimal baseNegotiatedTotalPrice;
     @SerializedName("extension_attributes")
     private JSONObject extensionAttributes;
 }
