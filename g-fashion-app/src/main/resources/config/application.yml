@@ -13,6 +13,32 @@
 spring:
   profiles:
     active: dev
+#  redis:
+#    database: 1
+#    host: 192.168.71.71
+#    port: 6379
+#    password:
+#    timeout: 5000
+#    pool:
+#      max-active: 8
+#      max-wait: -1
+#      max-idle: 8
+#      min-idle: 0
+#    session:
+#      store-type: none
+  # 使用redis集群
+  #  redis:
+  #    database: 0
+  #    cluster:
+  #      nodes: 192.168.71.71:7001,192.168.71.71:7002,192.168.71.71:7003,192.168.71.71:7004,192.168.71.71:7005,192.168.71.71:7006
+  #    jedis:
+  #      pool:
+  #        max-idle: 8
+  #        max-wait: -1
+  #        min-idle: 0
+  #    timeout: 5000
+  #    session:
+  #      store-type: redis
 ---
 spring:
   profiles: dev

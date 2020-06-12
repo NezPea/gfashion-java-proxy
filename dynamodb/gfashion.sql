@@ -37,8 +37,18 @@ aws dynamodb create-table \
         AttributeName=id,KeyType=HASH \
     --provisioned-throughput \
         ReadCapacityUnits=10,WriteCapacityUnits=5
+
+aws dynamodb create-table ^
+--table-name gfContactUs ^
+--attribute-definitions AttributeName=gfContactUsId,AttributeType=S ^
+--key-schema AttributeName=gfContactUsId,KeyType=HASH ^
+--provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5
         
-        
+aws dynamodb create-table ^
+--table-name gfContactUsLog ^
+--attribute-definitions AttributeName=gfContactUsId,AttributeType=S AttributeName=seq,AttributeType=S ^
+--key-schema AttributeName=gfContactUsId,KeyType=HASH AttributeName=seq,KeyType=RANGE ^
+--provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5
         
         
         
