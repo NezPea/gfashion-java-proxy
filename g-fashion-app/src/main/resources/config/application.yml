@@ -48,10 +48,15 @@ magento:
       recommendedBrandsParentId: 59 # the category id for brands
     designersParentId: 46
     brandsParentId: 50
+    paymentMethods: carts/mine/retrieve-adyen-payment-methods
+    originKey: adyen/originKey
     information: carts/mine/payment-information
     paymentStatus: adyen/orders/%s/payment-status
-  username: admin
-  password: 202064_Hh
+    verificationFingerprint: adyen/threeDS2Process
+  username: christ4us@hotmail.com
+  #admin
+  password: Password3
+  #202064_Hh
 
 test:
   email: testli@test.com
