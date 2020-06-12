@@ -35,28 +35,21 @@ public class DDBLogAspect {
     @Autowired
     GfashionDDBLogResource logResource;
 
-    LogEntity logEntity = new LogEntity();
+    ThreadLocal<LogEntity> entityThreadLocal = new ThreadLocal<LogEntity>();
 
     @Before("addLog()")
     public void doBefore(JoinPoint joinPoint) throws Throwable {
+        entityThreadLocal.set(new LogEntity());
+        LogEntity logEntity = entityThreadLocal.get();
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-
-        log.info("DATE : " + getDateTime());
-        log.info("HTTP_METHOD : " + request.getMethod());
-        log.info("IP : " + request.getRemoteHost());
-        log.info("URL : " + request.getRequestURL().toString());
-        log.info("CLASS " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-        log.info("RAW DATA : " + getRaw(request));
-        log.info("OBJECT ARGS : " + new Gson().toJson(joinPoint.getArgs()));
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         DDBLog ddbLog = method.getAnnotation(DDBLog.class);
         if (ddbLog != null) {
-            ddbLog.operationType();
-            ddbLog.operationEvent();
-            log.info("action type=" + ddbLog.operationType() + ", value=" + ddbLog.operationEvent());
+            logEntity.setOperationType(ddbLog.operationType());
+            logEntity.setOperationEvent(ddbLog.operationEvent());
         }
 
         logEntity.setOperationDate(getDateTime());
@@ -70,7 +63,7 @@ public class DDBLogAspect {
     @AfterReturning(returning = "result", pointcut = "addLog()")
     public void doAfterReturning(Object result) throws Throwable {
         String json = new Gson().toJson(((ResponseEntity) result).getBody());
-        log.info("RESPONSE : " + json);
+        LogEntity logEntity = entityThreadLocal.get();
         logEntity.setResponseInfo(json);
         saveEntity(logEntity);
     }
@@ -79,12 +72,14 @@ public class DDBLogAspect {
     public void doAfterThrowing(Throwable throwable) {
         String excption = ExceptionUtils.getStackTrace(throwable);
         log.info("EXCEPTION : " + excption);
+        LogEntity logEntity = entityThreadLocal.get();
         logEntity.setExceptionInfo(excption);
         saveEntity(logEntity);
     }
 
     private void saveEntity(LogEntity logEntity) {
         logEntity.setId(UUID.randomUUID().toString());
+        log.info("EXCEPTION : " + logEntity);
         logResource.createLog(logEntity);
     }
 
