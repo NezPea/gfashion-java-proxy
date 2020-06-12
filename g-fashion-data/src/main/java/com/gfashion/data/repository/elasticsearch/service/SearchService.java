@@ -20,6 +20,7 @@ import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,33 +42,35 @@ public class SearchService {
 
 
     public void mockData() {
-        EsProduct product = new EsProduct();
-        product.setId("100");
-        product.setBrandId("100");
-        product.setPrice(10000);
-        product.setBrandName("channel");
-        product.setBrief("Slim-fit plain-woven stretch wool trousers in black. Low-rise. Five-pocket styling. Belt loops at waistband. Central creases at front and back. Zip-fly. Partially lined.");
-        product.setName("Black Wool Herris Trousers");
-        product.setCategories(new String[]{"clothing", "trousers"});
-        product.setGender("F");
-        product.setSale(1);
-        product.setDesignerId("1003239");
-        product.setSize("XXL");
-        product.setLanguage("en");
+        EsProduct product = EsProduct.builder()
+                .id("100")
+                .brandId("100")
+                .price(10000)
+                .brandName("channel")
+                .brief("Slim-fit plain-woven stretch wool trousers in black. Low-rise. Five-pocket styling. Belt loops at waistband. Central creases at front and back. Zip-fly. Partially lined.")
+                .name("Black Wool Herris Trousers")
+                .categories(new String[]{"clothing", "trousers"})
+                .gender("F")
+                .sale(1)
+                .designerId("1003239")
+                .size("XXL")
+                .language("en")
+                .build();
 
-        EsProduct product1 = new EsProduct();
-        product1.setId("101");
-        product1.setBrandId("101");
-        product1.setPrice(15000);
-        product1.setBrandName("adidass");
-        product1.setBrief("Relaxed-fit technical twill cargo pants in black. Mid-rise. Four-pocket styling. Belt loops at partially elasticized waistband. Darts at front, back, and legs. Zippered pocket at outseams. Elasticized cuffs. Zip-fly. Tonal hardware.");
-        product1.setName("Black Dimensional Out Pocket Cargo Pants");
-        product1.setCategories(new String[]{"bags", "shoes"});
-        product1.setGender("F");
-        product1.setSale(0);
-        product1.setDesignerId("09a88ser2");
-        product1.setSize("36");
-        product1.setLanguage("cn");
+        EsProduct product1 = EsProduct.builder()
+                .id("101")
+                .brandId("101")
+                .price(15000)
+                .brandName("adidass")
+                .brief("Relaxed-fit technical twill cargo pants in black. Mid-rise. Four-pocket styling. Belt loops at partially elasticized waistband. Darts at front, back, and legs. Zippered pocket at outseams. Elasticized cuffs. Zip-fly. Tonal hardware.")
+                .name("Black Dimensional Out Pocket Cargo Pants")
+                .categories(new String[]{"bags", "shoes"})
+                .gender("F")
+                .sale(0)
+                .designerId("09a88ser2")
+                .size("36")
+                .language("cn")
+                .build();
 
         List<EsProduct> products = new ArrayList<>();
         products.add(product);
@@ -76,10 +79,11 @@ public class SearchService {
     }
 
     public void cleanup() {
-        productRepository.deleteAll();
+        productRepository.deleteById("100");
+        productRepository.deleteById("101");
     }
 
-    public Page<EsProduct> search(GfProductSearchRequest request) {
+    public Page<EsProduct> search(@NotNull GfProductSearchRequest request) {
 
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
         if (!isEmpty(request.getKeyword())) {
@@ -90,7 +94,7 @@ public class SearchService {
             queryBuilder.must(matchQuery("gender", request.getGender()));
         }
 
-        if (request.getSale() != null) {
+        if (request.getSale() == 1) {
             queryBuilder.must(matchQuery("sale", request.getSale()));
         }
 
