@@ -1,10 +1,8 @@
 package com.gfashion.api.elasticsearch;
 
-import com.gfashion.data.repository.elasticsearch.model.EsProduct;
 import com.gfashion.data.repository.elasticsearch.service.SearchService;
 import com.gfashion.domain.elasticsearch.GfProductPage;
 import com.gfashion.domain.elasticsearch.GfProductSearchRequest;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -20,8 +18,7 @@ public class GfashionSearchResource {
 
     @PostMapping("/search")
     public GfProductPage search(@RequestBody GfProductSearchRequest request) {
-        Page<EsProduct> products = searchService.search(request);
-        return searchService.transform(products);
+        return searchService.searchWithCategories(request);
     }
 
     @GetMapping("/mock")

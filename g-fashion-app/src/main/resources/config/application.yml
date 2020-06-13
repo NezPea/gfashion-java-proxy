@@ -164,6 +164,7 @@ logging:
   level:
     ROOT: DEBUG
     com.gfashion: DEBUG
+    org.springframework.data.elasticsearch.client.WIRE: trace
 
 aws:
   dynamodb:
