@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -35,9 +37,18 @@ public class GfMessagingIT {
     @Before
     public void setup() {
         RestAssured.port = port;
+
+        HashMap<String, String> msgTitle = new HashMap<>();
+        msgTitle.put("zh_CN", "中文标题");
+        msgTitle.put("en", "English title");
+
+        HashMap<String, String> msgContent = new HashMap<>();
+        msgContent.put("zh_CN", "这是中文内容");
+        msgContent.put("en", "English content.");
+
         testMessage = new MessageRequest();
-        testMessage.setTitle("This is a test message.");
-        testMessage.setContent("This is some test content.");
+        testMessage.setTitle(msgTitle);
+        testMessage.setContent(msgContent);
         testMessage.setReceiver(receiver);
     }
 

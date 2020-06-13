@@ -18,7 +18,7 @@ import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/message/v1", produces = {"application/json"})
+@RequestMapping(path = "/message/v1", produces = {"application/json;charset=UTF-8"})
 @Validated
 @AllArgsConstructor
 public class GfMsgMessageResource {

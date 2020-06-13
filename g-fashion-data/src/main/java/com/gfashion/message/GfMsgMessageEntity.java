@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.util.HashMap;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,9 +20,9 @@ public class GfMsgMessageEntity {
   @DynamoDBHashKey
   private String receiver;
 
-  private String title;
+  private HashMap<String, String> title;
 
-  private String content;
+  private HashMap<String, String> content;
 
   private String picture;
 
