@@ -1,6 +1,7 @@
 package com.gfashion.api;
 
 import com.gfashion.domain.customer.GfCustomer;
+import com.gfashion.domain.customer.GfCustomerAddress;
 import com.gfashion.domain.customer.GfCustomerNewPassword;
 import com.gfashion.domain.customer.GfCustomerRegistration;
 import com.gfashion.restclient.MagentoCustomerClient;
@@ -27,36 +28,36 @@ public class GfashionCustomerResource {
     private SendGridEmailClient sendGridEmailClient;
 
     @PostMapping("/customers")
-    public ResponseEntity<GfCustomer> creatCustomer(@RequestBody GfCustomerRegistration gfCustomer) {
+    public ResponseEntity<GfCustomer> creatCustomer(@RequestBody GfCustomerRegistration gfCustomer, @RequestHeader(name = "Authorization") String token) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(magentoCustomerClient.createCustomer(gfCustomer));
+            return ResponseEntity.status(HttpStatus.CREATED).body(magentoCustomerClient.createCustomer(gfCustomer, token));
         } catch (CustomerException e) {
             throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
     }
 
     @GetMapping("/customers/{customerId}")
-    public ResponseEntity<GfCustomer> getCustomerById(@PathVariable Integer customerId) {
+    public ResponseEntity<GfCustomer> getCustomerById(@PathVariable Integer customerId, @RequestHeader(name = "Authorization") String token) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.getCustomerById(customerId));
+            return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.getCustomerById(customerId, token));
         } catch (CustomerException e) {
             throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
     }
 
     @PutMapping("/customers/{customerId}")
-    public ResponseEntity<GfCustomer> getCustomerById(@RequestBody GfCustomerRegistration gfCustomer, @PathVariable Integer customerId) {
+    public ResponseEntity<GfCustomer> updateCustomerById(@RequestBody GfCustomerRegistration gfCustomer, @PathVariable Integer customerId, @RequestHeader(name = "Authorization") String token) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.updateCustomerById(gfCustomer, customerId));
+            return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.updateCustomerById(gfCustomer, customerId, token));
         } catch (CustomerException e) {
             throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
     }
 
     @DeleteMapping("/customers/{customerId}")
-    public ResponseEntity<String> deleteCustomerById(@PathVariable Integer customerId) {
+    public ResponseEntity<String> deleteCustomerById(@PathVariable Integer customerId, @RequestHeader(name = "Authorization") String token) {
         try {
-            magentoCustomerClient.deleteCustomerById(customerId);
+            magentoCustomerClient.deleteCustomerById(customerId, token);
             return ResponseEntity.status(HttpStatus.OK).body("The Customer " + customerId + " has been deleted.");
         } catch (CustomerException e) {
             throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
@@ -72,8 +73,35 @@ public class GfashionCustomerResource {
         }
     }
 
+    @PutMapping("/customers/{customerId}/addAddress")
+    public ResponseEntity<GfCustomer> addAddress(@RequestBody GfCustomerAddress newAddress, @PathVariable Integer customerId, @RequestHeader(name = "Authorization") String token) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.addAddress(newAddress, customerId, token));
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+        }
+    }
+
+    @PutMapping("/customers/{customerId}/changeAddress")
+    public ResponseEntity<GfCustomer> changeAddress(@RequestBody GfCustomerAddress newAddress, @PathVariable Integer customerId, @RequestHeader(name = "Authorization") String token) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.changeAddress(newAddress, customerId, token));
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+        }
+    }
+
+    @DeleteMapping("/customers/{customerId}/deleteAddress/{addressId}")
+    public ResponseEntity<GfCustomer> deleteAddress(@PathVariable Integer customerId, @PathVariable Integer addressId, @RequestHeader(name = "Authorization") String token) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.deleteAddress(customerId, addressId, token));
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+        }
+    }
+
     @PostMapping("/customers/{customerId}/getVerificationCode")
-    public ResponseEntity<String> getVerificationCode(@RequestBody String email, @PathVariable String customerId, @RequestHeader(name = "Authorization") String token) {
+    public ResponseEntity<String> getVerificationCode(@RequestBody String email, @PathVariable Integer customerId, @RequestHeader(name = "Authorization") String token) {
         try {
             magentoCustomerClient.verifyCustomerToken(customerId, token);
             return ResponseEntity.status(HttpStatus.OK).body(sendGridEmailClient.sendVerificationCode(email));
