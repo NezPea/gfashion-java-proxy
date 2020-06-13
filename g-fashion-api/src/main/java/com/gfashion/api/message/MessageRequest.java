@@ -1,10 +1,13 @@
 package com.gfashion.api.message;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 
 /**
  * Message request class sent from the client.
@@ -17,11 +20,11 @@ public class MessageRequest {
     @NotBlank(message = "Receiver field is required.")
     private String receiver;
 
-    @NotBlank(message = "Message title is required.")
-    private String title;
+    @NotNull
+    private HashMap<String, String> title;
 
-    @NotBlank(message = "Message content is required.")
-    private String content = "";
+    @NotNull
+    private HashMap<String, String> content;
 
     private String picture = "";
 
