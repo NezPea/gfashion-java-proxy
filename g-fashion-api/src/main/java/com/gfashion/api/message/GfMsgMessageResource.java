@@ -72,11 +72,13 @@ public class GfMsgMessageResource {
     @GetMapping("/receive")
     public ResponseEntity<List<GfMsgMessageEntity>> receiveMessage(
             @RequestHeader(name = "Authorization") String token,
+            @RequestHeader(name = "lang") String language,
             @RequestParam(value = "secondsAgo", required = true) @Min(1) Long secondsAgo,
             @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit) {
 
         try {
-            List<GfMsgMessageEntity> messages = _msgService.getMessages(receiver, secondsAgo, limit);
+            language = (null == language || "".equals(language)) ? "en" : language;
+            List<GfMsgMessageEntity> messages = _msgService.getMessages(receiver, secondsAgo, language, limit);
             return ResponseEntity.status(HttpStatus.OK).body(messages);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage());
