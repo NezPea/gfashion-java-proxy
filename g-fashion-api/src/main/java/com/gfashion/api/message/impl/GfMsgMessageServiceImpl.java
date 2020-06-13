@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class GfMsgMessageServiceImpl implements GfMsgMessageService {
@@ -63,8 +65,40 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
     }
 
     @Override
-    public List<GfMsgMessageEntity> getMessages(String receiver, Long secondsAgo, Integer countLimit) {
-        return _msgRepository.findAll(receiver, secondsAgo, countLimit);
+    public List<GfMsgMessageEntity> getMessages(String receiver, Long secondsAgo, String language, Integer countLimit) {
+        List<GfMsgMessageEntity> messages = _msgRepository.findAll(receiver, secondsAgo, countLimit);
+        List<GfMsgMessageEntity> updatedMessages = messages.stream().map(message -> {
+
+            String k, v;
+            if (message.getTitle().containsKey(language)) {
+                k = language;
+                v = message.getTitle().get(k);
+                message.getTitle().clear();
+                message.getTitle().put(k, v);
+            } else if (message.getTitle().containsKey("en")) {
+                v = message.getTitle().get("en");
+                message.getTitle().clear();
+                message.getTitle().put("en", v);
+            } else {
+                throw new AmazonServiceException("The title should at least contains value for language en.");
+            }
+
+            if (message.getContent().containsKey(language)) {
+                k = language;
+                v = message.getContent().get(k);
+                message.getContent().clear();
+                message.getContent().put(k, v);
+            } else if (message.getContent().containsKey("en")) {
+                v = message.getContent().get("en");
+                message.getContent().clear();
+                message.getContent().put("en", v);
+            } else {
+                throw new AmazonServiceException("The content should at least contains value for language en.");
+            }
+
+            return message;
+        }).collect(Collectors.toList());
+        return updatedMessages;
     }
 
     @Override

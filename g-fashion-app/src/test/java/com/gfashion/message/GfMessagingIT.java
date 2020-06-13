@@ -77,6 +77,7 @@ public class GfMessagingIT {
     public void testReceive() throws Exception {
         given().header("Content-Type", ContentType.JSON)
                 .header("Authorization", "sso_token")
+                .header("lang", "zh_CN")
                 .param("secondsAgo", 1000)
                 .param("limit", 10)
                 .get("/message/v1/receive")

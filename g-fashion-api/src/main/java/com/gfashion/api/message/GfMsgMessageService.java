@@ -20,10 +20,11 @@ public interface GfMsgMessageService {
      * Retrieve a user's message starting from [num] seconds ago.
      * @param receiver The receiver of the message.
      * @param secondsAgo Retrieve message from [num] seconds ago.
+     * @param language Which language of content to return.
      * @param countLimit Only retrieve a limited number of messages.
      * @return A list of message entities.
      */
-    List<GfMsgMessageEntity> getMessages(String receiver, Long secondsAgo, Integer countLimit);
+    List<GfMsgMessageEntity> getMessages(String receiver, Long secondsAgo, String language, Integer countLimit);
 
     /**
      * Retrieve a message with id.
