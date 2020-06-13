@@ -28,9 +28,9 @@ public class EsProduct {
     private String language;
     private String brandId;
     private String vendorId;
-    private String designerId;
-    private String[] categories;
-    private String category;
+    private Integer designerId;
+    private Integer[] categories;
+    private Integer category;
     private String gender;
     private Integer sale;
     private String size;
