@@ -14,6 +14,4 @@ public class GfProductPage {
     private long total = 0;
     private int totalPage = 0;
     private List<GfProduct> items;
-    private Set<GfCategory> categories;
-    private Set<GfDesigner> designers;
 }
