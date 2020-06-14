@@ -83,66 +83,6 @@ public class SearchService {
         return subTree;
     }
 
-    public void mockProduct() {
-        EsProduct product = EsProduct.builder()
-                .id("100")
-                .brandId("100")
-                .price(10000)
-                .brandName("channel")
-                .brief("Slim-fit plain-woven stretch wool trousers in black. Low-rise. Five-pocket styling. Belt loops at waistband. Central creases at front and back. Zip-fly. Partially lined.")
-                .name("Black Wool Herris Trousers")
-                .categories(new Integer[]{100, 1001})
-                .category(1001)
-                .gender("F")
-                .sale(1)
-                .designerId(1003239)
-                .size("XXL")
-                .language("en")
-                .build();
-
-        EsProduct product1 = EsProduct.builder()
-                .id("101")
-                .brandId("101")
-                .price(15000)
-                .brandName("adidass")
-                .brief("Relaxed-fit technical twill cargo pants in black. Mid-rise. Four-pocket styling. Belt loops at partially elasticized waistband. Darts at front, back, and legs. Zippered pocket at outseams. Elasticized cuffs. Zip-fly. Tonal hardware.")
-                .name("Black Dimensional Out Pocket Cargo Pants")
-                .categories(new Integer[]{101, 1011})
-                .category(1011)
-                .gender("F")
-                .sale(0)
-                .designerId(900)
-                .size("36")
-                .language("cn")
-                .build();
-
-        List<EsProduct> products = new ArrayList<>();
-        products.add(product);
-        products.add(product1);
-        productRepository.saveAll(products);
-    }
-
-    public void mockDesigner() {
-        EsDesigner designer = EsDesigner.builder().id("100").name("李世民").suggest(new Completion(new String[]{"李世明"})).build();
-        EsDesigner designer1 = EsDesigner.builder().id("101").name("Nirvana").suggest(new Completion(new String[]{"Nirvana"})).build();
-        EsDesigner designer2 = EsDesigner.builder().id("102").name("Nevermind Never").suggest(new Completion(new String[]{"Nevermind Never"})).build();
-        List<EsDesigner> designers = new ArrayList<>();
-        designers.add(designer);
-        designers.add(designer1);
-        designers.add(designer2);
-        designerRepository.saveAll(designers);
-    }
-
-    public void cleanupProducts() {
-//        productRepository.deleteById("100");
-//        productRepository.deleteById("101");
-        productRepository.deleteAll();
-    }
-
-    public void cleanupDesigners() {
-        designerRepository.deleteAll();
-    }
-
     private BoolQueryBuilder buildQueryBuilder(@NotNull GfProductSearchRequest request) {
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
         if (!isEmpty(request.getKeyword())) {
@@ -271,5 +211,69 @@ public class SearchService {
 
     private boolean isEmpty(String txt) {
         return txt == null || txt.trim().length() == 0;
+    }
+
+
+
+    /** ------------- methods down below for mocking data ------------------- */
+
+    public void mockProduct() {
+        EsProduct product = EsProduct.builder()
+                .id("100")
+                .brandId("100")
+                .price(10000)
+                .brandName("channel")
+                .brief("Slim-fit plain-woven stretch wool trousers in black. Low-rise. Five-pocket styling. Belt loops at waistband. Central creases at front and back. Zip-fly. Partially lined.")
+                .name("Black Wool Herris Trousers")
+                .categories(new Integer[]{100, 1001})
+                .category(1001)
+                .gender("F")
+                .sale(1)
+                .designerId(1003239)
+                .size("XXL")
+                .language("en")
+                .build();
+
+        EsProduct product1 = EsProduct.builder()
+                .id("101")
+                .brandId("101")
+                .price(15000)
+                .brandName("adidass")
+                .brief("Relaxed-fit technical twill cargo pants in black. Mid-rise. Four-pocket styling. Belt loops at partially elasticized waistband. Darts at front, back, and legs. Zippered pocket at outseams. Elasticized cuffs. Zip-fly. Tonal hardware.")
+                .name("Black Dimensional Out Pocket Cargo Pants")
+                .categories(new Integer[]{101, 1011})
+                .category(1011)
+                .gender("F")
+                .sale(0)
+                .designerId(900)
+                .size("36")
+                .language("cn")
+                .build();
+
+        List<EsProduct> products = new ArrayList<>();
+        products.add(product);
+        products.add(product1);
+        productRepository.saveAll(products);
+    }
+
+    public void mockDesigner() {
+        EsDesigner designer = EsDesigner.builder().id("100").name("李世民").suggest(new Completion(new String[]{"李世明"})).build();
+        EsDesigner designer1 = EsDesigner.builder().id("101").name("Nirvana").suggest(new Completion(new String[]{"Nirvana"})).build();
+        EsDesigner designer2 = EsDesigner.builder().id("102").name("Nevermind Never").suggest(new Completion(new String[]{"Nevermind Never"})).build();
+        List<EsDesigner> designers = new ArrayList<>();
+        designers.add(designer);
+        designers.add(designer1);
+        designers.add(designer2);
+        designerRepository.saveAll(designers);
+    }
+
+    public void cleanupProducts() {
+//        productRepository.deleteById("100");
+//        productRepository.deleteById("101");
+        productRepository.deleteAll();
+    }
+
+    public void cleanupDesigners() {
+        designerRepository.deleteAll();
     }
 }
