@@ -143,70 +143,84 @@ public class SearchService {
                 .build();
     }
 
-    public GfProductPage searchWithCategories(@NotNull GfProductSearchRequest request) {
-        NativeSearchQueryBuilder nativeBuilder = new NativeSearchQueryBuilder();
-        nativeBuilder.withIndices(Constants.INDEX_PRODUCT).withTypes(Constants.TYPE).withQuery(buildQueryBuilder(request));
+    public GfProductSearchResponse searchWithCategories(@NotNull GfProductSearchRequest request) {
+        try {
+            NativeSearchQueryBuilder nativeBuilder = new NativeSearchQueryBuilder();
+            nativeBuilder.withIndices(Constants.INDEX_PRODUCT).withTypes(Constants.TYPE).withQuery(buildQueryBuilder(request));
 
-        nativeBuilder.addAggregation(AggregationBuilders.terms(Constants.GROUP_CATEGORY).field("category"))
-                .addAggregation(AggregationBuilders.terms(Constants.GROUP_DESIGNER).field("designerId"));
+            nativeBuilder.addAggregation(AggregationBuilders.terms(Constants.GROUP_CATEGORY).field("category"))
+                    .addAggregation(AggregationBuilders.terms(Constants.GROUP_DESIGNER).field("designerId"));
 
-        // Page starts from 0 in elasticsearch
-        nativeBuilder.withPageable(PageRequest.of(request.getPage(), request.getPageSize()));
+            // Page starts from 0 in elasticsearch
+            nativeBuilder.withPageable(PageRequest.of(request.getPage(), request.getPageSize()));
 
-        SearchQuery searchQuery = nativeBuilder.build();
+            SearchQuery searchQuery = nativeBuilder.build();
 
-        AggregatedPage<EsProduct> products = (AggregatedPage) elasticsearchTemplate.queryForPage(searchQuery, EsProduct.class);
+            // Search for products
+            AggregatedPage<EsProduct> products = (AggregatedPage) elasticsearchTemplate.queryForPage(searchQuery, EsProduct.class);
 
-        Set<GfDesigner> designers = new HashSet<>();
-        Set<GfCategory> categories = new HashSet<>();
+            Set<GfDesigner> designers = new HashSet<>();
+            Set<GfCategory> categories = new HashSet<>();
 
-        for (FacetResult result : products.getFacets()) {
-            TermResult termResult = (TermResult) result;
+            for (FacetResult result : products.getFacets()) {
+                TermResult termResult = (TermResult) result;
 
-            // find out designers
-            if (Constants.GROUP_DESIGNER.equals(result.getName())) {
-                termResult.getTerms().forEach(t -> designers.add(GfDesigner.builder().id(Integer.valueOf(t.getTerm())).build()));
-            }
+                // find out designers
+                if (Constants.GROUP_DESIGNER.equals(result.getName())) {
+                    termResult.getTerms().forEach(t -> designers.add(GfDesigner.builder().id(Integer.valueOf(t.getTerm())).build()));
+                }
 
-            // find out categories
-            if (Constants.GROUP_CATEGORY.equals(result.getName())) {
-                Set<EsCategory> categoryTree = getCategories(request.getLanguage());
+                // find out categories
+                if (Constants.GROUP_CATEGORY.equals(result.getName())) {
+                    Set<EsCategory> categoryTree = getCategories(request.getLanguage());
 
-                for (Term term : termResult.getTerms()) {
-                    Integer categoryId = Integer.valueOf(term.getTerm());
-                    Set<GfCategory> subCategoryTree = getSubCategoryTree(categoryId, categoryTree);
-                    categories.addAll(subCategoryTree);
+                    for (Term term : termResult.getTerms()) {
+                        Integer categoryId = Integer.valueOf(term.getTerm());
+                        Set<GfCategory> subCategoryTree = getSubCategoryTree(categoryId, categoryTree);
+                        categories.addAll(subCategoryTree);
+                    }
                 }
             }
-        }
 
-        return GfProductPage.builder()
-                .pageNo(products.getNumber() + 1)
-                .pageSize(products.getSize())
-                .total(products.getTotalElements())
-                .totalPage(products.getTotalPages())
-                .items(mapper.convertProducts(products.getContent()))
-                .categories(categories)
-                .designers(designers)
-                .build();
+            // assemble product page
+            GfProductPage page = GfProductPage.builder()
+                    .pageNo(products.getNumber() + 1)
+                    .pageSize(products.getSize())
+                    .total(products.getTotalElements())
+                    .totalPage(products.getTotalPages())
+                    .items(mapper.convertProducts(products.getContent()))
+                    .build();
+
+            // assemble search response
+            return GfProductSearchResponse.builder().success(true).products(page).categories(categories).designers(designers).build();
+        } catch (Exception e) {
+            LOGGER.error("Search product error", e);
+            return GfProductSearchResponse.builder().success(false).build();
+        }
     }
 
     public GfDesignerSuggestionResponse designerSuggestion(@NotNull String keyword) {
-        CompletionSuggestionBuilder suggestionBuilder = SuggestBuilders.completionSuggestion(Constants.SUGGEST_FIELD).prefix(keyword, Fuzziness.AUTO).size(10);
-        SearchResponse response = elasticsearchTemplate.suggest(new SuggestBuilder().addSuggestion(Constants.SUGGEST_NAME, suggestionBuilder), EsDesigner.class);
-        CompletionSuggestion completionSuggestion = response.getSuggest().getSuggestion(Constants.SUGGEST_NAME);
-        List<CompletionSuggestion.Entry.Option> options = completionSuggestion.getEntries().get(0).getOptions();
+        try {
+            CompletionSuggestionBuilder suggestionBuilder = SuggestBuilders.completionSuggestion(Constants.SUGGEST_FIELD).prefix(keyword, Fuzziness.AUTO).size(10);
+            SearchResponse response = elasticsearchTemplate.suggest(new SuggestBuilder().addSuggestion(Constants.SUGGEST_NAME, suggestionBuilder), EsDesigner.class);
+            CompletionSuggestion completionSuggestion = response.getSuggest().getSuggestion(Constants.SUGGEST_NAME);
+            List<CompletionSuggestion.Entry.Option> options = completionSuggestion.getEntries().get(0).getOptions();
 
-        List<GfDesigner> designers = new ArrayList<>();
-        for (CompletionSuggestion.Entry.Option option: options) {
-            try {
-                GfDesigner designer = ElasticsearchMapper.MAPPER.readValue(option.getHit().getSourceAsString(), GfDesigner.class);
-                designers.add(designer);
-            } catch (JsonProcessingException e) {
-                LOGGER.error("Designer suggestion error", e);
+            List<GfDesigner> designers = new ArrayList<>();
+            for (CompletionSuggestion.Entry.Option option : options) {
+                try {
+                    GfDesigner designer = ElasticsearchMapper.MAPPER.readValue(option.getHit().getSourceAsString(), GfDesigner.class);
+                    designers.add(designer);
+                } catch (JsonProcessingException e) {
+                    LOGGER.error("Convert suggestion error", e);
+                }
             }
+            return GfDesignerSuggestionResponse.builder().success(true).data(designers).build();
+        } catch (Exception e) {
+            LOGGER.error("Designer suggestion error", e);
+            return GfDesignerSuggestionResponse.builder().success(false).build();
         }
-        return GfDesignerSuggestionResponse.builder().success(true).data(designers).build();
+
     }
 
     private boolean isEmpty(String txt) {

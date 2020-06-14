@@ -2,6 +2,8 @@ package com.gfashion.api.elasticsearch;
 
 import com.gfashion.data.repository.elasticsearch.service.SearchService;
 import com.gfashion.domain.elasticsearch.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -11,21 +13,29 @@ import java.util.Map;
 @RestController
 @RequestMapping("/gfashion/v1")
 public class GfashionSearchResource {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GfashionSearchResource.class);
+
     @Resource
     private SearchService searchService;
 
 
     @PostMapping("/search")
-    public GfProductPage search(@RequestBody GfProductSearchRequest request) {
-        return searchService.searchWithCategories(request);
+    public GfProductSearchResponse search(@RequestBody GfProductSearchRequest request) {
+        LOGGER.info("Search product request:{}", request);
+        GfProductSearchResponse response = searchService.searchWithCategories(request);
+        LOGGER.info("Search product response:{}", response);
+        return response;
     }
 
     @PostMapping("/designer")
     public GfDesignerSuggestionResponse designer(@RequestBody GfDesignerSuggestionRequest request) {
-        return searchService.designerSuggestion(request.getKeyword());
+        LOGGER.info("Designer suggestion request:{}", request);
+        GfDesignerSuggestionResponse response = searchService.designerSuggestion(request.getKeyword());
+        LOGGER.info("Designer suggestion response:{}", response);
+        return response;
     }
 
-    @GetMapping("/mock")
+    @GetMapping("/mock_product")
     public Map<String, Integer> mock() {
         try {
             searchService.mockProduct();
@@ -38,7 +48,7 @@ public class GfashionSearchResource {
         return map;
     }
 
-    @GetMapping("/clean")
+    @GetMapping("/clean_product")
     public Map<String, Integer> clean() {
         try {
             searchService.cleanupProducts();
