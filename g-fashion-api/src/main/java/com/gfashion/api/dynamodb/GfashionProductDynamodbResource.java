@@ -20,7 +20,7 @@ public class GfashionProductDynamodbResource {
 
     private ProductRepository productRepository;
 
-    @DDBLog(operationType = "DDB_Post", operationEvent = "POST_EVENT")
+    @DDBLog(operationType = "custom_operation_type", operationEvent = "custom_operation_event")
     @PostMapping(value = "/dynamodb/products", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfProductEntity> createProduct(@RequestBody GfProductEntity product) {
         try {
@@ -48,7 +48,7 @@ public class GfashionProductDynamodbResource {
     @PutMapping(value = "/dynamodb/products", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfProductEntity> updateProduct(@RequestBody GfProductEntity product) {
         try {
-            if (productRepository.readGfProductEntityById(product.getMagentoId()) == null) {
+            if (productRepository.readGfProductEntityById(product.getId()) == null) {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
             }
             GfProductEntity response = productRepository.updateGfProductEntity(product);

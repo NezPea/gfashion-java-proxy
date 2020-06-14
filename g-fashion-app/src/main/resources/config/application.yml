@@ -21,7 +21,7 @@ server:
 
 magento:
   url:
-    base: https://www.gfashion2020.tk/index.php/rest/V1/
+    base: http://magento2.dev3.gfashion2020.tk/index.php/rest/V1/
     adminToken: integration/admin/token
     customerToken: integration/customer/token
     customers: customers/
@@ -56,7 +56,7 @@ magento:
     designersParentId: 46
     brandsParentId: 50
   username: admin
-  password: 202064_Hh
+  password: magentorocks1
 
 test:
   email: customer@test.com
@@ -104,7 +104,7 @@ server:
 
 magento:
   url:
-    base: https://www.gfashion2020.tk/index.php/rest/V1/
+    base: http://magento2.dev3.gfashion2020.tk/index.php/rest/V1/
     adminToken: integration/admin/token
     customerToken: integration/customer/token
     customers: customers/

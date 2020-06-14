@@ -16,8 +16,8 @@ import java.math.BigDecimal;
 @DynamoDBTable(tableName = "gfProduct")
 public class GfProductEntity {
 
-    @DynamoDBHashKey(attributeName = "magentoId")
-    private String magentoId;
+    @DynamoDBHashKey(attributeName = "id")
+    private String id;
 
     @DynamoDBAttribute(attributeName = "name")
     private String name;
@@ -157,8 +157,4 @@ public class GfProductEntity {
 //    private List<GfProductLink> product_links; // 关联产品
 //    @DynamoDBAttribute(attributeName = "extension_attributes")
 //    private GfMediaGalleryEntry extension_attributes; // 扩展属性
-
-    /**
-     *  todo eric, dynamodb support using complex object to store, need check ES support complex object.
-     */
 }

@@ -1,7 +1,7 @@
 package com.gfashion.api.log;
 
 import com.gfashion.api.log.annotation.DDBLog;
-import com.gfashion.api.log.entity.LogEntity;
+import com.gfashion.data.LogEntity;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -9,6 +9,8 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -18,40 +20,36 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.UUID;
 
 @Aspect
 @Component
 @Slf4j
 public class DDBLogAspect {
 
-    @Pointcut("execution(public * com.gfashion.api.dynamodb..*.*(..))"
-            + "@annotation(org.springframework.web.bind.annotation.PostMapping)"
+    @Pointcut("within(com.gfashion.api.dynamodb..*)"
             + "@annotation(com.gfashion.api.log.annotation.DDBLog)")
     public void addLog() {
     }
 
-    LogEntity logEntity = new LogEntity();
+    @Autowired
+    GfashionDDBLogResource logResource;
+
+    ThreadLocal<LogEntity> entityThreadLocal = new ThreadLocal<LogEntity>();
 
     @Before("addLog()")
     public void doBefore(JoinPoint joinPoint) throws Throwable {
+        entityThreadLocal.set(new LogEntity());
+        LogEntity logEntity = entityThreadLocal.get();
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-
-        log.info("DATE : " + getDateTime());
-        log.info("HTTP_METHOD : " + request.getMethod());
-        log.info("IP : " + request.getRemoteHost());
-        log.info("URL : " + request.getRequestURL().toString());
-        log.info("CLASS " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-        log.info("RAW DATA : " + getRaw(request));
-        log.info("OBJECT ARGS : " + new Gson().toJson(joinPoint.getArgs()));
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
         DDBLog ddbLog = method.getAnnotation(DDBLog.class);
         if (ddbLog != null) {
-            ddbLog.operationType();
-            ddbLog.operationEvent();
-            log.info("action type=" + ddbLog.operationType() + ", value=" + ddbLog.operationEvent());
+            logEntity.setOperationType(ddbLog.operationType());
+            logEntity.setOperationEvent(ddbLog.operationEvent());
         }
 
         logEntity.setOperationDate(getDateTime());
@@ -64,8 +62,9 @@ public class DDBLogAspect {
 
     @AfterReturning(returning = "result", pointcut = "addLog()")
     public void doAfterReturning(Object result) throws Throwable {
-        log.info("RESPONSE : " + result);
-        logEntity.setResponseInfo(result.toString());
+        String json = new Gson().toJson(((ResponseEntity) result).getBody());
+        LogEntity logEntity = entityThreadLocal.get();
+        logEntity.setResponseInfo(json);
         saveEntity(logEntity);
     }
 
@@ -73,12 +72,15 @@ public class DDBLogAspect {
     public void doAfterThrowing(Throwable throwable) {
         String excption = ExceptionUtils.getStackTrace(throwable);
         log.info("EXCEPTION : " + excption);
+        LogEntity logEntity = entityThreadLocal.get();
         logEntity.setExceptionInfo(excption);
         saveEntity(logEntity);
     }
 
     private void saveEntity(LogEntity logEntity) {
-        //save to dynamodb.
+        logEntity.setId(UUID.randomUUID().toString());
+        log.info("EXCEPTION : " + logEntity);
+        logResource.createLog(logEntity);
     }
 
     public static String getDateTime() {
