@@ -1,25 +1,33 @@
 package com.gfashion.data.repository.elasticsearch.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gfashion.data.repository.elasticsearch.constant.Constants;
 import com.gfashion.data.repository.elasticsearch.mapper.ElasticsearchMapper;
 import com.gfashion.data.repository.elasticsearch.model.EsCategory;
+import com.gfashion.data.repository.elasticsearch.model.EsDesigner;
 import com.gfashion.data.repository.elasticsearch.model.EsProduct;
 import com.gfashion.data.repository.elasticsearch.repostory.EsDesignerRepository;
 import com.gfashion.data.repository.elasticsearch.repostory.EsProductRepository;
-import com.gfashion.domain.elasticsearch.GfCategory;
-import com.gfashion.domain.elasticsearch.GfDesigner;
-import com.gfashion.domain.elasticsearch.GfProductPage;
-import com.gfashion.domain.elasticsearch.GfProductSearchRequest;
+import com.gfashion.domain.elasticsearch.*;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.search.suggest.SuggestBuilder;
+import org.elasticsearch.search.suggest.SuggestBuilders;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.mapstruct.factory.Mappers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
+import org.springframework.data.elasticsearch.core.completion.Completion;
 import org.springframework.data.elasticsearch.core.facet.FacetResult;
 import org.springframework.data.elasticsearch.core.facet.result.Term;
 import org.springframework.data.elasticsearch.core.facet.result.TermResult;
@@ -39,6 +47,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 
 @Service
 public class SearchService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SearchService.class);
 
     @Resource
     private EsProductRepository productRepository;
@@ -47,7 +56,7 @@ public class SearchService {
     private EsDesignerRepository designerRepository;
 
     @Resource
-    private ElasticsearchOperations elasticsearchTemplate;
+    private ElasticsearchRestTemplate elasticsearchTemplate;
 
     private ElasticsearchMapper mapper = Mappers.getMapper(ElasticsearchMapper.class);
 
@@ -74,7 +83,7 @@ public class SearchService {
         return subTree;
     }
 
-    public void mockData() {
+    public void mockProduct() {
         EsProduct product = EsProduct.builder()
                 .id("100")
                 .brandId("100")
@@ -113,11 +122,25 @@ public class SearchService {
         productRepository.saveAll(products);
     }
 
-    public void cleanup() {
+    public void mockDesigner() {
+        EsDesigner designer = EsDesigner.builder().id("100").name("李世民").suggest(new Completion(new String[]{"李世明"})).build();
+        EsDesigner designer1 = EsDesigner.builder().id("101").name("Nirvana").suggest(new Completion(new String[]{"Nirvana"})).build();
+        EsDesigner designer2 = EsDesigner.builder().id("102").name("Nevermind Never").suggest(new Completion(new String[]{"Nevermind Never"})).build();
+        List<EsDesigner> designers = new ArrayList<>();
+        designers.add(designer);
+        designers.add(designer1);
+        designers.add(designer2);
+        designerRepository.saveAll(designers);
+    }
+
+    public void cleanupProducts() {
 //        productRepository.deleteById("100");
 //        productRepository.deleteById("101");
-
         productRepository.deleteAll();
+    }
+
+    public void cleanupDesigners() {
+        designerRepository.deleteAll();
     }
 
     private BoolQueryBuilder buildQueryBuilder(@NotNull GfProductSearchRequest request) {
@@ -226,6 +249,24 @@ public class SearchService {
                 .categories(categories)
                 .designers(designers)
                 .build();
+    }
+
+    public GfDesignerSuggestionResponse designerSuggestion(@NotNull String keyword) {
+        CompletionSuggestionBuilder suggestionBuilder = SuggestBuilders.completionSuggestion(Constants.SUGGEST_FIELD).prefix(keyword, Fuzziness.AUTO).size(10);
+        SearchResponse response = elasticsearchTemplate.suggest(new SuggestBuilder().addSuggestion(Constants.SUGGEST_NAME, suggestionBuilder), EsDesigner.class);
+        CompletionSuggestion completionSuggestion = response.getSuggest().getSuggestion(Constants.SUGGEST_NAME);
+        List<CompletionSuggestion.Entry.Option> options = completionSuggestion.getEntries().get(0).getOptions();
+
+        List<GfDesigner> designers = new ArrayList<>();
+        for (CompletionSuggestion.Entry.Option option: options) {
+            try {
+                GfDesigner designer = ElasticsearchMapper.MAPPER.readValue(option.getHit().getSourceAsString(), GfDesigner.class);
+                designers.add(designer);
+            } catch (JsonProcessingException e) {
+                LOGGER.error("Designer suggestion error", e);
+            }
+        }
+        return GfDesignerSuggestionResponse.builder().success(true).data(designers).build();
     }
 
     private boolean isEmpty(String txt) {

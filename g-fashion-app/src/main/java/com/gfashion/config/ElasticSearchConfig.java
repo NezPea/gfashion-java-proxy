@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 
 
 @Configuration
@@ -57,7 +58,7 @@ public class ElasticSearchConfig {
     }
 
     @Bean
-    public ElasticsearchOperations elasticsearchTemplate(AWSCredentialsProvider credentialsProvider) {
+    public ElasticsearchRestTemplate elasticsearchTemplate(AWSCredentialsProvider credentialsProvider) {
         return new ElasticsearchRestTemplate(awsClient(credentialsProvider));
     }
 

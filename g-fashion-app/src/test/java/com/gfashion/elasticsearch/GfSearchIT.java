@@ -1,6 +1,8 @@
 package com.gfashion.elasticsearch;
 
+import com.gfashion.data.repository.elasticsearch.model.EsDesigner;
 import com.gfashion.data.repository.elasticsearch.model.EsProduct;
+import com.gfashion.data.repository.elasticsearch.repostory.EsDesignerRepository;
 import com.gfashion.data.repository.elasticsearch.repostory.EsProductRepository;
 import com.gfashion.domain.cart.GfCartEstimateShippingMethod;
 import com.gfashion.domain.elasticsearch.GfProductSearchRequest;
@@ -14,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.data.elasticsearch.core.completion.Completion;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -38,6 +41,9 @@ public class GfSearchIT {
     @Resource
     private EsProductRepository productRepository;
 
+    @Resource
+    private EsDesignerRepository designerRepository;
+
     @Autowired
     protected Gson gson;
 
@@ -45,7 +51,7 @@ public class GfSearchIT {
     public void setup() {
         RestAssured.port = port;
 
-        mockData();
+        mockProduct();
     }
 
     @Test
@@ -61,17 +67,49 @@ public class GfSearchIT {
                 .body("total", greaterThan(0), "pageNo", is(1));
     }
 
+    @Test
+    public void searchProductByCategory() throws Exception {
+        GfProductSearchRequest request = new GfProductSearchRequest();
+        request.setCategoryId("1001");
+
+        given().header("Content-Type", ContentType.JSON)
+                .body(gson.toJson(request))
+                .post("/gfashion/v1/search")
+                .then().assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .body("total", greaterThan(0), "pageNo", is(1));
+    }
+
+    @Test
+    public void suggestDesigner() throws Exception {
+        GfProductSearchRequest request = new GfProductSearchRequest();
+        request.setKeyword("李");
+
+        given().header("Content-Type", ContentType.JSON)
+                .body(gson.toJson(request))
+                .post("/gfashion/v1/designer")
+                .then().assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .body("success", is(true), "data.size()", greaterThan(0));
+    }
+
     @After
     public void clearTestData() throws Exception {
+        // Catch exception because there is no permission for refreshing
         try {
             productRepository.deleteById("1000");
             productRepository.deleteById("1001");
+
+            designerRepository.deleteById("100");
+            designerRepository.deleteById("101");
+            designerRepository.deleteById("102");
         } catch (Exception e) {
 
         }
     }
 
-    private void mockData() {
+    private void mockProduct() {
+        // Catch exception because there is no permission for refreshing
         try {
             EsProduct product = EsProduct.builder()
                     .id("1000")
@@ -111,5 +149,22 @@ public class GfSearchIT {
 
         }
     }
+
+    public void mockDesigner() {
+        // Catch exception because there is no permission for refreshing
+        try {
+            EsDesigner designer = EsDesigner.builder().id("100").name("李世民").suggest(new Completion(new String[]{"李世明"})).build();
+            EsDesigner designer1 = EsDesigner.builder().id("101").name("Nirvana").suggest(new Completion(new String[]{"Nirvana"})).build();
+            EsDesigner designer2 = EsDesigner.builder().id("102").name("Nevermind Never").suggest(new Completion(new String[]{"Nevermind Never"})).build();
+            List<EsDesigner> designers = new ArrayList<>();
+            designers.add(designer);
+            designers.add(designer1);
+            designers.add(designer2);
+            designerRepository.saveAll(designers);
+        } catch (Exception e) {
+
+        }
+    }
+
 }
 
