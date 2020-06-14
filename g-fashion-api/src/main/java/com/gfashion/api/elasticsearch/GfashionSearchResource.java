@@ -1,7 +1,10 @@
 package com.gfashion.api.elasticsearch;
 
 import com.gfashion.data.repository.elasticsearch.service.SearchService;
-import com.gfashion.domain.elasticsearch.*;
+import com.gfashion.domain.elasticsearch.GfDesignerSuggestionRequest;
+import com.gfashion.domain.elasticsearch.GfDesignerSuggestionResponse;
+import com.gfashion.domain.elasticsearch.GfProductSearchRequest;
+import com.gfashion.domain.elasticsearch.GfProductSearchResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;

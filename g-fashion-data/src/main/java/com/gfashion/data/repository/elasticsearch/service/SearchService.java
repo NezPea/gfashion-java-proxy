@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -62,9 +63,14 @@ public class SearchService {
 
     public Set<EsCategory> getCategories(@NotBlank String language) {
         Set<EsCategory> categories = new HashSet<>();
-        categories.add(EsCategory.builder().id(100).name("Clothing").weight(1).build());
+        categories.add(EsCategory.builder().id(10).name("Cloth").weight(1).build());
+        categories.add(EsCategory.builder().id(100).name("Clothing").parentId(10).weight(1).build());
+        categories.add(EsCategory.builder().id(102).name("Dress").parentId(10).weight(3).build());
         categories.add(EsCategory.builder().id(1001).name("Trousers").parentId(100).weight(10).build());
-        categories.add(EsCategory.builder().id(101).name("Accessory").weight(2).build());
+        categories.add(EsCategory.builder().id(1002).name("Sweeter").parentId(100).weight(11).build());
+        categories.add(EsCategory.builder().id(1003).name("Jeans").parentId(100).weight(12).build());
+        categories.add(EsCategory.builder().id(11).name("Beauty").weight(1).build());
+        categories.add(EsCategory.builder().id(101).name("Accessory").parentId(11).weight(2).build());
         categories.add(EsCategory.builder().id(1011).name("Bags").parentId(101).weight(20).build());
         return categories;
     }
@@ -157,7 +163,7 @@ public class SearchService {
             SearchQuery searchQuery = nativeBuilder.build();
 
             // Search for products
-            AggregatedPage<EsProduct> products = (AggregatedPage) elasticsearchTemplate.queryForPage(searchQuery, EsProduct.class);
+            AggregatedPage<EsProduct> products = elasticsearchTemplate.queryForPage(searchQuery, EsProduct.class);
 
             Set<GfDesigner> designers = new HashSet<>();
             Set<GfCategory> categories = new HashSet<>();
@@ -179,6 +185,8 @@ public class SearchService {
                         Set<GfCategory> subCategoryTree = getSubCategoryTree(categoryId, categoryTree);
                         categories.addAll(subCategoryTree);
                     }
+
+                    categories = toTree(categories);
                 }
             }
 
@@ -221,6 +229,26 @@ public class SearchService {
             return GfDesignerSuggestionResponse.builder().success(false).build();
         }
 
+    }
+
+    private Set<GfCategory> toTree(Set<GfCategory> categories) {
+        Set<GfCategory> tree = new HashSet<>();
+
+        for (GfCategory category: categories) {
+            if (category.getParentId() == null) {
+                tree.add(category);
+            }
+
+            for (GfCategory cat: categories) {
+                if (cat.getParentId() != null && cat.getParentId().equals(category.getId())) {
+                    if (category.getChildren() == null) {
+                        category.setChildren(new HashSet<>());
+                    }
+                    category.getChildren().add(cat);
+                }
+            }
+        }
+        return tree;
     }
 
     private boolean isEmpty(String txt) {
