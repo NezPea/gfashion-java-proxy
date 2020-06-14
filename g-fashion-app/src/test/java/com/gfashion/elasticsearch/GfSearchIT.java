@@ -64,7 +64,7 @@ public class GfSearchIT {
                 .post("/gfashion/v1/search")
                 .then().assertThat()
                 .statusCode(HttpStatus.OK.value())
-                .body("total", greaterThan(0), "pageNo", is(1));
+                .body("success", is(true),"products.total", greaterThan(0), "products.pageNo", is(1));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class GfSearchIT {
                 .post("/gfashion/v1/search")
                 .then().assertThat()
                 .statusCode(HttpStatus.OK.value())
-                .body("total", greaterThan(0), "pageNo", is(1));
+                .body("success", is(true), "products.total", greaterThan(0), "products.pageNo", is(1));
     }
 
     @Test
