@@ -1,12 +1,20 @@
 package com.gfashion.data.repository.elasticsearch.model;
 
 import com.gfashion.data.repository.elasticsearch.constant.Constants;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Document(indexName = Constants.INDEX_PRODUCT, type = Constants.TYPE)
 public class EsProduct {
     @Id
@@ -22,9 +30,10 @@ public class EsProduct {
     private String language;
     private String brandId;
     private String vendorId;
-    private String designerId;
-    private String[] categories;
-    private String category;
+    @Field(type = FieldType.Text, fielddata = true)
+    private Integer designerId;
+    private Integer[] categories;
+    private Integer category;
     private String gender;
     private Integer sale;
     private String size;

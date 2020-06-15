@@ -7,7 +7,7 @@ public class GfProductSearchRequest {
     private String language;
     private String keyword;
     private String gender;
-    private Integer sale;
+    private Integer sale = 0;
     private String designerId;
     private String categoryId;
     private String size;
