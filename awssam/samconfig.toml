@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "gfashion-app"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-fh9y8zd14stf"
+s3_prefix = "gfashion-app"
+region = "us-east-1"
+profile = "gfmabea"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "WebAppBucketName=\"gfashion-media\" WebAppSourceBucketName=\"gfashion-media-source\""
