@@ -4,8 +4,20 @@
 # gfMsgMessage: table for one to one conversation messages.
 #
 
+# The main message table for all the messages.
 aws dynamodb create-table \
     --table-name gfMsgMessage \
+    --attribute-definitions AttributeName=receiver,AttributeType=S AttributeName=timeSent,AttributeType=N AttributeName=id,AttributeType=S \
+    --key-schema AttributeName=receiver,KeyType=HASH AttributeName=timeSent,KeyType=RANGE \
+    --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5 \
+    --local-secondary-indexes \
+      "[{\"IndexName\": \"ReceiverMsgIdIndex\", \"KeySchema\":[{\"AttributeName\":\"receiver\",\"KeyType\":\"HASH\"},
+      {\"AttributeName\":\"id\",\"KeyType\":\"RANGE\"}],
+      \"Projection\":{\"ProjectionType\":\"ALL\"}}]" \
+    --profile local
+
+aws dynamodb create-table \
+    --table-name gfMsgBroadcastStatus \
     --attribute-definitions AttributeName=receiver,AttributeType=S AttributeName=timeSent,AttributeType=N AttributeName=id,AttributeType=S \
     --key-schema AttributeName=receiver,KeyType=HASH AttributeName=timeSent,KeyType=RANGE \
     --provisioned-throughput ReadCapacityUnits=10,WriteCapacityUnits=5 \
