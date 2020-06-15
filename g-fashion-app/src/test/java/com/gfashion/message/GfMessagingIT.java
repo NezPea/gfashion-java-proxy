@@ -1,7 +1,6 @@
 package com.gfashion.message;
 
-import com.gfashion.api.message.MessageIdRequest;
-import com.gfashion.api.message.MessageRequest;
+import com.gfashion.api.message.*;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -16,9 +15,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertFalse;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -33,6 +34,9 @@ public class GfMessagingIT {
     private final String receiver = "receiver1";
 
     private MessageRequest testMessage;
+
+    @Autowired
+    GfMsgMessageService _msgService;
 
     @Before
     public void setup() {
@@ -50,6 +54,53 @@ public class GfMessagingIT {
         testMessage.setTitle(msgTitle);
         testMessage.setContent(msgContent);
         testMessage.setReceiver(receiver);
+    }
+
+    @Test
+    public void testMsgServiceConversationAPI() throws Exception {
+        // test the service layer API.
+        // send.
+        String msgId = _msgService.saveMessage(sender, testMessage, MessageType.CONVERSATION);
+        assertFalse(null == msgId);
+
+        // receive.
+        List<GfMsgMessageEntity> msgs = _msgService.getMessages(receiver, (long) 1000, "zh_CN", 10);
+        assertFalse(null == msgs);
+        assertFalse(msgs.size() == 0);
+        assertFalse(msgs.get(0).getOpened() == true);
+
+        // mark read.
+        _msgService.markRead(receiver, msgId);
+
+        // delete message.
+        _msgService.deleteMessage(receiver, msgId);
+
+        // try receive again.
+        msgs = _msgService.getMessages(receiver, (long) 1000, "zh_CN", 10);
+        assertFalse(msgs.size() > 0);
+    }
+
+    @Test
+    public void testMsgServiceBroadcastAPI() throws Exception {
+        // send.
+        String msgId = _msgService.saveMessage(sender, testMessage, MessageType.BROADCAST);
+        assertFalse(null == msgId);
+
+        // receive.
+        List<GfMsgMessageEntity> msgs = _msgService.getMessages(receiver, (long) 1000, "zh_CN", 10);
+        assertFalse(null == msgs);
+        assertFalse(msgs.size() == 0);
+        assertFalse(msgs.get(0).getOpened() == true);
+
+        // mark read.
+        _msgService.markRead(receiver, msgId);
+
+        // delete message.
+        _msgService.deleteMessage(receiver, msgId);
+
+        // try receive again.
+        msgs = _msgService.getMessages(receiver, (long) 1, "zh_CN", 10);
+        assertFalse(msgs.size() > 0);
     }
 
     @Test
