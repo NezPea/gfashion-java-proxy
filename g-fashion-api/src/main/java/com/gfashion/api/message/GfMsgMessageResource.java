@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.gfashion.message.GfMsgMessageEntity;
+import com.gfashion.message.constant.GfMessageConstants;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -27,8 +28,8 @@ public class GfMsgMessageResource {
     private GfMsgMessageService _msgService;
 
     // TODO: SSO integration to get the sender id.
-    final private String sender = "sender1";
-    final private String receiver = "receiver1";
+    private final String sender = "sender1";
+    private final String receiver = "receiver1";
 
     // TODO: sender can't send message to himself.
     // TODO: sender can't send message to empty receiver or unknown receiver.
@@ -41,8 +42,8 @@ public class GfMsgMessageResource {
             MessageResponse response = new MessageResponse();
             String msgId = _msgService.saveMessage(sender, msg, MessageType.CONVERSATION);
             response.setId(msgId);
-            response.setAction("SEND");
-            response.setStatus("SUCCESS");
+            response.setAction(GfMessageConstants.ACTION_SEND);
+            response.setStatus(GfMessageConstants.MESSAGE_SUCCESS);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage());
@@ -59,8 +60,8 @@ public class GfMsgMessageResource {
             MessageResponse response = new MessageResponse();
             String msgId = _msgService.saveMessage(sender, msg, MessageType.BROADCAST);
             response.setId(msgId);
-            response.setAction("BROADCAST");
-            response.setStatus("SUCCESS");
+            response.setAction(GfMessageConstants.ACTION_BROADCAST);
+            response.setStatus(GfMessageConstants.MESSAGE_SUCCESS);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage());
@@ -77,7 +78,7 @@ public class GfMsgMessageResource {
             @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit) {
 
         try {
-            language = (null == language || "".equals(language)) ? "en" : language;
+            language = (null == language || "".equals(language)) ? GfMessageConstants.MESSAGE_DEFAULT_LANGUAGE : language;
             List<GfMsgMessageEntity> messages = _msgService.getMessages(receiver, secondsAgo, language, limit);
             return ResponseEntity.status(HttpStatus.OK).body(messages);
         } catch (AmazonServiceException e) {
@@ -95,8 +96,8 @@ public class GfMsgMessageResource {
             _msgService.deleteMessage(receiver, msg.getId());
             MessageResponse response = new MessageResponse();
             response.setId(msg.getId());
-            response.setAction("DELETE");
-            response.setStatus("SUCCESS");
+            response.setAction(GfMessageConstants.ACTION_DELETE);
+            response.setStatus(GfMessageConstants.MESSAGE_SUCCESS);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -113,8 +114,8 @@ public class GfMsgMessageResource {
             _msgService.markRead(receiver, msg.getId());
             MessageResponse response = new MessageResponse();
             response.setId(msg.getId());
-            response.setAction("MARK_READ");
-            response.setStatus("SUCCESS");
+            response.setAction(GfMessageConstants.ACTION_MARK_READ);
+            response.setStatus(GfMessageConstants.MESSAGE_SUCCESS);
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
