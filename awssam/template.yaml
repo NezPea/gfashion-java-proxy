@@ -1,0 +1,141 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  gfashion
+
+  SAM Template for gfashion that has s3 and cdn
+
+Parameters:
+  WebAppBucketName:
+    Type: String
+    Default: 'gfashion-media'
+    Description: (Required) The name of the new S3 Bucket. Minimum 3 characters
+    MinLength: 3
+    MaxLength: 50
+    AllowedPattern: ^[A-Za-z0-9-]+$
+    ConstraintDescription: 'Required. Can be characters and underscore only. No numbers or special characters allowed.'
+  WebAppSourceBucketName:
+    Type: String
+    Default: 'gfashion-media-source'
+    Description: (Required) The name of the new S3 Bucket. Minimum 3 characters
+    MinLength: 3
+    MaxLength: 50
+    AllowedPattern: ^[A-Za-z0-9-]+$
+    ConstraintDescription: 'Required. Can be characters and underscore only. No numbers or special characters allowed.'
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Runtime: nodejs12.x
+    Timeout: 10
+
+Resources:
+  WebAppBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Ref WebAppBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  WebAppBucketPolicy: 
+    Type: AWS::S3::BucketPolicy
+    Properties: 
+      Bucket: 
+        Ref: WebAppBucket
+      PolicyDocument: 
+        Statement: 
+          - Sid: AllowCDNOAIAccess
+            Action: 
+              - "s3:GetObject"
+            Effect: "Allow"
+            Resource: !Sub arn:aws:s3:::${WebAppBucket}/*
+            Principal: 
+              AWS: !Sub arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${WebAppCDNOAI}
+
+  WebAppCDN:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: Gfashion WebApp
+        DefaultCacheBehavior:
+          ViewerProtocolPolicy: 'redirect-to-https'
+          TargetOriginId: !Sub S3-${WebAppBucket}
+          ForwardedValues:
+            QueryString: false
+        IPV6Enabled: true
+        Enabled: true
+        Origins:
+          - Id: !Sub S3-${WebAppBucket}
+            DomainName: !GetAtt WebAppBucket.DomainName
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${WebAppCDNOAI}
+
+  WebAppCDNOAI:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: 'Gfashion WebApp CDN OAI'
+
+  WebAppSourceBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: !Ref WebAppSourceBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  WebAppSourceBucketPolicy: 
+    Type: AWS::S3::BucketPolicy
+    Properties: 
+      Bucket: 
+        Ref: WebAppSourceBucket
+      PolicyDocument: 
+        Statement: 
+          - Sid: DeleteOriginAccess
+            Action: 
+              - "s3:DeleteObject"
+            Effect: "Allow"
+            Resource: !Sub arn:aws:s3:::${WebAppSourceBucket}/*
+            Principal: 
+              AWS: !GetAtt CreateThumbnailFunctionRole.Arn
+
+  CreateThumbnailFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: createthumbnail
+      Handler: app.handler
+      Timeout: 60
+      Policies: AWSLambdaExecute
+      Environment:
+        Variables:
+          TARGET_BUCKET_NAME: !Ref WebAppBucketName
+      Events:
+        CreateThumbnailEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref WebAppSourceBucket
+            Events: s3:ObjectCreated:*
+
+Outputs:
+  WebAppCDNID:
+    Description: "The Web App cdn id"
+    Value: !Ref WebAppCDN
+
+  WebAppCDNURI:
+    Description: "The Web App cdn URI"
+    Value: !Join [ '', [ 'https://', !GetAtt WebAppCDN.DomainName] ]
+
+  WebAppSourceBucketURI:
+    Description: "The Web App bucket URI"
+    Value: !Join [ '', [ 'http://', !GetAtt WebAppSourceBucket.RegionalDomainName] ]
+
+  CreateThumbnailFunctionRoleArn:
+    Description: "The Web App bucket URI"
+    Value: !GetAtt CreateThumbnailFunctionRole.Arn
