@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 public class GfMsgMessageRepositoryImpl implements GfMsgMessageRepository {
 
   @Autowired
-  protected DynamoDBMapper _dynamoDbMapper;
+  private DynamoDBMapper _dynamoDbMapper;
 
   @Override
   public void add(GfMsgMessageEntity t) {

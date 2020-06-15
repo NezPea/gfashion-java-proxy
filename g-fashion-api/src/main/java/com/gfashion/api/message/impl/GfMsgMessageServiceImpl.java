@@ -4,14 +4,17 @@ import com.amazonaws.AmazonServiceException;
 import com.gfashion.api.message.GfMsgMessageService;
 import com.gfashion.api.message.MessageRequest;
 import com.gfashion.api.message.MessageType;
+import com.gfashion.message.GfMsgBroadcastStatusEntity;
 import com.gfashion.message.GfMsgMessageEntity;
+import com.gfashion.message.repository.GfMsgBroadcastStatusRepository;
 import com.gfashion.message.repository.GfMsgMessageRepository;
 import com.gfashion.message.constant.GfMessageConstants;
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.collections4.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -21,6 +24,9 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
 
     @Autowired
     GfMsgMessageRepository _msgRepository;
+
+    @Autowired
+    GfMsgBroadcastStatusRepository _broadcastMsgStatusRepository;
 
     @Override
     public String saveMessage(String sender, MessageRequest msg, MessageType type) {
@@ -99,6 +105,37 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
 
             return message;
         }).collect(Collectors.toList());
+
+        // filter out messages that has been marked as deleted.
+        // TODO:
+
+        // update the status of the broadcast messages.
+        List<GfMsgBroadcastStatusEntity> msgStatuses = _broadcastMsgStatusRepository.findAll(receiver, secondsAgo, countLimit);
+        if (null != msgStatuses || 0 < msgStatuses.size()) {
+
+            updatedMessages.forEach(message -> {
+                GfMsgBroadcastStatusEntity msgStatus;
+                if (GfMessageConstants.BROADCAST_RECEIVER == message.getReceiver()) {
+                    msgStatus = IterableUtils.find(msgStatuses,
+                        new Predicate<GfMsgBroadcastStatusEntity>() {
+                            @Override
+                            public boolean evaluate(GfMsgBroadcastStatusEntity status) {
+                                return status.getId() == message.getId();
+                            }
+                        });
+                    if (null != msgStatus) {
+                        if (msgStatus.getDeleted()) {
+                            updatedMessages.remove(message);
+                        } else {
+                            message.setOpened(msgStatus.getOpened());
+                            message.setTimeOpened(msgStatus.getTimeOpened());
+                            message.setTimeUpdated(msgStatus.getTimeUpdated());
+                        }
+                    }
+                }
+            });
+        }
+
         return updatedMessages;
     }
 
@@ -111,22 +148,58 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
     public void markRead(String receiver, String msgId) {
         GfMsgMessageEntity msg = _msgRepository.findById(receiver, msgId);
 
-        if (null == msg) {
-            throw new AmazonServiceException("Message " + msgId + " doesn't exist.");
-        }
-
         final Instant now = Instant.now();
         final Long ts = now.toEpochMilli();
-        msg.setOpened(true);
-        msg.setTimeUpdated(ts);
-        msg.setTimeOpened(ts);
+        if (null != msg) {
 
-        _msgRepository.add(msg);
+            msg.setOpened(true);
+            msg.setTimeUpdated(ts);
+            msg.setTimeOpened(ts);
+
+            _msgRepository.add(msg);
+        } else {
+            // check if this is a broadcast message.
+            msg = _msgRepository.findById(GfMessageConstants.BROADCAST_RECEIVER, msgId);
+            if (null == msg) {
+                throw new AmazonServiceException("Message " + msgId + " doesn't exist.");
+            }
+            GfMsgBroadcastStatusEntity msgStatus = _broadcastMsgStatusRepository.findById(receiver, msgId);
+
+            if (null == msgStatus) {
+                msgStatus = new GfMsgBroadcastStatusEntity();
+                msgStatus.setId(msg.getId());
+                msgStatus.setReceiver(receiver);
+            }
+
+            msgStatus.setOpened(true);
+            msgStatus.setTimeSent(msg.getTimeSent());
+            msgStatus.setTimeUpdated(ts);
+            msgStatus.setTimeOpened(ts);
+
+            _broadcastMsgStatusRepository.add(msgStatus);
+        }
     }
 
     @Override
     public void deleteMessage(String receiver, String msgId) {
-        _msgRepository.receiverDelete(receiver, msgId);
+        GfMsgMessageEntity msg = _msgRepository.findById(receiver, msgId);
+        if (null != msg) {
+            _msgRepository.receiverDelete(receiver, msgId);
+        } else {
+            msg = _msgRepository.findById(GfMessageConstants.BROADCAST_RECEIVER, msgId);
+            if (null == msg) {
+                throw new AmazonServiceException("Message " + msgId + " doesn't exist.");
+            }
+
+            // ok, this is a broadcast message, mark it as delete in the status table.
+            GfMsgBroadcastStatusEntity msgStatus = new GfMsgBroadcastStatusEntity();
+            msgStatus.setId(msgId);
+            msgStatus.setReceiver(receiver);
+            msgStatus.setTimeSent(msg.getTimeSent());
+            msgStatus.setDeleted(true);
+
+            _broadcastMsgStatusRepository.add(msgStatus);
+        }
     }
 
     @Override
