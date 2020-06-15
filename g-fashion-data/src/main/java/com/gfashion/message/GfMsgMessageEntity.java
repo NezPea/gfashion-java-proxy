@@ -15,19 +15,19 @@ public class GfMsgMessageEntity {
   @DynamoDBIndexRangeKey(localSecondaryIndexName = "ReceiverMsgIdIndex")
   private String id;
 
-  private String sender;
-
   @DynamoDBHashKey
   private String receiver;
+
+  @DynamoDBRangeKey
+  private Long timeSent;
+
+  private String sender;
 
   private HashMap<String, String> title;
 
   private HashMap<String, String> content;
 
   private String picture;
-
-  @DynamoDBRangeKey
-  private Long timeSent;
 
   private String category;
 

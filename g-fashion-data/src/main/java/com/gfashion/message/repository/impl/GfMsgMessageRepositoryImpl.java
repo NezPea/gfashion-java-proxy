@@ -13,6 +13,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.datamodeling.QueryResultPage;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.gfashion.message.GfMsgMessageEntity;
+import com.gfashion.message.constant.GfMessageConstants;
 import com.gfashion.message.repository.GfMsgMessageRepository;
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class GfMsgMessageRepositoryImpl implements GfMsgMessageRepository {
     queryValues.put(":msgId", new AttributeValue().withS(msgId));
 
     DynamoDBQueryExpression<GfMsgMessageEntity> queryExpr = new DynamoDBQueryExpression<GfMsgMessageEntity>()
-            .withIndexName("ReceiverMsgIdIndex")
+            .withIndexName(GfMessageConstants.DYNAMODB_LSI_NAME)
             .withConsistentRead(true)
             .withKeyConditionExpression("receiver = :receiver and id = :msgId")
             .withExpressionAttributeValues(queryValues);
@@ -72,7 +73,7 @@ public class GfMsgMessageRepositoryImpl implements GfMsgMessageRepository {
     //
     // get the broadcast messages.
     //
-    queryValues.put(":receiver", new AttributeValue().withS("BROADCAST"));
+    queryValues.put(":receiver", new AttributeValue().withS(GfMessageConstants.BROADCAST_RECEIVER));
     // List<GfMsgMessageEntity> broadcastMessages = _dynamoDbMapper.query(GfMsgMessageEntity.class, queryExpr);
     result = _dynamoDbMapper.queryPage(GfMsgMessageEntity.class, queryExpr);
     List<GfMsgMessageEntity> broadcastMessages = result.getResults();
@@ -91,9 +92,9 @@ public class GfMsgMessageRepositoryImpl implements GfMsgMessageRepository {
   public void receiverDelete(String receiver, String msgId) {
     GfMsgMessageEntity e = findById(receiver, msgId);
     if (null == e) {
-      throw new AmazonServiceException("Message does not exist.");
+      throw new AmazonServiceException(GfMessageConstants.MESSAGE_NOT_EXIST_ERROR);
     }
-    if ("BROADCAST" == e.getReceiver()) {
+    if (GfMessageConstants.BROADCAST_RECEIVER == e.getReceiver()) {
       throw new AmazonServiceException("Can't delete broadcast message.");
     }
     _dynamoDbMapper.delete(e);

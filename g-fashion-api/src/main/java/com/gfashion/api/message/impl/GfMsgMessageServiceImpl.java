@@ -6,6 +6,7 @@ import com.gfashion.api.message.MessageRequest;
 import com.gfashion.api.message.MessageType;
 import com.gfashion.message.GfMsgMessageEntity;
 import com.gfashion.message.repository.GfMsgMessageRepository;
+import com.gfashion.message.constant.GfMessageConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,7 +53,7 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
         message.setContent(msg.getContent());
         message.setPicture(msg.getPicture());
         message.setTimeSent(ts);
-        message.setCategory("normal");
+        message.setCategory(GfMessageConstants.MESSAGE_DEFAULT_CATEGORY);
         message.setTimeUpdated(ts);
         message.setUpdatedBy(sender);
         message.setOpened(false);
@@ -75,10 +76,10 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
                 v = message.getTitle().get(k);
                 message.getTitle().clear();
                 message.getTitle().put(k, v);
-            } else if (message.getTitle().containsKey("en")) {
-                v = message.getTitle().get("en");
+            } else if (message.getTitle().containsKey(GfMessageConstants.MESSAGE_DEFAULT_LANGUAGE)) {
+                v = message.getTitle().get(GfMessageConstants.MESSAGE_DEFAULT_LANGUAGE);
                 message.getTitle().clear();
-                message.getTitle().put("en", v);
+                message.getTitle().put(GfMessageConstants.MESSAGE_DEFAULT_LANGUAGE, v);
             } else {
                 throw new AmazonServiceException("The title should at least contains value for language en.");
             }
@@ -88,10 +89,10 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
                 v = message.getContent().get(k);
                 message.getContent().clear();
                 message.getContent().put(k, v);
-            } else if (message.getContent().containsKey("en")) {
-                v = message.getContent().get("en");
+            } else if (message.getContent().containsKey(GfMessageConstants.MESSAGE_DEFAULT_LANGUAGE)) {
+                v = message.getContent().get(GfMessageConstants.MESSAGE_DEFAULT_LANGUAGE);
                 message.getContent().clear();
-                message.getContent().put("en", v);
+                message.getContent().put(GfMessageConstants.MESSAGE_DEFAULT_LANGUAGE, v);
             } else {
                 throw new AmazonServiceException("The content should at least contains value for language en.");
             }
