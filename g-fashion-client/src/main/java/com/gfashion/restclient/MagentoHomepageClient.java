@@ -1,20 +1,22 @@
 package com.gfashion.restclient;
 
 import com.gfashion.domain.homepage.GfCategory;
+import com.gfashion.domain.homepage.GfCountry;
 import com.gfashion.restclient.magento.exception.CustomerException;
+import com.gfashion.restclient.magento.exception.HomepageException;
 import com.gfashion.restclient.magento.homepage.MagentoCategories;
-import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
+import com.gfashion.restclient.magento.homepage.MagentoCountry;
+import com.gfashion.restclient.magento.mapper.GfMagentoHomepageConverter;
 import com.google.gson.Gson;
-import lombok.AllArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Component
@@ -22,6 +24,9 @@ public class MagentoHomepageClient {
 
     @Value("${magento.url.listCategories}")
     private String listCategories;
+
+    @Value("${magento.url.countries}")
+    private String listCountries;
 
     @Value("${magento.url.parameters.parentIdField}")
     private String parentIdField;
@@ -50,9 +55,9 @@ public class MagentoHomepageClient {
     @Autowired
     private RestClient _restClient;
 
-    private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
+    private final GfMagentoHomepageConverter _mapper = Mappers.getMapper(GfMagentoHomepageConverter.class);
 
-    public List<GfCategory> getCategoriesUnderParentId(String parentId) throws CustomerException {
+    public List<GfCategory> getCategoriesUnderParentId(String parentId) throws HomepageException {
         String field0 = String.format(field, 0, 0);
         String value0 = String.format(value, 0, 0);
         String listCategoriesById = listCategories + "?" +
@@ -63,11 +68,11 @@ public class MagentoHomepageClient {
             Gson gson = new Gson();
             return this._mapper.convertMagentoCategoriesToGfCategories(gson.fromJson(responseEntity.getBody(), MagentoCategories.class).getItems());
         } catch (HttpStatusCodeException e) {
-            throw new CustomerException(e.getStatusCode(), e.getMessage());
+            throw new HomepageException(e.getStatusCode(), e.getMessage());
         }
     }
 
-    public List<GfCategory> getCategories(Integer fromLevel, Integer toLevel, String locale) throws CustomerException {
+    public List<GfCategory> getCategories(Integer fromLevel, Integer toLevel, String locale) throws HomepageException {
         Set<String> supportLanguageSet = new HashSet<>(Arrays.asList(supportLanguages.split(",")));
         if (!supportLanguageSet.contains(locale)) {
             throw new IllegalArgumentException("The input locale is not supported. Only en or cn is supported.");
@@ -137,7 +142,18 @@ public class MagentoHomepageClient {
 
             return parentCategories;
         } catch (HttpStatusCodeException e) {
-            throw new CustomerException(e.getStatusCode(), e.getMessage());
+            throw new HomepageException(e.getStatusCode(), e.getMessage());
+        }
+    }
+
+    public List<GfCountry> getCountries() throws HomepageException {
+        try {
+            ResponseEntity<MagentoCountry[]> responseEntity = this._restClient.exchangeGet(listCountries, MagentoCountry[].class, null);
+            return this._mapper.convertMagentoCountriesToGfCountries(responseEntity.getBody());
+        } catch (HttpStatusCodeException e) {
+            throw new HomepageException(e.getStatusCode(), e.getMessage());
+        } catch (Exception e) {
+            throw new HomepageException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 }
