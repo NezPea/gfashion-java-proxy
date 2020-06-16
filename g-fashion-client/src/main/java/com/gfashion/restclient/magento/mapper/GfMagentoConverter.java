@@ -5,9 +5,9 @@ import com.gfashion.domain.customer.GfCustomer;
 import com.gfashion.domain.customer.GfCustomerAddress;
 import com.gfashion.domain.customer.GfCustomerExtensionAttributes;
 import com.gfashion.domain.customer.GfCustomerRegion;
-import com.gfashion.domain.homepage.GfCategory;
-import com.gfashion.domain.homepage.HomepageBrand;
-import com.gfashion.domain.homepage.HomepageDesigner;
+import com.gfashion.domain.order.GfOrderItem;
+import com.gfashion.domain.order.GfOrderItemOrderId;
+import com.gfashion.domain.order.GfOrderResp;
 import com.gfashion.domain.product.*;
 import com.gfashion.domain.sales.*;
 import com.gfashion.domain.sales.response.GfShipmentResp;
@@ -24,17 +24,13 @@ import com.gfashion.restclient.magento.customer.MagentoCustomer;
 import com.gfashion.restclient.magento.customer.MagentoCustomerAddress;
 import com.gfashion.restclient.magento.customer.MagentoCustomerExtensionAttributes;
 import com.gfashion.restclient.magento.customer.MagentoCustomerRegion;
-import com.gfashion.restclient.magento.homepage.MagentoCategory;
+import com.gfashion.restclient.magento.order.MagentoOrderItem;
+import com.gfashion.restclient.magento.order.MagentoOrderItemOrderId;
+import com.gfashion.restclient.magento.order.MagentoOrderResp;
 import com.gfashion.restclient.magento.product.*;
 import com.gfashion.restclient.magento.sales.*;
 import com.gfashion.restclient.magento.sales.response.MagentoShipmentResp;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Mapper
 public interface GfMagentoConverter {
@@ -131,4 +127,13 @@ public interface GfMagentoConverter {
 
     GfShipmentResp convertMagentoShipmentRespToGfShipmentResp(MagentoShipmentResp magentoShipmentResp);
     //--shipment
+
+    //--order
+    MagentoOrderItem from(GfOrderItem orderItem);
+    MagentoOrderItemOrderId from(GfOrderItemOrderId itemOrderId);
+
+    GfOrderItem from(MagentoOrderItem orderItem);
+    GfOrderItemOrderId from(MagentoOrderItemOrderId itemOrderId);
+    GfOrderResp from(MagentoOrderResp orderResp);
+    //--order
 }

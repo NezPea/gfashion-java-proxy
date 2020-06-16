@@ -1,11 +1,18 @@
 package com.gfashion.restclient;
 
+import com.gfashion.domain.order.GfOrder;
+import com.gfashion.domain.order.GfOrderItem;
+import com.gfashion.domain.order.GfOrderItemOrderId;
+import com.gfashion.domain.order.GfOrderResp;
 import com.gfashion.domain.sales.GfShipOrder;
 import com.gfashion.restclient.magento.exception.OrderNotFoundException;
 import com.gfashion.restclient.magento.exception.OrderUnknowException;
 import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
+import com.gfashion.restclient.magento.order.MagentoOrderResp;
 import com.gfashion.restclient.magento.sales.MagentoShipOrder;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,14 +24,23 @@ import org.springframework.web.client.HttpStatusCodeException;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.ValidationException;
-import java.util.Set;
+import java.util.*;
 
 @Component
 @Slf4j
 public class MagentoOrderClient {
 
-    @Value("${magento.url.order}")
+    @Value("${magento.url.orders}")
     private String orderUrl;
+
+    @Value("${magento.url.parameters.field}")
+    private String field;
+
+    @Value("${magento.url.parameters.value}")
+    private String value;
+
+    @Value("${magento.url.parameters.conditionType}")
+    private String conditionType;
 
     @Autowired
     private RestClient _restClient;
@@ -56,5 +72,59 @@ public class MagentoOrderClient {
             throw new ValidationException(next.getPropertyPath() + " " + next.getMessage());
         }
     }
-}
 
+
+    public GfOrderResp queryOrders(Integer customerId) throws OrderNotFoundException, OrderUnknowException {
+        // Referring to MagentoHomepageClient.java/getCategoriesUnderParentId()
+        String filed0 = String.format(field, 0, 0);
+        String value0 = String.format(value, 0, 0);
+        String conditionType0 = String.format(conditionType, 0, 0);
+        String filedFilter = "fields=items[created_at,total_item_count,shipping_amount,status,subtotal,items[order_id]],total_count";
+
+        String url = orderUrl + "?" +
+                String.join("&", new ArrayList<>(Arrays.asList(new String[]{filed0 + "customer_id", value0 + customerId,
+                        conditionType0 + "eq", filedFilter})));
+
+        try {
+            ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, null);
+            Gson gson = new Gson();
+            MagentoOrderResp magentoOrderResp = gson.fromJson(responseEntity.getBody(), MagentoOrderResp.class);
+            return _mapper.from(magentoOrderResp);
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new OrderNotFoundException(e.getMessage());
+            }
+            throw new OrderUnknowException(e.getMessage());
+        }
+    }
+
+
+    public List<GfOrder> refactorOrederResponse(GfOrderResp gfOrderResp) {
+        if (CollectionUtils.isEmpty(gfOrderResp.getItems())) {
+            // Return empty order list
+            List<GfOrder> orderArrayList = new ArrayList<>();
+            return orderArrayList;
+        }
+
+        List<GfOrder> orderArrayList = new ArrayList<>(gfOrderResp.getItems().size());
+        //Refactor the data structure
+        for (GfOrderItem item : gfOrderResp.getItems()) {
+            if (CollectionUtils.isNotEmpty(item.getItems())) {
+                GfOrder order = new GfOrder();
+                // Extract order_id
+                GfOrderItemOrderId itemOrderId = item.getItems().get(0);
+                order.setOrder_id(itemOrderId.getOrder_id());
+
+                order.setCreated_at(item.getCreated_at());
+                order.setTotal_item_count(item.getTotal_item_count());
+                order.setShipping_amount(item.getShipping_amount());
+                order.setStatus(item.getStatus());
+                order.setSubtotal(item.getSubtotal());
+
+                orderArrayList.add(order);
+            }
+        }
+        return orderArrayList;
+    }
+
+}
