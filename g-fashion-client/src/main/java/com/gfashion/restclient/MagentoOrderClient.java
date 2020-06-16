@@ -1,18 +1,14 @@
 package com.gfashion.restclient;
 
 import com.gfashion.domain.order.GfOrder;
-import com.gfashion.domain.order.GfOrderItem;
-import com.gfashion.domain.order.GfOrderItemOrderId;
-import com.gfashion.domain.order.GfOrderResp;
 import com.gfashion.domain.sales.GfShipOrder;
 import com.gfashion.restclient.magento.exception.OrderNotFoundException;
 import com.gfashion.restclient.magento.exception.OrderUnknowException;
-import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
+import com.gfashion.restclient.magento.mapper.GfMagentoOrderShipmentConverter;
 import com.gfashion.restclient.magento.order.MagentoOrderResp;
 import com.gfashion.restclient.magento.sales.MagentoShipOrder;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,7 +41,7 @@ public class MagentoOrderClient {
     @Autowired
     private RestClient _restClient;
 
-    private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
+    private final GfMagentoOrderShipmentConverter _mapper = Mappers.getMapper(GfMagentoOrderShipmentConverter.class);
 
     public String shipOrder(Integer orderId, GfShipOrder gfShipOrder) throws OrderNotFoundException, OrderUnknowException {
         String url = orderUrl + orderId + "/ship";
@@ -73,8 +69,7 @@ public class MagentoOrderClient {
         }
     }
 
-
-    public GfOrderResp queryOrders(Integer customerId) throws OrderNotFoundException, OrderUnknowException {
+    public List<GfOrder> queryOrders(Integer customerId) throws OrderNotFoundException, OrderUnknowException {
         // Referring to MagentoHomepageClient.java/getCategoriesUnderParentId()
         String filed0 = String.format(field, 0, 0);
         String value0 = String.format(value, 0, 0);
@@ -89,7 +84,7 @@ public class MagentoOrderClient {
             ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, null);
             Gson gson = new Gson();
             MagentoOrderResp magentoOrderResp = gson.fromJson(responseEntity.getBody(), MagentoOrderResp.class);
-            return _mapper.from(magentoOrderResp);
+            return _mapper.from(magentoOrderResp.getItems());
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new OrderNotFoundException(e.getMessage());
@@ -97,34 +92,4 @@ public class MagentoOrderClient {
             throw new OrderUnknowException(e.getMessage());
         }
     }
-
-
-    public List<GfOrder> refactorOrederResponse(GfOrderResp gfOrderResp) {
-        if (CollectionUtils.isEmpty(gfOrderResp.getItems())) {
-            // Return empty order list
-            List<GfOrder> orderArrayList = new ArrayList<>();
-            return orderArrayList;
-        }
-
-        List<GfOrder> orderArrayList = new ArrayList<>(gfOrderResp.getItems().size());
-        //Refactor the data structure
-        for (GfOrderItem item : gfOrderResp.getItems()) {
-            if (CollectionUtils.isNotEmpty(item.getItems())) {
-                GfOrder order = new GfOrder();
-                // Extract order_id
-                GfOrderItemOrderId itemOrderId = item.getItems().get(0);
-                order.setOrder_id(itemOrderId.getOrder_id());
-
-                order.setCreated_at(item.getCreated_at());
-                order.setTotal_item_count(item.getTotal_item_count());
-                order.setShipping_amount(item.getShipping_amount());
-                order.setStatus(item.getStatus());
-                order.setSubtotal(item.getSubtotal());
-
-                orderArrayList.add(order);
-            }
-        }
-        return orderArrayList;
-    }
-
 }

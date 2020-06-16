@@ -4,7 +4,7 @@ import com.gfashion.domain.sales.GfShipment;
 import com.gfashion.domain.sales.response.GfShipmentResp;
 import com.gfashion.restclient.magento.exception.ShipmentNotFoundException;
 import com.gfashion.restclient.magento.exception.ShipmentUnknowException;
-import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
+import com.gfashion.restclient.magento.mapper.GfMagentoOrderShipmentConverter;
 import com.gfashion.restclient.magento.sales.MagentoShipment;
 import com.gfashion.restclient.magento.sales.request.MagentoShipmentReq;
 import com.gfashion.restclient.magento.sales.response.MagentoShipmentResp;
@@ -32,7 +32,7 @@ public class MagentoShipmentClient {
 	@Autowired
 	private RestClient _restClient;
 
-	private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
+	private final GfMagentoOrderShipmentConverter _mapper = Mappers.getMapper(GfMagentoOrderShipmentConverter.class);
 
 	public GfShipment updateShipment(GfShipment gfShipment) throws ShipmentNotFoundException, ShipmentUnknowException {
 		try {

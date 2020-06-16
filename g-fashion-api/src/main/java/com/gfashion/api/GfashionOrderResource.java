@@ -1,7 +1,6 @@
 package com.gfashion.api;
 
 import com.gfashion.domain.order.GfOrder;
-import com.gfashion.domain.order.GfOrderResp;
 import com.gfashion.domain.sales.GfShipOrder;
 import com.gfashion.domain.sales.GfShipment;
 import com.gfashion.domain.sales.GfShipmentTrack;
@@ -78,11 +77,7 @@ public class GfashionOrderResource {
 	@GetMapping("{customerId}")
 	public ResponseEntity<List<GfOrder>> getOrdersByCustomerId(@PathVariable Integer customerId) {
 		try {
-			GfOrderResp gfOrderResp = magentoOrderClient.queryOrders(customerId);
-			// Refactor nested gfOrderResp data structure
-			List<GfOrder> orderArrayList = magentoOrderClient.refactorOrederResponse(gfOrderResp);
-
-			return ResponseEntity.status(HttpStatus.OK).body(orderArrayList);
+			return ResponseEntity.status(HttpStatus.OK).body(magentoOrderClient.queryOrders(customerId));
 		} catch (OrderNotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
 		} catch (OrderUnknowException e) {
