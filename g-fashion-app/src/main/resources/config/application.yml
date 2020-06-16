@@ -48,8 +48,8 @@ magento:
       field: searchCriteria[filterGroups][%d][filters][%d][field]=
       value: searchCriteria[filterGroups][%d][filters][%d][value]=
       conditionType: searchCriteria[filterGroups][%d][filters][%d][condition_type]=
-      englishRootCategory: 65
-      chineseRootCategory: 65
+      englishRootCategory: 172
+      chineseRootCategory: 182
       rootCategoryLevel: 1
       supportLanguages: en,cn
       recommendedDesignersParentId: 62 # the category id for designers
@@ -132,8 +132,8 @@ magento:
       field: searchCriteria[filterGroups][%d][filters][%d][field]=
       value: searchCriteria[filterGroups][%d][filters][%d][value]=
       conditionType: searchCriteria[filterGroups][%d][filters][%d][condition_type]=
-      englishRootCategory: 65
-      chineseRootCategory: 65
+      englishRootCategory: 172
+      chineseRootCategory: 182
       rootCategoryLevel: 1
       supportLanguages: en,cn
       recommendedDesignersParentId: 62 # the category id for designers
