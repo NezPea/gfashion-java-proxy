@@ -1,5 +1,7 @@
 package com.gfashion.api;
 
+import com.gfashion.domain.order.GfOrder;
+import com.gfashion.domain.order.GfOrderResp;
 import com.gfashion.domain.sales.GfShipOrder;
 import com.gfashion.domain.sales.GfShipment;
 import com.gfashion.domain.sales.GfShipmentTrack;
@@ -23,8 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/gfashion/v1/order", produces = {"application/json"})
-//@CrossOrigin(origins = "*")
+@RequestMapping(path = "/gfashion/v1/orders", produces = {"application/json"})
 @AllArgsConstructor
 public class GfashionOrderResource {
 	private MagentoOrderClient magentoOrderClient;
@@ -70,5 +71,23 @@ public class GfashionOrderResource {
 		}
 	}
 
+	/**
+	 * 根据 customer id 来查询 我的订单
+	 * 订单页面需要
+	 */
+	@GetMapping("{customerId}")
+	public ResponseEntity<List<GfOrder>> getOrdersByCustomerId(@PathVariable Integer customerId) {
+		try {
+			GfOrderResp gfOrderResp = magentoOrderClient.queryOrders(customerId);
+			// Refactor nested gfOrderResp data structure
+			List<GfOrder> orderArrayList = magentoOrderClient.refactorOrederResponse(gfOrderResp);
+
+			return ResponseEntity.status(HttpStatus.OK).body(orderArrayList);
+		} catch (OrderNotFoundException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
+		} catch (OrderUnknowException e) {
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
+		}
+	}
 
 }
