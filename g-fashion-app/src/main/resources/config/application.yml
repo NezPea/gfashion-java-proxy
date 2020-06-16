@@ -23,6 +23,7 @@ magento:
   url:
     base: http://magento2.dev3.gfashion2020.tk/index.php/rest/V1/
     adminToken: integration/admin/token
+    countries: directory/countries
     customerToken: integration/customer/token
     customers: customers/
     customerMe: customers/me
@@ -106,6 +107,7 @@ magento:
   url:
     base: http://magento2.dev3.gfashion2020.tk/index.php/rest/V1/
     adminToken: integration/admin/token
+    countries: directory/countries
     customerToken: integration/customer/token
     customers: customers/
     customerMe: customers/me

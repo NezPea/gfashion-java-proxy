@@ -177,18 +177,8 @@ public class MagentoCustomerClient {
             }
             return res;
         } catch (HttpStatusCodeException e) {
-            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                throw new CustomerException(e.getStatusCode(), e.getMessage());
-            }
-
-            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                throw new CustomerException(e.getStatusCode(), e.getMessage());
-            }
-
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new CustomerException(e.getStatusCode(), e.getMessage());
-            }
-
+            throw new CustomerException(e.getStatusCode(), e.getMessage());
+        } catch (Exception e) {
             throw new CustomerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
@@ -204,18 +194,8 @@ public class MagentoCustomerClient {
                     this._restClient.exchangePut(customerMeUrl, currentCustomerToMagento, MagentoCustomer.class, tokenHeader).getBody()
             );
         } catch (HttpStatusCodeException e) {
-            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                throw new CustomerException(e.getStatusCode(), e.getMessage());
-            }
-
-            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                throw new CustomerException(e.getStatusCode(), e.getMessage());
-            }
-
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new CustomerException(e.getStatusCode(), e.getMessage());
-            }
-
+            throw new CustomerException(e.getStatusCode(), e.getMessage());
+        } catch (Exception e) {
             throw new CustomerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
