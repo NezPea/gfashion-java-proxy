@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "gfContactUs")
+@Table(name = "gf_contact_us")
 public class GfContactUsEntity {
 
     /**
@@ -21,23 +21,23 @@ public class GfContactUsEntity {
     @Id
     @GenericGenerator(name = "contactGenerator", strategy = "uuid")
     @GeneratedValue(generator = "contactGenerator")
-    @Column(name = "gfContactUsId")
+    @Column(name = "gf_contact_us_id")
     private String  gfContactUsId;
     /**
      *  用户ID GF_CUSTOMER_ID
      */
-    @Column(name = "gfCustomerId")
+    @Column(name = "gf_customer_id")
     private String gfCustomerId ;
     /**
      * 订单ID  GF_ORDER_ID  spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
      */
-    @Column(name =  "gfOrderId")
+    @Column(name =  "gf_order_id")
     private String  gfOrderId;
 
     /**
      * 客服Id serviceId
      */
-    @Column(name = "serviceId")
+    @Column(name = "service_id")
     private String serviceId;
 
     /**
@@ -59,7 +59,7 @@ public class GfContactUsEntity {
     /**
      *  咨询内容  CONTENT_OF_INQUIRY
      */
-    @Column(name = "contentOfInquiry")
+    @Column(name = "content_of_inquiry")
     private String  contentOfInquiry;
     /**
      *   状态 STATUS  1新增数据/ 2客服处理中 /3 已解决（答复客户）/ 4客户处理中
@@ -69,41 +69,41 @@ public class GfContactUsEntity {
     /**
      * 生成时间。（第一次联络时间） CREATE_TIME
      */
-    @Column(name = "createTime")
+    @Column(name = "create_time")
     private Long   createTime;
     /**
      * 更新时间 UPDATE_TIME
      */
-    @Column(name = "updateTime")
+    @Column(name = "update_time")
      private Long updateTime;
 
     /**
      * 更新时间 UPDATE_TIME
      */
-    @Column(name = "customFlushTime")
+    @Column(name = "custom_flush_time")
     private Long customFlushTime;
 
     /**
      * 用户昵称
      */
-    @Column(name = "customName")
+    @Column(name = "custom_name")
     private String customName;
 
     /**
      * 品牌编号
      */
-    @Column(name = "brandId")
+    @Column(name = "brand_id")
     private String brandId;
     /**
      * 品牌名
      */
-    @Column(name = "brandName")
+    @Column(name = "brand_name")
     private String brandName;
 
     /**
      * 读状态  1 未读  2 已读
      */
-    @Column(name = "isRead")
+    @Column(name = "is_read")
     private Integer isRead;
 
     /**

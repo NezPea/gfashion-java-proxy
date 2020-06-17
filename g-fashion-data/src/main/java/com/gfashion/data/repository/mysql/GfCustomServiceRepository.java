@@ -13,6 +13,6 @@ import java.util.Map;
 public interface GfCustomServiceRepository extends JpaRepository<GfCustomServiceEntity, String>, JpaSpecificationExecutor<GfCustomServiceEntity> {
 
 
-        @Query(value = "select * from gfCustomService where serviceId in (:serviceId)", nativeQuery = true)
+        @Query(value = "select service_id as serviceId, name from gf_custom_service where service_id in (:serviceId)", nativeQuery = true)
         List<Map<String,Object>> getByServiceIdIn(List<String> serviceId);
 }

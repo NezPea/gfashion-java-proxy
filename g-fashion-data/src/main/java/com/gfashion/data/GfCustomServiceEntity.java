@@ -12,12 +12,12 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "gfCustomService")
+@Table(name = "gf_custom_service")
 public class GfCustomServiceEntity {
 
     @Id
     @GeneratedValue
-    @Column(name = "serviceId")
+    @Column(name = "service_id")
     private String serviceId;
 
     @Column(name = "name")

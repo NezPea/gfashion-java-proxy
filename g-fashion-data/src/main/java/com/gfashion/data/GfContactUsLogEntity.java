@@ -12,13 +12,13 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "gfContactUsLog")
+@Table(name = "gf_contact_us_log")
 public class GfContactUsLogEntity {
 
     /**
      *  ID
      */
-    @Column(name= "gfContactUsId")
+    @Column(name= "gf_contact_us_id")
     private String  gfContactUsId;
 
     /**
@@ -39,20 +39,20 @@ public class GfContactUsLogEntity {
     /**
      *  1： 客服发给客户，2：客户发给客服 3：GF团队内部交互信息
      */
-    @Column(name = "infoType")
+    @Column(name = "info_type")
     private Integer infoType;
 
 
     /**
      *  外部（客户）交互信息
      */
-    @Column(name = "infoWithExternal")
+    @Column(name = "info_with_external")
     private String infoWithExternal;
 
     /**
      *  内部交互信息
      */
-    @Column(name = "infoWithInternal")
+    @Column(name = "info_with_internal")
     private String infoWithInternal;
 
     /**
@@ -64,25 +64,25 @@ public class GfContactUsLogEntity {
     /**
      * 客服负责人
      */
-    @Column(name = "csSpecialist")
+    @Column(name = "cs_specialist")
     private String csSpecialist;
 
     /**
      * 客服负责人
      */
-    @Column(name = "serviceId")
+    @Column(name = "service_id")
     private String serviceId;
 
     /**
      *  生成时间
      */
-    @Column(name = "createTime")
+    @Column(name = "create_time")
     private Long createTime;
 
     /**
      *  排序时间
      */
-    @Column(name = "orderTime")
+    @Column(name = "order_time")
     private Long orderTime;
 
 
