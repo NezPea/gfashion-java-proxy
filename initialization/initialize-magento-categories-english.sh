@@ -1,8 +1,19 @@
 #!/bin/bash
 
-server="https://magento-dev6.devenv.vogfw.xyz"
-root_id="1"
-adminToken="1ukdombne8ptu4afm7m7spgygxpere1q"
+#!/bin/bash
+
+server=$1
+username=$2
+password=$3
+root_id=$4
+
+adminToken=$(curl --location --request POST ${server}/index.php/rest/V1/integration/admin/token \
+--header 'Content-Type: application/json' \
+--header 'Cookie: PHPSESSID=f52b8b5466245cc1e0e333f8ae88617f' \
+--data-raw '{
+	"username": "'$username'",
+	"password": "'$password'"
+}' | jq -r .)
 
 PostCategory () {
   echo $(curl --location --request POST ${server}/index.php/rest/V1/categories \
@@ -21,21 +32,21 @@ PostCategory () {
 
 
 #Add GFashion Root Level Category
-gf_id=$(PostCategory $root_id "Gfashion1")
+gf_id=$(PostCategory $root_id "Gfashion")
 #echo $gf_id
 
 #Add GFashion First Level Category
-men_id=$(PostCategory $gf_id "Men1")
-women_id=$(PostCategory $gf_id "Women1")
-others_id=$(PostCategory $gf_id "Others1")
+men_id=$(PostCategory $gf_id "Men")
+women_id=$(PostCategory $gf_id "Women")
+others_id=$(PostCategory $gf_id "Others")
 
 # Add Second Level Categories
-men_cloth_id=$(PostCategory $men_id "Cloth1")
-men_accessories_id=$(PostCategory $men_id "Accessories1")
-women_cloth_id=$(PostCategory $women_id "Cloth1")
-women_accessories_id=$(PostCategory $women_id "Accessories1")
-others_cloth_id=$(PostCategory $others_id "Cloth1")
-others_accessories_id=$(PostCategory $others_id "Accessories1")
+men_cloth_id=$(PostCategory $men_id "Cloth")
+men_accessories_id=$(PostCategory $men_id "Accessories")
+women_cloth_id=$(PostCategory $women_id "Cloth")
+women_accessories_id=$(PostCategory $women_id "Accessories")
+others_cloth_id=$(PostCategory $others_id "Cloth")
+others_accessories_id=$(PostCategory $others_id "Accessories")
 
 
 
