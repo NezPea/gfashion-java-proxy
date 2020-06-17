@@ -2,12 +2,10 @@ package com.gfashion.restclient;
 
 import com.gfashion.domain.order.GfOrder;
 import com.gfashion.domain.sales.GfShipOrder;
-import com.gfashion.restclient.magento.exception.OrderNotFoundException;
-import com.gfashion.restclient.magento.exception.OrderUnknowException;
+import com.gfashion.restclient.magento.exception.OrderException;
 import com.gfashion.restclient.magento.mapper.GfMagentoOrderShipmentConverter;
 import com.gfashion.restclient.magento.order.MagentoOrderResp;
 import com.gfashion.restclient.magento.sales.MagentoShipOrder;
-import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +41,7 @@ public class MagentoOrderClient {
 
     private final GfMagentoOrderShipmentConverter _mapper = Mappers.getMapper(GfMagentoOrderShipmentConverter.class);
 
-    public String shipOrder(Integer orderId, GfShipOrder gfShipOrder) throws OrderNotFoundException, OrderUnknowException {
+    public String shipOrder(Integer orderId, GfShipOrder gfShipOrder) throws OrderException {
         String url = orderUrl + orderId + "/ship";
         try {
             validate(gfShipOrder);
@@ -54,10 +52,9 @@ public class MagentoOrderClient {
             shipmentId = shipmentId.substring(1, shipmentId.length() - 1);
             return shipmentId;
         } catch (HttpStatusCodeException e) {
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new OrderNotFoundException(e.getMessage());
-            }
-            throw new OrderUnknowException(e.getMessage());
+            throw new OrderException(e.getStatusCode(), e.getMessage());
+        } catch (Exception e) {
+            throw new OrderException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
@@ -69,7 +66,7 @@ public class MagentoOrderClient {
         }
     }
 
-    public List<GfOrder> queryOrders(Integer customerId) throws OrderNotFoundException, OrderUnknowException {
+    public List<GfOrder> queryOrders(Integer customerId) throws OrderException {
         // Referring to MagentoHomepageClient.java/getCategoriesUnderParentId()
         String filed0 = String.format(field, 0, 0);
         String value0 = String.format(value, 0, 0);
@@ -81,15 +78,13 @@ public class MagentoOrderClient {
                         conditionType0 + "eq", filedFilter})));
 
         try {
-            ResponseEntity<String> responseEntity = this._restClient.exchangeGet(url, String.class, null);
-            Gson gson = new Gson();
-            MagentoOrderResp magentoOrderResp = gson.fromJson(responseEntity.getBody(), MagentoOrderResp.class);
-            return _mapper.from(magentoOrderResp.getItems());
+            return _mapper.from(
+                    this._restClient.exchangeGet(url, MagentoOrderResp.class, null).getBody().getItems()
+            );
         } catch (HttpStatusCodeException e) {
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new OrderNotFoundException(e.getMessage());
-            }
-            throw new OrderUnknowException(e.getMessage());
+            throw new OrderException(e.getStatusCode(), e.getMessage());
+        } catch (Exception e) {
+            throw new OrderException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 }
