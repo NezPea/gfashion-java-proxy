@@ -4,11 +4,9 @@ import com.gfashion.domain.product.GfProduct;
 import com.gfashion.domain.product.GfProductSearchResponse;
 import com.gfashion.domain.product.GfProductSearchResponseFix;
 import com.gfashion.restclient.MagentoProductClient;
-import com.gfashion.restclient.magento.exception.ProductNotFoundException;
-import com.gfashion.restclient.magento.exception.ProductUnknowException;
+import com.gfashion.restclient.magento.exception.ProductException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,13 +33,10 @@ public class GfashionProductResource {
     public ResponseEntity<GfProduct> getProductBySku(@PathVariable String skuId) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoProductClient.getProductBySku(skuId));
-        } catch (ProductNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
-        } catch (ProductUnknowException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
+        } catch (ProductException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
     }
-
 
 
     /**
@@ -127,10 +122,8 @@ public class GfashionProductResource {
             String magentoSearchCriteria = "";
             return ResponseEntity.status(HttpStatus.OK).body(magentoProductClient.searchProducts(resultUrl, categoryId.intValue()));
 
-        } catch (ProductNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getErrorMessage());
-        } catch (ProductUnknowException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getErrorMessage());
+        } catch (ProductException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
     }
 }
