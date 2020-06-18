@@ -4,9 +4,7 @@ import com.gfashion.domain.payment.GfShipping;
 import com.gfashion.restclient.magento.exception.CustomerException;
 import com.gfashion.restclient.magento.exception.PaymentNotFoundException;
 import com.gfashion.restclient.magento.exception.PaymentUnknowException;
-import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -39,9 +37,6 @@ public class MagentoPaymentClient {
 
     @Autowired
     private RestClient restClient;
-
-
-    private final GfMagentoConverter mapper = Mappers.getMapper(GfMagentoConverter.class);
 
     public String getPaymentMethods(GfShipping gfShipping) throws CustomerException, PaymentNotFoundException, PaymentUnknowException {
         try {
