@@ -36,17 +36,20 @@ public class GfashionOrderIT {
             case "dev":
                 order_id = 96;
                 order_item_id = 215;
+                customer_id = 1;
                 break;
             case "test":
             case "qa":
                 order_id = 1;
                 order_item_id = 1;
+                customer_id = 10;
                 break;
         }
     }
 
     private Integer order_id;
     private Integer order_item_id;
+    private Integer customer_id;
 
     /**
      * 如果执行失败，可能是订单的所有商品都已发货。
@@ -61,7 +64,7 @@ public class GfashionOrderIT {
         //
         RestAssured.given().request().contentType(ContentType.JSON)
                 .body(gson.toJson(gfShipOrder))
-                .post("/gfashion/v1/order/{orderId}/ship", order_id)
+                .post("/gfashion/v1/orders/{orderId}/ship", order_id)
                 .then().assertThat()
                 .statusCode(200)
                 .body("entityId", Matchers.greaterThan(0));//"67"
@@ -71,7 +74,16 @@ public class GfashionOrderIT {
     public void getTracksByOrderId() throws Exception {
         /*RestAssured.given().param("searchCriteria", "order_id=50")
                 .param("fields", "items[tracks]").when()*/
-        RestAssured.given().get("/gfashion/v1/order/{orderId}/tracks", order_id).then().assertThat()
+        RestAssured.given().get("/gfashion/v1/orders/{orderId}/tracks", order_id).then().assertThat()
+                .statusCode(200)
+                .body("items.size()", Matchers.greaterThanOrEqualTo(0));
+    }
+
+    @Test
+    public void getOrdersByCustomerId() throws Exception {
+        /*RestAssured.given().param("searchCriteria", "customer_id=1")
+                .param("fields", "items[created_at,total_item_count,shipping_amount,status,subtotal,items[order_id]],total_count").when()*/
+        RestAssured.given().get("/gfashion/v1/orders/{customerId}", customer_id).then().assertThat()
                 .statusCode(200)
                 .body("items.size()", Matchers.greaterThanOrEqualTo(0));
     }

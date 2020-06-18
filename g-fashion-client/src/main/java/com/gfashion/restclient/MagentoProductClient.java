@@ -4,7 +4,7 @@ import com.gfashion.domain.product.*;
 import com.gfashion.domain.store.GfStoreConfig;
 import com.gfashion.restclient.magento.exception.*;
 import com.gfashion.restclient.magento.product.*;
-import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
+import com.gfashion.restclient.magento.mapper.GfMagentoProductConverter;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
@@ -47,7 +47,6 @@ public class MagentoProductClient {
     private String localeZh;
 
 
-
     @Autowired
     private RestClient magentoRestClient;
 
@@ -55,7 +54,7 @@ public class MagentoProductClient {
     private MagentoStoreClient magentoStoreClient;
     private String secureBaseMediaUrl = ""; // 产品图片地址
 
-    private final GfMagentoConverter gfMagentoConverter = Mappers.getMapper(GfMagentoConverter.class);
+    private final GfMagentoProductConverter gfMagentoProductConverter = Mappers.getMapper(GfMagentoProductConverter.class);
 
     /**
      * 加入参数extraHeaders，如果已经拿到token，避免再去取token
@@ -70,7 +69,7 @@ public class MagentoProductClient {
         ResponseEntity<String> responseEntityAttribute = magentoRestClient.exchangeGet(attributesUrl, String.class, extraHeaders);
 
         Gson gson = new Gson();
-        GfEvaAttribute gfEvaAttribute = gfMagentoConverter.convertMagentoEvaAttributeToGfEvaAttribute(gson.fromJson(responseEntityAttribute.getBody(), MagentoEvaAttribute.class));
+        GfEvaAttribute gfEvaAttribute = gfMagentoProductConverter.convertMagentoEvaAttributeToGfEvaAttribute(gson.fromJson(responseEntityAttribute.getBody(), MagentoEvaAttribute.class));
 
         Map<String, Map<String, String>> attributeOption = new HashMap<>();
         if (gfEvaAttribute.getItems() != null) {
@@ -95,7 +94,7 @@ public class MagentoProductClient {
 
         ResponseEntity<String> responseEntityCategory = magentoRestClient.exchangeGet(getProductUrl, String.class, extraHeaders);
         Gson gson = new Gson();
-        return gfMagentoConverter.convertMagentoProductCategoryToGfProductCategory(gson.fromJson(responseEntityCategory.getBody(), MagentoProductCategory.class));
+        return gfMagentoProductConverter.convertMagentoProductCategoryToGfProductCategory(gson.fromJson(responseEntityCategory.getBody(), MagentoProductCategory.class));
     }
 
     public GfStockItem getStockItemBySku(String productSku, MultiValueMap<String, String> extraHeaders) {
@@ -103,7 +102,7 @@ public class MagentoProductClient {
 
         ResponseEntity<String> responseEntityStockItem = magentoRestClient.exchangeGet(getProductUrl, String.class, extraHeaders);
         Gson gson = new Gson();
-        return gfMagentoConverter.convertMagentoStockItemToGfStockItem(gson.fromJson(responseEntityStockItem.getBody(), MagentoStockItem.class));
+        return gfMagentoProductConverter.convertMagentoStockItemToGfStockItem(gson.fromJson(responseEntityStockItem.getBody(), MagentoStockItem.class));
     }
 
     /**
@@ -111,10 +110,9 @@ public class MagentoProductClient {
      *
      * @param sku
      * @return
-     * @throws ProductNotFoundException
-     * @throws ProductUnknowException
+     * @throws ProductException
      */
-    public GfProduct getProductBySku(String sku) throws ProductNotFoundException, ProductUnknowException {
+    public GfProduct getProductBySku(String sku) throws ProductException {
         String getProductUrl = productsUrl + sku;
         String productFilePath = "catalog/product";
         try {
@@ -128,7 +126,7 @@ public class MagentoProductClient {
             HttpHeaders headers = magentoRestClient.getHeaders(null);
             ResponseEntity<String> responseEntityProduct = magentoRestClient.exchangeGet(getProductUrl, String.class, headers);
             Gson gson = new Gson();
-            GfProduct gfProduct = gfMagentoConverter.convertMagentoProductToGfProduct(gson.fromJson(responseEntityProduct.getBody(), MagentoProduct.class));
+            GfProduct gfProduct = gfMagentoProductConverter.convertMagentoProductToGfProduct(gson.fromJson(responseEntityProduct.getBody(), MagentoProduct.class));
             List<GfMediaGalleryEntry> gfMediaGalleryEntryList = gfProduct.getMedia_gallery_entries();
             if (gfMediaGalleryEntryList.size() > 0) {
                 gfMediaGalleryEntryList.forEach(gfMediaGalleryEntry -> {
@@ -237,7 +235,7 @@ public class MagentoProductClient {
                 // 循环获取关联产品的名称、价格、图片地址
                 gfProductLinkList.forEach(GfProductLink -> {
                     ResponseEntity<String> responseEntityProduct1 = magentoRestClient.exchangeGet(productsUrl + GfProductLink.getLinked_product_sku(), String.class, headers);
-                    GfProduct gfProduct1 = gfMagentoConverter.convertMagentoProductToGfProduct(gson.fromJson(responseEntityProduct1.getBody(), MagentoProduct.class));
+                    GfProduct gfProduct1 = gfMagentoProductConverter.convertMagentoProductToGfProduct(gson.fromJson(responseEntityProduct1.getBody(), MagentoProduct.class));
 
                     GfProductLink.setName(gfProduct1.getName()); // 产品名称
                     GfProductLink.setPrice(gfProduct1.getPrice()); // 产品价格
@@ -316,16 +314,15 @@ public class MagentoProductClient {
 
             return gfProduct;
         } catch (HttpStatusCodeException e) {
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new ProductNotFoundException(e.getMessage());
-            }
-            throw new ProductUnknowException(e.getMessage());
+            throw new ProductException(e.getStatusCode(), e.getMessage());
+        } catch (Exception e) {
+            throw new ProductException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
     }
 
-    public GfProductSearchResponseFix searchProducts(String query, Integer category_id) throws ProductNotFoundException, ProductUnknowException {
-        String getProductSearchUrl = productsUrl + query.replace("localeEn",localeEn).replace("localeZh",localeZh);
+    public GfProductSearchResponseFix searchProducts(String query, Integer category_id) throws ProductException {
+        String getProductSearchUrl = productsUrl + query.replace("localeEn", localeEn).replace("localeZh", localeZh);
 
         try {
 
@@ -340,7 +337,7 @@ public class MagentoProductClient {
 
             Gson gson = new Gson();
             //将产品格式转换为GfProductSearchResponse
-            GfProductSearchResponse gfProductSearchResponse = gfMagentoConverter.convertMagentoProductSearchToGfProductSearch(gson.fromJson(responseProductSearch.getBody(), MagentoProductSearchResponse.class));
+            GfProductSearchResponse gfProductSearchResponse = gfMagentoProductConverter.convertMagentoProductSearchToGfProductSearch(gson.fromJson(responseProductSearch.getBody(), MagentoProductSearchResponse.class));
 
             //产品详情，精简字段
             List<GfChannelProduct> gfChannelProductList = new ArrayList<>();
@@ -481,11 +478,11 @@ public class MagentoProductClient {
                         gfAttributeOptions.forEach(gfAttributeOption -> {
                             gfAttributeOptionMap.put(gfAttributeOption.getId(), gfAttributeOption);
                         });
-                        gfAttributeOptionMap.forEach((optionKey,optionValue)->{
-                            if(optionKey.equals(searchFilter.getValue())){
+                        gfAttributeOptionMap.forEach((optionKey, optionValue) -> {
+                            if (optionKey.equals(searchFilter.getValue())) {
                                 optionValue.setIsChecked("true");
                                 gfAttributeOptionTmp.add(optionValue);
-                            }else{
+                            } else {
                                 gfAttributeOptionTmp.add(optionValue);
                             }
                         });
@@ -506,12 +503,10 @@ public class MagentoProductClient {
             gfProductSearchResponseFix.setCategory_id(category_id);
             return gfProductSearchResponseFix;
         } catch (HttpStatusCodeException e) {
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new ProductNotFoundException(e.getMessage());
-            }
-            throw new ProductUnknowException(e.getMessage());
+            throw new ProductException(e.getStatusCode(), e.getMessage());
+        } catch (Exception e) {
+            throw new ProductException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-
     }
 }
 

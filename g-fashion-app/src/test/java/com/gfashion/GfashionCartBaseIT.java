@@ -127,7 +127,7 @@ public class GfashionCartBaseIT {
 
     protected GfCartPaymentInformation createPaymentInformationParams() {
         GfCartPaymentMethod paymentMethod = new GfCartPaymentMethod();
-        paymentMethod.setMethod("banktransfer");
+        paymentMethod.setMethod("checkmo");
 
         GfCartPaymentInformation params = new GfCartPaymentInformation();
         params.setPaymentMethod(paymentMethod);

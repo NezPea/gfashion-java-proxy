@@ -120,7 +120,7 @@ public class GfashionCartIT extends GfashionCartBaseIT {
                 .body(gson.toJson(cartItem))
                 .post("/gfashion/v1/carts/items/")
                 .then().assertThat()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test

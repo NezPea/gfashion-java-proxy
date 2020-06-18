@@ -7,6 +7,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -150,11 +151,10 @@ public class GfProductEntity {
 
     @DynamoDBAttribute(attributeName = "isFeatured")
     private Boolean isFeatured;
-//    private List<GfProductCustomAttribute> custom_attributes;
-//    private JSONObject extension_attributes;
-//    private List<GfMediaGalleryEntry> media_gallery_entries;  // 媒体图片资源库，包含图片地址
-//    private List<GfProductCustomAttribute> custom_attributes; // 自定义属性：可能包含颜色、描述、缩略图、价格
-//    private List<GfProductLink> product_links; // 关联产品
+
+    @DynamoDBAttribute(attributeName = "productSize")
+    private Set<String> productSize;
+
 //    @DynamoDBAttribute(attributeName = "extension_attributes")
 //    private GfMediaGalleryEntry extension_attributes; // 扩展属性
 }
