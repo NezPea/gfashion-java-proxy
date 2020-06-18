@@ -1,9 +1,10 @@
-package com.gfashion;
+package com.gfashion.product;
 
 import com.gfashion.domain.product.GfProduct;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,6 +49,7 @@ public class GfashionProductIT {
     }
 
     @Test
+    @Ignore
     public void searchChannelProductsShouldReturnProducts() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setRequestURI("/gfashion/v1/channelProducts");

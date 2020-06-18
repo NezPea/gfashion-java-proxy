@@ -1,4 +1,4 @@
-package com.gfashion;
+package com.gfashion.cart;
 
 import com.gfashion.domain.cart.GfCartAddress;
 import com.gfashion.domain.cart.GfCartEstimateShippingMethod;

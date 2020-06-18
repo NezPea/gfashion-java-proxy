@@ -1,4 +1,4 @@
-package com.gfashion;
+package com.gfashion.designer;
 
 import com.gfashion.domain.designer.GfDesignerSearchAttributeValueMappings;
 import com.google.gson.Gson;
