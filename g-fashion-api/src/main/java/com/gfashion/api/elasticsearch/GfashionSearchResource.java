@@ -46,6 +46,11 @@ public class GfashionSearchResource {
         return searchService.generateDesigners();
     }
 
+    @GetMapping("/categories")
+    public String categories() {
+        return searchService.getCategoryTree();
+    }
+
     @GetMapping("/mock_product")
     public Map<String, Integer> mock() {
         try {

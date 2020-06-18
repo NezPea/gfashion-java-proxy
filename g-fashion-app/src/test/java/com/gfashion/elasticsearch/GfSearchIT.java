@@ -153,9 +153,9 @@ public class GfSearchIT {
     public void mockDesigner() {
         // Catch exception because there is no permission for refreshing
         try {
-            EsDesigner designer = EsDesigner.builder().id(100L).name("李世民").suggest(new Completion(new String[]{"李世明"})).build();
-            EsDesigner designer1 = EsDesigner.builder().id(101L).name("Nirvana").suggest(new Completion(new String[]{"Nirvana"})).build();
-            EsDesigner designer2 = EsDesigner.builder().id(102L).name("Nevermind Never").suggest(new Completion(new String[]{"Nevermind Never"})).build();
+            EsDesigner designer = EsDesigner.builder().id(100L).name_zh("李世民").suggest(new Completion(new String[]{"李世明"})).build();
+            EsDesigner designer1 = EsDesigner.builder().id(101L).name_en("Nirvana").suggest(new Completion(new String[]{"Nirvana"})).build();
+            EsDesigner designer2 = EsDesigner.builder().id(102L).name_en("Nevermind Never").suggest(new Completion(new String[]{"Nevermind Never"})).build();
             List<EsDesigner> designers = new ArrayList<>();
             designers.add(designer);
             designers.add(designer1);

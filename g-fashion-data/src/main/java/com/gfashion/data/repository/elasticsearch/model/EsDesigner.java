@@ -23,12 +23,12 @@ public class EsDesigner {
     @Id @Field(type = FieldType.Long)
     private Long id;
     private Long designerId;
-    private String name;
-    private String brief;
-    private String country;
+    private String name_en;
+    private String name_zh;
+    private String brief_en;
+    private String brief_zh;
     private String photoUrl;
-    private String language;
-    private Integer majorCategoryId;
+    private Integer topCategoryId;
     private Boolean sale;
     private Long productCount;
 

@@ -27,6 +27,7 @@ import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
@@ -38,9 +39,11 @@ import org.springframework.data.elasticsearch.core.facet.result.Term;
 import org.springframework.data.elasticsearch.core.facet.result.TermResult;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -53,6 +56,9 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class SearchService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SearchService.class);
 
+    @Value("${magento.url.categories}")
+    private String categoryUrl;
+
     @Resource
     private EsProductRepository productRepository;
 
@@ -61,6 +67,9 @@ public class SearchService {
 
     @Resource
     private ElasticsearchRestTemplate elasticsearchTemplate;
+
+    @Resource
+    private MagentoClient magentoClient;
 
     private ElasticsearchMapper mapper = Mappers.getMapper(ElasticsearchMapper.class);
 
@@ -158,12 +167,8 @@ public class SearchService {
             queryBuilder.must(termQuery("categories", request.getCategoryId()));
         }
 
-        if (!isEmpty(request.getLanguage())) {
-            queryBuilder.must(matchQuery("language", request.getLanguage()));
-        }
-
         if (!isEmpty(request.getSize())) {
-            queryBuilder.must(matchQuery("size", request.getSize()));
+            queryBuilder.must(termQuery("size", request.getSize()));
         }
         return queryBuilder;
     }
@@ -333,7 +338,7 @@ public class SearchService {
                         Long sale = (Long) saleBucket.getKey();
                         Long count = saleBucket.getDocCount();
                         LOGGER.debug("designerId={}, categoryId={}, sale={}, count={}", designerId, categoryId, sale, count);
-                        designers.add(EsDesigner.builder().designerId(Long.valueOf(designerId)).majorCategoryId(categoryId.intValue()).sale(sale==1).productCount(count).build());
+                        designers.add(EsDesigner.builder().designerId(Long.valueOf(designerId)).topCategoryId(categoryId.intValue()).sale(sale==1).productCount(count).build());
                     });
                 });
             });
@@ -341,14 +346,26 @@ public class SearchService {
             // Merge designer by designerId and majorCategoryId
             Map<String, EsDesigner> summary = new HashMap<>();
             for (EsDesigner designer : designers) {
-                String key = designer.getDesignerId() + "-" + designer.getMajorCategoryId();
+                String key = designer.getDesignerId() + "-" + designer.getTopCategoryId();
 
                 if (summary.containsKey(key)) {
                     EsDesigner esDesigner = summary.get(key);
                     esDesigner.setProductCount(esDesigner.getProductCount() + designer.getProductCount());
                 } else {
-                    // TODO compute the suggest of designer
-//                    designer.setSuggest(new Completion());
+                    // TODO Get Designer from somewhere
+                    Set<String> suggest = new HashSet<>();
+                    if (!isEmpty(designer.getName_en())) {
+                        String[] names = designer.getName_en().split(" ");
+                        for (String name: names) {
+                            suggest.add(name);
+                        }
+                    }
+                    if (!isEmpty(designer.getName_zh())) {
+                        suggest.add(designer.getName_zh());
+                    }
+                    String[] suggests = new String[suggest.size()];
+
+                    designer.setSuggest(new Completion(suggest.toArray(suggests)));
                     summary.put(key, designer);
                 }
 
@@ -362,6 +379,11 @@ public class SearchService {
             LOGGER.error("Generate designer sales error.", e);
             return designers;
         }
+    }
+
+    public String getCategoryTree() {
+        ResponseEntity<String> response = magentoClient.exchangeGet(categoryUrl, String.class, null);
+        return response.getBody();
     }
 
     private boolean isEmpty(String txt) {
@@ -414,9 +436,9 @@ public class SearchService {
     }
 
     public void mockDesigner() {
-        EsDesigner designer = EsDesigner.builder().id(100L).name("李世民").suggest(new Completion(new String[]{"李世明"})).brief("Alumna of prestigious Parisian houses Maison Margiela, Dior, and Balenciaga, Marine Serre debuted her first collection, ‘15-21’, during her fourth year at La Cambre Mode in Brussels. Since, the French designer has established her namesake label as one to watch, garnering the LVMH Prize for Young Fashion Designers in 2017 and launching a menswear line for Spring/Summer 2019. Before pursuing a career in fashion design, Serre initially intended on becoming a professional tennis player. This proclivity for athletics features prominently across Serre’s collections: second-skin tops, leggings, and jet caps, all emblazoned with her instantly-recognizable moon logo, have become Serre’s calling card. Her men’s ready-to-wear offering sees deconstructed chore jackets and parkas referencing the convergence of sportswear and workwear, with all-over logo jeans, bike shorts, and plush jackets summoning 90’s nostalgia. Collaborative sneakers with sportswear giants Nike and Converse round out Serre’s collection of genderless separates.").build();
-        EsDesigner designer1 = EsDesigner.builder().id(101L).name("Nirvana").suggest(new Completion(new String[]{"Nirvana"})).brief("Phillip Lim launched his namesake collection in 2005, naming it “3.1” after his 31 years of age. His first menswear collection debuted shortly after, in 2007. The New York-based designer counts his city as his chief inspiration, but the optimistic, laid-back attitude of Lim’s native California informs his sophisticated yet approachable designs. Fusions of sportswear and tailoring join classic pieces reworked with a minimalist finish. Oversized cuts, graphic colorblocking, and directional prints infuse Lim’s motorcycle and bomber jackets, slim lounge pants, and signature 31 Hour bags with a modern, masculine sleekness.").build();
-        EsDesigner designer2 = EsDesigner.builder().id(102L).name("Nevermind Never").suggest(new Completion(new String[]{"Nevermind Never"})).brief("Based out of New York City, Abasi Rosborough is the namesake menswear brand of Abdul Abasi and Greg Rosborough, who met during their studies at the Fashion Institute of Technology. Following several years spent respectively honing their skills with Ralph Lauren and Engineered Garments, Rosborough and Abasi initiated their collaboration and released their first concept-driven collection in 2013. The pair has since further refined their sartorial output with pieces in simple shapes and progressive cuts that echo a multitude of influences, including sportswear, military uniforms, and classic suiting. Their offering of unadorned but precisely panelled shirts, jackets, and sarouel-style trousers in black and neutral tones fulfills the need for a modular wardrobe of separates that layer seamlessly while making a statement on their own – a pragmatic ideal for the urban sophisticate.").build();
+        EsDesigner designer = EsDesigner.builder().id(100L).name_zh("李世民").suggest(new Completion(new String[]{"李世明"})).brief_en("Alumna of prestigious Parisian houses Maison Margiela, Dior, and Balenciaga, Marine Serre debuted her first collection, ‘15-21’, during her fourth year at La Cambre Mode in Brussels. Since, the French designer has established her namesake label as one to watch, garnering the LVMH Prize for Young Fashion Designers in 2017 and launching a menswear line for Spring/Summer 2019. Before pursuing a career in fashion design, Serre initially intended on becoming a professional tennis player. This proclivity for athletics features prominently across Serre’s collections: second-skin tops, leggings, and jet caps, all emblazoned with her instantly-recognizable moon logo, have become Serre’s calling card. Her men’s ready-to-wear offering sees deconstructed chore jackets and parkas referencing the convergence of sportswear and workwear, with all-over logo jeans, bike shorts, and plush jackets summoning 90’s nostalgia. Collaborative sneakers with sportswear giants Nike and Converse round out Serre’s collection of genderless separates.").build();
+        EsDesigner designer1 = EsDesigner.builder().id(101L).name_en("Nirvana").suggest(new Completion(new String[]{"Nirvana"})).brief_en("Phillip Lim launched his namesake collection in 2005, naming it “3.1” after his 31 years of age. His first menswear collection debuted shortly after, in 2007. The New York-based designer counts his city as his chief inspiration, but the optimistic, laid-back attitude of Lim’s native California informs his sophisticated yet approachable designs. Fusions of sportswear and tailoring join classic pieces reworked with a minimalist finish. Oversized cuts, graphic colorblocking, and directional prints infuse Lim’s motorcycle and bomber jackets, slim lounge pants, and signature 31 Hour bags with a modern, masculine sleekness.").build();
+        EsDesigner designer2 = EsDesigner.builder().id(102L).name_en("Nevermind Never").suggest(new Completion(new String[]{"Nevermind Never"})).brief_en("Based out of New York City, Abasi Rosborough is the namesake menswear brand of Abdul Abasi and Greg Rosborough, who met during their studies at the Fashion Institute of Technology. Following several years spent respectively honing their skills with Ralph Lauren and Engineered Garments, Rosborough and Abasi initiated their collaboration and released their first concept-driven collection in 2013. The pair has since further refined their sartorial output with pieces in simple shapes and progressive cuts that echo a multitude of influences, including sportswear, military uniforms, and classic suiting. Their offering of unadorned but precisely panelled shirts, jackets, and sarouel-style trousers in black and neutral tones fulfills the need for a modular wardrobe of separates that layer seamlessly while making a statement on their own – a pragmatic ideal for the urban sophisticate.").build();
         List<EsDesigner> designers = new ArrayList<>();
         designers.add(designer);
         designers.add(designer1);
