@@ -48,7 +48,7 @@ public class GfashionSkuDynamodbResource {
     @PutMapping(value = "/dynamodb/skus", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfSkuEntity> updateSku(@RequestBody GfSkuEntity sku) {
         try {
-            if (skuRepository.readGfSkuEntityById(sku.getId()) == null) {
+            if (skuRepository.readGfSkuEntityById(sku.getSkuId()) == null) {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
             }
             GfSkuEntity response = skuRepository.updateGfSkuEntity(sku);

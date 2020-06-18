@@ -107,4 +107,10 @@ public class GfProductEntity {
     //是否可以二次打折
     @DynamoDBAttribute(attributeName = "isDiscount")
     private boolean isDiscount;
+
+    @DynamoDBAttribute(attributeName = "isFeatured")
+    private String photoUrl;
+
+    @DynamoDBAttribute(attributeName = "isFeatured")
+    private Boolean isFeatured;
 }

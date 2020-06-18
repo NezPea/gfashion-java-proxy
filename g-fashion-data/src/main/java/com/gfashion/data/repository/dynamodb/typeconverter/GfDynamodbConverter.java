@@ -1,11 +1,12 @@
 package com.gfashion.data.repository.dynamodb.typeconverter;
 
-import com.gfashion.data.GfBrandEntity;
-import com.gfashion.data.GfDesignerEntity;
-import com.gfashion.data.GfProductEntity;
+import com.gfashion.data.*;
 import com.gfashion.domain.homepage.HomepageBrand;
 import com.gfashion.domain.homepage.HomepageDesigner;
 import com.gfashion.domain.homepage.HomepageProduct;
+import com.gfashion.domain.productdetail.GfProductShort;
+import com.gfashion.domain.productdetail.GfSku;
+import com.gfashion.domain.productdetail.ProductDetail;
 import com.google.gson.Gson;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -30,4 +31,9 @@ public interface GfDynamodbConverter {
     }
 
     HomepageProduct convertDynamodbProductToHomeProduct(GfProductEntity gfProductEntity);
+
+
+    ProductDetail convertDynamodbProductToDetailProduct(GfProductEntity gfProductEntity);
+    GfProductShort convertDynamodbProductToShortProduct(GfProductEntity gfProductEntity);
+    GfSku convertDynamodbSkuToDetailSku(GfSkuCopyEntity gfSkuEntity);
 }

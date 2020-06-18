@@ -36,12 +36,12 @@ public class MagentoMockDataClient {
 
     private List<HomepageProduct> getDefaultHomepageProducts(){
         List<HomepageProduct> homepageProducts = new ArrayList<HomepageProduct>();
-        homepageProducts.add(HomepageProduct.builder().id("1").name("product1").photoUrl("http://image1.gf.com").isFeatured(true).build());
-        homepageProducts.add(HomepageProduct.builder().id("2").name("product2").photoUrl("http://image2.gf.com").isFeatured(true).build());
-        homepageProducts.add(HomepageProduct.builder().id("3").name("product3").photoUrl("http://image3.gf.com").isFeatured(false).build());
-        homepageProducts.add(HomepageProduct.builder().id("4").name("product4").photoUrl("http://image4.gf.com").isFeatured(false).build());
-        homepageProducts.add(HomepageProduct.builder().id("5").name("product5").photoUrl("http://image5.gf.com").isFeatured(false).build());
-        homepageProducts.add(HomepageProduct.builder().id("6").name("product6").photoUrl("http://image6.gf.com").isFeatured(false).build());
+        homepageProducts.add(HomepageProduct.builder().id("1").productName("product1").photoUrl("http://image1.gf.com").isFeatured(true).build());
+        homepageProducts.add(HomepageProduct.builder().id("2").productName("product2").photoUrl("http://image2.gf.com").isFeatured(true).build());
+        homepageProducts.add(HomepageProduct.builder().id("3").productName("product3").photoUrl("http://image3.gf.com").isFeatured(false).build());
+        homepageProducts.add(HomepageProduct.builder().id("4").productName("product4").photoUrl("http://image4.gf.com").isFeatured(false).build());
+        homepageProducts.add(HomepageProduct.builder().id("5").productName("product5").photoUrl("http://image5.gf.com").isFeatured(false).build());
+        homepageProducts.add(HomepageProduct.builder().id("6").productName("product6").photoUrl("http://image6.gf.com").isFeatured(false).build());
         return homepageProducts;
     }
 

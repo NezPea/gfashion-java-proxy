@@ -3,8 +3,8 @@ package com.gfashion.api.dynamodb;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.gfashion.api.log.annotation.DDBLog;
-import com.gfashion.data.GfCategoryEntity;
-import com.gfashion.data.repository.dynamodb.GfCategoryRepository;
+import com.gfashion.data.GfSkuCopyEntity;
+import com.gfashion.data.repository.dynamodb.GfSkuCopyRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,21 +12,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping(path = "/gfashion/v1", produces = {MediaType.APPLICATION_JSON_VALUE})
 //@CrossOrigin(origins = "*")
 @AllArgsConstructor
-public class GfashionCategoryDynamodbResource {
+public class GfashionSkuCopyDynamodbResource {
 
-    private GfCategoryRepository categoryRepository;
+    private GfSkuCopyRepository skuRepository;
 
     @DDBLog(operationType = "custom_operation_type", operationEvent = "custom_operation_event")
-    @PostMapping(value = "/dynamodb/categories", produces = "application/json;charset=utf-8")
-    public ResponseEntity<GfCategoryEntity> createCategory(@RequestBody GfCategoryEntity category) {
+    @PostMapping(value = "/dynamodb/skus", produces = "application/json;charset=utf-8")
+    public ResponseEntity<GfSkuCopyEntity> createSkuCopy(@RequestBody GfSkuCopyEntity sku) {
         try {
-            GfCategoryEntity response = categoryRepository.createGfCategoryEntity(category);
+            GfSkuCopyEntity response = skuRepository.createGfSkuCopyEntity(sku);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
@@ -35,11 +33,10 @@ public class GfashionCategoryDynamodbResource {
         }
     }
 
-    @GetMapping(value = "/dynamodb/categories/{categoryId}", produces = "application/json;charset=utf-8")
-    public ResponseEntity<GfCategoryEntity> getCategory(@PathVariable String categoryId) {
+    @GetMapping(value = "/dynamodb/skus", produces = "application/json;charset=utf-8")
+    public ResponseEntity<GfSkuCopyEntity> getSkuCopy(@RequestParam(required = true) String productId,@RequestParam(required = true)  String skuId) {
         try {
-            GfCategoryEntity response = categoryRepository.readGfCategoryEntityById(categoryId);
-
+            GfSkuCopyEntity response = skuRepository.readGfSkuCopyEntityById(productId,skuId);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
@@ -48,13 +45,13 @@ public class GfashionCategoryDynamodbResource {
         }
     }
 
-    @PutMapping(value = "/dynamodb/categories", produces = "application/json;charset=utf-8")
-    public ResponseEntity<GfCategoryEntity> updateCategory(@RequestBody GfCategoryEntity category) {
+    @PutMapping(value = "/dynamodb/skus", produces = "application/json;charset=utf-8")
+    public ResponseEntity<GfSkuCopyEntity> updateSkuCopy(@RequestBody GfSkuCopyEntity sku) {
         try {
-            if (categoryRepository.readGfCategoryEntityById(category.getId()) == null) {
+            if (skuRepository.readGfSkuCopyEntityById(sku.getProductId(),sku.getSkuId()) == null) {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
             }
-            GfCategoryEntity response = categoryRepository.createGfCategoryEntity(category);
+            GfSkuCopyEntity response = skuRepository.updateGfSkuCopyEntity(sku);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
@@ -63,13 +60,13 @@ public class GfashionCategoryDynamodbResource {
         }
     }
 
-    @DeleteMapping(value = "/dynamodb/categories/{categoryId}", produces = "application/json;charset=utf-8")
-    public ResponseEntity<GfCategoryEntity> deleteCategory(@PathVariable String categoryId) {
+    @DeleteMapping(value = "/dynamodb/skus", produces = "application/json;charset=utf-8")
+    public ResponseEntity<GfSkuCopyEntity> deleteSkuCopy(@RequestParam(required = true)  String productId,@RequestParam(required = true)  String skuId) {
         try {
-            if (categoryRepository.readGfCategoryEntityById(categoryId) == null) {
+            if (skuRepository.readGfSkuCopyEntityById(productId,skuId) == null) {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
             }
-            categoryRepository.deleteGfCategoryEntity(categoryId);
+            skuRepository.deleteGfSkuCopyEntity(productId,skuId);
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);

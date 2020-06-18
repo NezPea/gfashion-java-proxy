@@ -14,24 +14,21 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@DynamoDBTable(tableName = "gfSku")
-public class GfSkuEntity {
+@DynamoDBTable(tableName = "gfSkuCopy")
+public class GfSkuCopyEntity {
 
     //主键
-    @DynamoDBHashKey(attributeName = "id")
-    private String id;
+    @DynamoDBHashKey(attributeName = "productId")
+    private String productId;
 
     //skuId
-    @DynamoDBAttribute(attributeName = "skuId")
+    @DynamoDBRangeKey(attributeName = "skuId")
     private String skuId;
 
     //skuName,可以用 productName+sizeName方式
     @DynamoDBAttribute(attributeName = "skuName")
     private String skuName;
 
-    //产品id,也可叫做spuID,或者父SkuId，这里1个productId对应多个skuID
-    @DynamoDBAttribute(attributeName = "productId")
-    private String productId;
 
     //产品名称
     @DynamoDBAttribute(attributeName = "productName")
