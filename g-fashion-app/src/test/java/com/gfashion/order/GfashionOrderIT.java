@@ -1,4 +1,4 @@
-package com.gfashion;
+package com.gfashion.order;
 
 import com.gfashion.domain.sales.GfShipOrder;
 import com.gfashion.domain.sales.GfShipmentItemCreation;

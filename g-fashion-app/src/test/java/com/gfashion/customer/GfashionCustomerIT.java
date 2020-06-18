@@ -1,4 +1,4 @@
-package com.gfashion;
+package com.gfashion.customer;
 
 import com.gfashion.domain.customer.GfCustomer;
 import com.gfashion.domain.customer.GfCustomerLogin;
