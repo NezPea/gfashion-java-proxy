@@ -177,6 +177,8 @@ public class MagentoCustomerClient {
             return res;
         } catch (HttpStatusCodeException e) {
             throw new CustomerException(e.getStatusCode(), e.getMessage());
+        } catch (CustomerException e) {
+            throw e;
         } catch (Exception e) {
             throw new CustomerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
