@@ -18,14 +18,20 @@ import org.springframework.web.client.HttpStatusCodeException;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.ValidationException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 @Component
 @Slf4j
 public class MagentoOrderClient {
 
-    @Value("${magento.url.orders}")
+    @Value("${magento.url.order}")
     private String orderUrl;
+
+    @Value("${magento.url.orders}")
+    private String ordersUrl;
 
     @Value("${magento.url.parameters.field}")
     private String field;
@@ -73,7 +79,7 @@ public class MagentoOrderClient {
         String conditionType0 = String.format(conditionType, 0, 0);
         String filedFilter = "fields=items[created_at,total_item_count,shipping_amount,status,subtotal,items[order_id]],total_count";
 
-        String url = orderUrl + "?" +
+        String url = ordersUrl + "?" +
                 String.join("&", new ArrayList<>(Arrays.asList(new String[]{filed0 + "customer_id", value0 + customerId,
                         conditionType0 + "eq", filedFilter})));
 

@@ -34,9 +34,9 @@ public class GfashionOrderIT {
         gson = new Gson();
         switch (profile) {
             case "dev":
-                order_id = 96;
-                order_item_id = 215;
-                customer_id = 1;
+                order_id = 9;
+                order_item_id = 20;
+                customer_id = 5;
                 break;
             case "test":
             case "qa":

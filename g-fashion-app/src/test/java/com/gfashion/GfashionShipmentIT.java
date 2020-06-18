@@ -38,15 +38,15 @@ public class GfashionShipmentIT {
         gson = new Gson();
         switch (profile) {
             case "dev":
-                order_id = 96;
-                order_item_id = 215;
-                shipment_id = 124;
+                order_id = 9;
+                order_item_id = 20;
+                shipment_id = 6;
                 break;
             case "test":
             case "qa":
                 order_id = 1;
                 order_item_id = 1;
-                shipment_id = 39;
+                shipment_id = 1;
                 break;
 
         }

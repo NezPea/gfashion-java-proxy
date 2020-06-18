@@ -17,9 +17,9 @@ public class GfShipOrder implements Serializable {
     @NotEmpty
     private List<GfShipmentItemCreation> items;
 
-    private boolean notify;
+    private Boolean notify;
 
-    private boolean appendComment;
+    private Boolean appendComment;
 
     private GfShipmentCommentCreation comment;
 
