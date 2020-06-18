@@ -34,7 +34,7 @@ public class GfashionProductIT {
         Response response = RestAssured.get("/gfashion/v1/products/{sku}", "WJ12-M-Black");
         response.then().assertThat()
                 .statusCode(200)
-                .body("id", equalTo(1393))
+                .body("id", equalTo(1394))
                 .body("sku", equalTo("WJ12-M-Black"))
                 .body("attribute_set_id", equalTo(9))
                 .body("price", equalTo(77));
