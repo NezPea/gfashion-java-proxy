@@ -1,4 +1,4 @@
-package com.gfashion;
+package com.gfashion.homepage;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;

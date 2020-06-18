@@ -1,4 +1,4 @@
-package com.gfashion;
+package com.gfashion.shipment;
 
 import com.gfashion.domain.sales.GfShipment;
 import com.gfashion.domain.sales.GfShipmentItem;
