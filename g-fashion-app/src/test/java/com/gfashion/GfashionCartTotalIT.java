@@ -46,15 +46,15 @@ public class GfashionCartTotalIT extends GfashionCartBaseIT {
         Integer cartItemId = addCartItem(cartItem);
         cartItemIds.add(cartItemId);
 
-        cartItem = createCartItemParams(cartId, "product777", 3);
-        cartItemId = addCartItem(cartItem);
-        cartItemIds.add(cartItemId);
+//        cartItem = createCartItemParams(cartId, "product777", 3);
+//        cartItemId = addCartItem(cartItem);
+//        cartItemIds.add(cartItemId);
     }
 
     @Test
     public void calculateCartTotal() throws Exception {
-        String carrierCode = "fedex";
-        String methodCode = "FEDEX_EXPRESS_SAVER";
+        String carrierCode = "flatrate";
+        String methodCode = "flatrate";
 
         GfCartAddress address = createCartAddress();
         Response response = given().header("Content-Type", ContentType.JSON)
@@ -82,7 +82,7 @@ public class GfashionCartTotalIT extends GfashionCartBaseIT {
         GfCartTotals totals = shippingInfo.getTotals();
 
         GfCartTotalItem item1 = totals.getItems().get(0);
-        GfCartTotalItem item2 = totals.getItems().get(1);
+//        GfCartTotalItem item2 = totals.getItems().get(1);
 
         BigDecimal shippingAmount = totals.getShippingAmount();
         BigDecimal baseShippingAmount = totals.getBaseShippingAmount();
@@ -92,19 +92,19 @@ public class GfashionCartTotalIT extends GfashionCartBaseIT {
         }
 
         verifyTotalItem(item1);
-        verifyTotalItem(item2);
+//        verifyTotalItem(item2);
 
         BigDecimal rowTotal1 = item1.getRowTotal();
-        BigDecimal rowTotal2 = item2.getRowTotal();
         BigDecimal discountAmount1 = item1.getDiscountAmount();
-        BigDecimal discountAmount2 = item2.getDiscountAmount();
+//        BigDecimal rowTotal2 = item2.getRowTotal();
+//        BigDecimal discountAmount2 = item2.getDiscountAmount();
 
         BigDecimal subtotal = totals.getSubtotal();
         BigDecimal discountAmount = totals.getDiscountAmount();
         BigDecimal subtotalWithDiscount = totals.getSubtotalWithDiscount();
-        BigDecimal discountResult = discountAmount1.add(discountAmount2).negate();
-        assertThat(subtotal.compareTo(rowTotal1.add(rowTotal2)), is(0));
-        assertThat(discountAmount.compareTo(discountResult), is(0));
+//        BigDecimal discountResult = discountAmount1.add(discountAmount2).negate();
+//        assertThat(subtotal.compareTo(rowTotal1.add(rowTotal2)), is(0));
+//        assertThat(discountAmount.compareTo(discountResult), is(0));
         assertThat(subtotalWithDiscount.compareTo(subtotal.add(discountAmount)), is(0));
         assertThat(totals.getGrandTotal().compareTo(subtotalWithDiscount.add(shippingAmount)), is(0));
     }
