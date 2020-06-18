@@ -36,6 +36,7 @@ magento:
     products: products/
     shipment: shipment/
     orders: orders/
+    order: order/
     stockItems: stockItems/
     categories: categories/
     attributes: attributes/
@@ -129,6 +130,7 @@ magento:
     products: products/
     shipment: shipment/
     orders: orders/
+    order: order/
     stockItems: stockItems/
     categories: categories/
     attributes: products/attributes?searchCriteria[filterGroups][0][filters][0][field]=is_filterable&searchCriteria[filterGroups][0][filters][0][value]=false&searchCriteria[filterGroups][0][filters][0][conditionType]=neq
