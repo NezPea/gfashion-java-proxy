@@ -7,7 +7,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,145 +16,95 @@ import java.util.Set;
 @AllArgsConstructor
 @DynamoDBTable(tableName = "gfProduct")
 public class GfProductEntity {
-
+    //主键
     @DynamoDBHashKey(attributeName = "id")
     private String id;
 
-    @DynamoDBAttribute(attributeName = "name")
-    private String name;
+    //产品id,也可叫做spuID,或者父SkuId，这里1个productId对应多个skuID
+    @DynamoDBAttribute(attributeName = "productId")
+    private String productId;
 
+    //产品条码
+    @DynamoDBAttribute(attributeName = "productCode")
+    private String productCode;
+
+    //产品名称
+    @DynamoDBAttribute(attributeName = "productName")
+    private String productName;
+
+    //语言
     @DynamoDBAttribute(attributeName = "language")
     private String language;
 
-    @DynamoDBAttribute(attributeName = "keyword")
-    private String keyword;
+    //三级分类id 此处考虑是否拆分成3个字段，third second first，或者添加一张category表。
+    @DynamoDBAttribute(attributeName = "categoryId")
+    private Integer categoryId;
 
-    @DynamoDBAttribute(attributeName = "brandId")
-    private String brandId;
-
+    //设计师id
     @DynamoDBAttribute(attributeName = "designerId")
     private String designerId;
 
-    @DynamoDBAttribute(attributeName = "vendorId")
-    private String vendorId;
+    //设计师名称
+    @DynamoDBAttribute(attributeName = "designerName")
+    private String designerName;
 
-    @DynamoDBAttribute(attributeName = "productDelete")
-    private String productDelete;
+    //设计师链接
+    @DynamoDBAttribute(attributeName = "designerLink")
+    private String designerLink;
 
-    @DynamoDBAttribute(attributeName = "productBrief")
-    private String productBrief;
+    //大类
+    @DynamoDBAttribute(attributeName = "mainCategory")
+    private String mainCategory;
 
-    @DynamoDBAttribute(attributeName = "productCategory")
-    private String productCategory;
+    //币种
+    @DynamoDBAttribute(attributeName = "currency")
+    private String currency;
 
-    @DynamoDBAttribute(attributeName = "productCreatedAt")
-    private String productCreatedAt;
+    //是否第三方发货
+    @DynamoDBAttribute(attributeName = "isDeliveryByThirdParty")
+    private boolean isDeliveryByThirdParty;
 
-    @DynamoDBAttribute(attributeName = "productUpdatedAt")
-    private String productUpdatedAt;
-
-    // for GfAttributeOption class
-    @DynamoDBAttribute(attributeName = "isChecked")
-    private String isChecked;
-
-    // for GfChannelProduct class
-    @DynamoDBAttribute(attributeName = "sku")
-    private String sku;
-
+    //原价
     @DynamoDBAttribute(attributeName = "price")
     private BigDecimal price;
 
-    @DynamoDBAttribute(attributeName = "file")
-    private String file;
+    //gClub会员价
+    @DynamoDBAttribute(attributeName = "gclubMemberPrice")
+    private BigDecimal gclubMemberPrice;
 
-    // for GfEvaAttribute class
-    @DynamoDBAttribute(attributeName = "totalCount")
-    private Integer totalCount;
+    //二次折扣价
+    @DynamoDBAttribute(attributeName = "discountPrice")
+    private BigDecimal discountPrice;
 
-    // for GfEvaAttributeOption class
-    @DynamoDBAttribute(attributeName = "attributeId")
-    private Integer attributeId;
+    //图片地址
+    @DynamoDBAttribute(attributeName = "images")
+    private List<String> images;
 
-    @DynamoDBAttribute(attributeName = "attributeCode")
-    private String attributeCode;
+    //限购数量
+    @DynamoDBAttribute(attributeName = "purchaseNumber")
+    private Integer purchaseNumber;
 
-    @DynamoDBAttribute(attributeName = "scope")
-    private String scope;
+    //限购数量 是否可见
+    @DynamoDBAttribute(attributeName = "isPurchaseNumberVisible")
+    private boolean isPurchaseNumberVisible;
 
-    @DynamoDBAttribute(attributeName = "frontendInput")
-    private String frontendInput;
+    //编辑笔记
+    @DynamoDBAttribute(attributeName = "editNotes")
+    private String editNotes;
 
-    // for GfSearchFilter class
-    @DynamoDBAttribute(attributeName = "conditionType")
-    private String conditionType;
+    //细节与养护
+    @DynamoDBAttribute(attributeName = "conservation")
+    private String conservation;
 
+    //尺码信息
+    @DynamoDBAttribute(attributeName = "specification")
+    private String specification;
 
-    @DynamoDBAttribute(attributeName = "attributeSetId")
-    private Integer attributeSetId;
+    //购买须知
+    @DynamoDBAttribute(attributeName = "postSale")
+    private String postSale;
 
-    @DynamoDBAttribute(attributeName = "status")
-    private Integer status;
-
-    @DynamoDBAttribute(attributeName = "visibility")
-    private Integer visibility;
-
-    @DynamoDBAttribute(attributeName = "typeId")
-    private String typeId;
-
-    @DynamoDBAttribute(attributeName = "createdAt")
-    private String createdAt;
-
-    @DynamoDBAttribute(attributeName = "updatedAt")
-    private String updatedAt;
-
-    @DynamoDBAttribute(attributeName = "weight")
-    private Double weight;
-
-    @DynamoDBAttribute(attributeName = "purchaseNumberLimit")
-    private Integer purchaseNumberLimit; // 每个账号至多购买x件
-
-    // for GfProductGategory class
-    @DynamoDBAttribute(attributeName = "parentId")
-    private Integer parentId;
-
-    @DynamoDBAttribute(attributeName = "isActive")
-    private Boolean isActive;
-
-    @DynamoDBAttribute(attributeName = "position")
-    private Integer position;
-
-    @DynamoDBAttribute(attributeName = "level")
-    private Integer level;
-
-    @DynamoDBAttribute(attributeName = "children")
-    private String children;
-
-    @DynamoDBAttribute(attributeName = "path")
-    private String path;
-
-    @DynamoDBAttribute(attributeName = "include")
-    private Boolean include;
-
-    // for GfProductLink class
-
-    @DynamoDBAttribute(attributeName = "linkType")
-    private String linkType;
-
-    @DynamoDBAttribute(attributeName = "linkedProductSku")
-    private String linkedProductSku;
-
-    @DynamoDBAttribute(attributeName = "linkedProductType")
-    private String linkedProductType;
-
-    @DynamoDBAttribute(attributeName = "photoUrl")
-    private String photoUrl;
-
-    @DynamoDBAttribute(attributeName = "isFeatured")
-    private Boolean isFeatured;
-
-    @DynamoDBAttribute(attributeName = "productSize")
-    private Set<String> productSize;
-
-//    @DynamoDBAttribute(attributeName = "extension_attributes")
-//    private GfMediaGalleryEntry extension_attributes; // 扩展属性
+    //是否可以二次打折
+    @DynamoDBAttribute(attributeName = "isDiscount")
+    private boolean isDiscount;
 }

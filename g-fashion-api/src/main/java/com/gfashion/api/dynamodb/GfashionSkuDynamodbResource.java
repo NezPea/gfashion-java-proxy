@@ -3,8 +3,8 @@ package com.gfashion.api.dynamodb;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.gfashion.api.log.annotation.DDBLog;
-import com.gfashion.data.GfProductEntity;
-import com.gfashion.data.repository.dynamodb.GfProductRepository;
+import com.gfashion.data.GfSkuEntity;
+import com.gfashion.data.repository.dynamodb.GfSkuRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,15 +16,15 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping(path = "/gfashion/v1", produces = {MediaType.APPLICATION_JSON_VALUE})
 //@CrossOrigin(origins = "*")
 @AllArgsConstructor
-public class GfashionProductDynamodbResource {
+public class GfashionSkuDynamodbResource {
 
-    private GfProductRepository productRepository;
+    private GfSkuRepository skuRepository;
 
     @DDBLog(operationType = "custom_operation_type", operationEvent = "custom_operation_event")
-    @PostMapping(value = "/dynamodb/products", produces = "application/json;charset=utf-8")
-    public ResponseEntity<GfProductEntity> createProduct(@RequestBody GfProductEntity product) {
+    @PostMapping(value = "/dynamodb/skus", produces = "application/json;charset=utf-8")
+    public ResponseEntity<GfSkuEntity> createSku(@RequestBody GfSkuEntity sku) {
         try {
-            GfProductEntity response = productRepository.createGfProductEntity(product);
+            GfSkuEntity response = skuRepository.createGfSkuEntity(sku);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
@@ -33,10 +33,10 @@ public class GfashionProductDynamodbResource {
         }
     }
 
-    @GetMapping(value = "/dynamodb/products/{productId}", produces = "application/json;charset=utf-8")
-    public ResponseEntity<GfProductEntity> getProduct(@PathVariable String productId) {
+    @GetMapping(value = "/dynamodb/skus/{skuId}", produces = "application/json;charset=utf-8")
+    public ResponseEntity<GfSkuEntity> getSku(@PathVariable String skuId) {
         try {
-            GfProductEntity response = productRepository.readGfProductEntityById(productId);
+            GfSkuEntity response = skuRepository.readGfSkuEntityById(skuId);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
@@ -45,13 +45,13 @@ public class GfashionProductDynamodbResource {
         }
     }
 
-    @PutMapping(value = "/dynamodb/products", produces = "application/json;charset=utf-8")
-    public ResponseEntity<GfProductEntity> updateProduct(@RequestBody GfProductEntity product) {
+    @PutMapping(value = "/dynamodb/skus", produces = "application/json;charset=utf-8")
+    public ResponseEntity<GfSkuEntity> updateSku(@RequestBody GfSkuEntity sku) {
         try {
-            if (productRepository.readGfProductEntityById(product.getId()) == null) {
+            if (skuRepository.readGfSkuEntityById(sku.getId()) == null) {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
             }
-            GfProductEntity response = productRepository.updateGfProductEntity(product);
+            GfSkuEntity response = skuRepository.updateGfSkuEntity(sku);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
@@ -60,13 +60,13 @@ public class GfashionProductDynamodbResource {
         }
     }
 
-    @DeleteMapping(value = "/dynamodb/products/{productId}", produces = "application/json;charset=utf-8")
-    public ResponseEntity<GfProductEntity> deleteProduct(@PathVariable String productId) {
+    @DeleteMapping(value = "/dynamodb/skus/{skuId}", produces = "application/json;charset=utf-8")
+    public ResponseEntity<GfSkuEntity> deleteSku(@PathVariable String skuId) {
         try {
-            if (productRepository.readGfProductEntityById(productId) == null) {
+            if (skuRepository.readGfSkuEntityById(skuId) == null) {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
             }
-            productRepository.deleteGfProductEntity(productId);
+            skuRepository.deleteGfSkuEntity(skuId);
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);

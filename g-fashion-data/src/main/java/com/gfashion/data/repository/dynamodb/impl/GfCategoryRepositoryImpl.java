@@ -4,48 +4,48 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.TransactionLoadRequest;
 import com.amazonaws.services.dynamodbv2.datamodeling.TransactionWriteRequest;
-import com.gfashion.data.GfOrderEntity;
-import com.gfashion.data.repository.dynamodb.GfOrderRepository;
+import com.gfashion.data.GfCategoryEntity;
+import com.gfashion.data.repository.dynamodb.GfCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GfOrderRepositoryImpl implements GfOrderRepository {
+public class GfCategoryRepositoryImpl implements GfCategoryRepository {
 
     @Autowired
     public DynamoDBMapper dynamoDBMapper;
 
     @Override
-    public GfOrderEntity addGfOrderEntity(GfOrderEntity order) {
+    public GfCategoryEntity createGfCategoryEntity(GfCategoryEntity category) {
         TransactionWriteRequest transactionWriteRequest = new TransactionWriteRequest();
-        transactionWriteRequest.addPut(order);
+        transactionWriteRequest.addPut(category);
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withSaveBehavior(DynamoDBMapperConfig.SaveBehavior.CLOBBER)
                 .withConsistentReads(DynamoDBMapperConfig.ConsistentReads.CONSISTENT)
                 .build();
         dynamoDBMapper.transactionWrite(transactionWriteRequest, config);
-        return order;
+        return category;
     }
 
     @Override
-    public GfOrderEntity readGfOrderEntityById(String orderId) {
+    public GfCategoryEntity readGfCategoryEntityById(String categoryId) {
         TransactionLoadRequest request = new TransactionLoadRequest();
-        GfOrderEntity entity = new GfOrderEntity();
-        entity.setId(orderId);
+        GfCategoryEntity entity = new GfCategoryEntity();
+        entity.setId(categoryId);
         request.addLoad(entity);
-        return (GfOrderEntity)dynamoDBMapper.transactionLoad(request).get(0);
+        return (GfCategoryEntity)dynamoDBMapper.transactionLoad(request).get(0);
     }
 
     @Override
-    public GfOrderEntity updateGfOrderEntity(GfOrderEntity order) {
+    public GfCategoryEntity updateGfCategoryEntity(GfCategoryEntity category) {
         TransactionWriteRequest transactionWriteRequest = new TransactionWriteRequest();
-        transactionWriteRequest.addPut(order);
+        transactionWriteRequest.addPut(category);
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withSaveBehavior(DynamoDBMapperConfig.SaveBehavior.UPDATE)
                 .withConsistentReads(DynamoDBMapperConfig.ConsistentReads.CONSISTENT)
                 .build();
         dynamoDBMapper.transactionWrite(transactionWriteRequest, config);
-        return order;
+        return category;
     }
 
     @Override
@@ -53,14 +53,14 @@ public class GfOrderRepositoryImpl implements GfOrderRepository {
      * updated by Candy
      * https://docs.aws.amazon.com/zh_cn/amazondynamodb/latest/developerguide/DynamoDBMapper.CRUDExample1.html
      */
-    public void deleteGfOrderEntity (String orderId) {
+    public void deleteGfCategoryEntity (String categoryId) {
 //        Map<String, ExpectedAttributeValue> expectedAttributeValueMap = new HashMap<>();
-//        expectedAttributeValueMap.put(PRODUCT_KEY, new ExpectedAttributeValue(new AttributeValue().withS(orderId)));
+//        expectedAttributeValueMap.put(PRODUCT_KEY, new ExpectedAttributeValue(new AttributeValue().withS(categoryId)));
 //        DynamoDBDeleteExpression deleteExpression = new DynamoDBDeleteExpression().withExpected(expectedAttributeValueMap);
-//        GfOrderEntity order = GfOrderEntity.builder()
-//                .id(orderId)
+//        GfCategoryEntity category = GfCategoryEntity.builder()
+//                .id(categoryId)
 //                .build();
-        GfOrderEntity order = dynamoDBMapper.load(GfOrderEntity.class, orderId);
-        dynamoDBMapper.delete(order);
+        GfCategoryEntity category = dynamoDBMapper.load(GfCategoryEntity.class, categoryId);
+        dynamoDBMapper.delete(category);
     }
 }

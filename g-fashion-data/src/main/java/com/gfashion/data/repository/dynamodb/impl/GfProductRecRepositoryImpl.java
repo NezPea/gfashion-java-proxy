@@ -4,48 +4,48 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.TransactionLoadRequest;
 import com.amazonaws.services.dynamodbv2.datamodeling.TransactionWriteRequest;
-import com.gfashion.data.GfProductEntity;
-import com.gfashion.data.repository.dynamodb.ProductRepository;
+import com.gfashion.data.GfProductRecEntity;
+import com.gfashion.data.repository.dynamodb.GfProductRecRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProductRepositoryImpl implements ProductRepository {
+public class GfProductRecRepositoryImpl implements GfProductRecRepository {
 
     @Autowired
     public DynamoDBMapper dynamoDBMapper;
 
     @Override
-    public GfProductEntity createGfProductEntity(GfProductEntity product) {
+    public GfProductRecEntity createGfProductRecEntity(GfProductRecEntity productRec) {
         TransactionWriteRequest transactionWriteRequest = new TransactionWriteRequest();
-        transactionWriteRequest.addPut(product);
+        transactionWriteRequest.addPut(productRec);
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withSaveBehavior(DynamoDBMapperConfig.SaveBehavior.CLOBBER)
                 .withConsistentReads(DynamoDBMapperConfig.ConsistentReads.CONSISTENT)
                 .build();
         dynamoDBMapper.transactionWrite(transactionWriteRequest, config);
-        return product;
+        return productRec;
     }
 
     @Override
-    public GfProductEntity readGfProductEntityById(String productId) {
+    public GfProductRecEntity readGfProductRecEntityById(String productRecId) {
         TransactionLoadRequest request = new TransactionLoadRequest();
-        GfProductEntity entity = new GfProductEntity();
-        entity.setId(productId);
+        GfProductRecEntity entity = new GfProductRecEntity();
+        entity.setId(productRecId);
         request.addLoad(entity);
-        return (GfProductEntity)dynamoDBMapper.transactionLoad(request).get(0);
+        return (GfProductRecEntity)dynamoDBMapper.transactionLoad(request).get(0);
     }
 
     @Override
-    public GfProductEntity updateGfProductEntity(GfProductEntity product) {
+    public GfProductRecEntity updateGfProductRecEntity(GfProductRecEntity productRec) {
         TransactionWriteRequest transactionWriteRequest = new TransactionWriteRequest();
-        transactionWriteRequest.addPut(product);
+        transactionWriteRequest.addPut(productRec);
         DynamoDBMapperConfig config = DynamoDBMapperConfig.builder()
                 .withSaveBehavior(DynamoDBMapperConfig.SaveBehavior.UPDATE)
                 .withConsistentReads(DynamoDBMapperConfig.ConsistentReads.CONSISTENT)
                 .build();
         dynamoDBMapper.transactionWrite(transactionWriteRequest, config);
-        return product;
+        return productRec;
     }
 
     @Override
@@ -53,14 +53,14 @@ public class ProductRepositoryImpl implements ProductRepository {
      * updated by Candy
      * https://docs.aws.amazon.com/zh_cn/amazondynamodb/latest/developerguide/DynamoDBMapper.CRUDExample1.html
      */
-    public void deleteGfProductEntity (String productId) {
+    public void deleteGfProductRecEntity (String productRecId) {
 //        Map<String, ExpectedAttributeValue> expectedAttributeValueMap = new HashMap<>();
 //        expectedAttributeValueMap.put(PRODUCT_KEY, new ExpectedAttributeValue(new AttributeValue().withS(productId)));
 //        DynamoDBDeleteExpression deleteExpression = new DynamoDBDeleteExpression().withExpected(expectedAttributeValueMap);
-//        GfProductEntity product = GfProductEntity.builder()
+//        GfProductRecEntity product = GfProductRecEntity.builder()
 //                .id(productId)
 //                .build();
-        GfProductEntity product = dynamoDBMapper.load(GfProductEntity.class, productId);
+        GfProductRecEntity product = dynamoDBMapper.load(GfProductRecEntity.class, productRecId);
         dynamoDBMapper.delete(product);
     }
 }
