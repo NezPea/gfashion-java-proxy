@@ -60,7 +60,6 @@ public class RestClient {
     public HttpHeaders getHeaders(MultiValueMap<String, String> customerHeaders) {
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
 
         if (customerHeaders != null) {
             headers.addAll(customerHeaders);
@@ -68,6 +67,11 @@ public class RestClient {
             String adminToken = getAdminToken();
             headers.setBearerAuth(adminToken);
         }
+
+        if (headers.getContentType() == null) {
+            headers.setContentType(MediaType.APPLICATION_JSON);
+        }
+
         return headers;
     }
 
