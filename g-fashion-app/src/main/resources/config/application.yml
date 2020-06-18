@@ -60,9 +60,7 @@ magento:
     originKey: adyen/originKey
     information: carts/mine/payment-information
     paymentStatus: adyen/orders/%s/payment-status
-    verificationFingerprint: adyen/threeDS2Process
-    designersParentId: 46
-    brandsParentId: 50
+    verificationFingerprint: adyen/threeDS2Process 
   username: admin
   password: magentorocks1
 
@@ -161,8 +159,6 @@ magento:
     information: carts/mine/payment-information
     paymentStatus: adyen/orders/%s/payment-status
     verificationFingerprint: adyen/threeDS2Process
-    designersParentId: 46
-    brandsParentId: 50
 
 logging:
   level:
