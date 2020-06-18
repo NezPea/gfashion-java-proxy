@@ -100,7 +100,7 @@ public class GfMessagingIT {
 
         // try receive again.
         msgs = _msgService.getMessages(receiver, (long) 1, "zh_CN", 10);
-        assertFalse(msgs.size() > 0);
+        assertFalse(null == msgs);
     }
 
     @Test
