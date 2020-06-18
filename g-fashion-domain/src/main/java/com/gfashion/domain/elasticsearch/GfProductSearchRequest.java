@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class GfProductSearchRequest {
-    private String language;
+    private String language = "en";
     private String keyword;
     private String gender;
     private Integer sale = 0;

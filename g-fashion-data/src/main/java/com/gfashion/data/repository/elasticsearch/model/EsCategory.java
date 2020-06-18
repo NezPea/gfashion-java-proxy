@@ -8,6 +8,7 @@ import lombok.Data;
 public class EsCategory {
     private Integer id;
     private String name;
+    private String brief;
     private Integer parentId;
     private Integer weight;
 }

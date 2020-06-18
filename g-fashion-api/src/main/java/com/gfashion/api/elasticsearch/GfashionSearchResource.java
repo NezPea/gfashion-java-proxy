@@ -1,5 +1,6 @@
 package com.gfashion.api.elasticsearch;
 
+import com.gfashion.data.repository.elasticsearch.model.EsDesigner;
 import com.gfashion.data.repository.elasticsearch.service.SearchService;
 import com.gfashion.domain.elasticsearch.GfDesignerSuggestionRequest;
 import com.gfashion.domain.elasticsearch.GfDesignerSuggestionResponse;
@@ -10,8 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/gfashion/v1")
@@ -33,9 +36,14 @@ public class GfashionSearchResource {
     @PostMapping("/designer")
     public GfDesignerSuggestionResponse designer(@RequestBody GfDesignerSuggestionRequest request) {
         LOGGER.info("Designer suggestion request:{}", request);
-        GfDesignerSuggestionResponse response = searchService.designerSuggestion(request.getKeyword());
+        GfDesignerSuggestionResponse response = searchService.designerSuggestion(request);
         LOGGER.info("Designer suggestion response:{}", response);
         return response;
+    }
+
+    @GetMapping("/sale")
+    public Collection<EsDesigner> sale() {
+        return searchService.generateDesigners();
     }
 
     @GetMapping("/mock_product")

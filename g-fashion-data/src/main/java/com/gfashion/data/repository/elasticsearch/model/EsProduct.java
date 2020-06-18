@@ -31,10 +31,10 @@ public class EsProduct {
     private String brandId;
     private String vendorId;
     @Field(type = FieldType.Text, fielddata = true)
-    private Integer designerId;
+    private Long designerId;
     private Integer[] categories;
     private Integer category;
-    private String gender;
+    private Integer majorCategory;
     private Integer sale;
     private String size;
 }

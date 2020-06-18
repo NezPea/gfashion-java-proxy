@@ -8,4 +8,5 @@ import javax.validation.constraints.NotBlank;
 public class GfDesignerSuggestionRequest {
     @NotBlank
     private String keyword;
+    private String language = "en";
 }

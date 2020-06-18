@@ -13,7 +13,7 @@ public class GfProduct {
     private String photoUrl;
     private String brandId;
     private String vendorId;
-    private String designerId;
+    private Long designerId;
     private String[] categories;
     private String category;
     private String gender;

@@ -15,6 +15,7 @@ import java.util.Set;
 public class GfCategory {
     private Integer id;
     private String name;
+    private String brief;
     private Integer parentId;
     private Integer weight;
     private Set<GfCategory> children;

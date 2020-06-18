@@ -119,9 +119,9 @@ public class GfSearchIT {
                     .brief("Slim-fit plain-woven stretch wool trousers in black. Low-rise. Five-pocket styling. Belt loops at waistband. Central creases at front and back. Zip-fly. Partially lined.")
                     .name("Black Wool Herris Trousers")
                     .categories(new Integer[]{100, 1001})
-                    .gender("F")
+                    .majorCategory(1)
                     .sale(1)
-                    .designerId(1003239)
+                    .designerId(1003239L)
                     .size("XXL")
                     .language("en")
                     .build();
@@ -134,9 +134,9 @@ public class GfSearchIT {
                     .brief("Relaxed-fit technical twill cargo pants in black. Mid-rise. Four-pocket styling. Belt loops at partially elasticized waistband. Darts at front, back, and legs. Zippered pocket at outseams. Elasticized cuffs. Zip-fly. Tonal hardware.")
                     .name("Black Dimensional Out Pocket Cargo Pants")
                     .categories(new Integer[]{101, 1011})
-                    .gender("F")
+                    .majorCategory(2)
                     .sale(0)
-                    .designerId(92)
+                    .designerId(92L)
                     .size("36")
                     .language("cn")
                     .build();
@@ -153,9 +153,9 @@ public class GfSearchIT {
     public void mockDesigner() {
         // Catch exception because there is no permission for refreshing
         try {
-            EsDesigner designer = EsDesigner.builder().id("100").name("李世民").suggest(new Completion(new String[]{"李世明"})).build();
-            EsDesigner designer1 = EsDesigner.builder().id("101").name("Nirvana").suggest(new Completion(new String[]{"Nirvana"})).build();
-            EsDesigner designer2 = EsDesigner.builder().id("102").name("Nevermind Never").suggest(new Completion(new String[]{"Nevermind Never"})).build();
+            EsDesigner designer = EsDesigner.builder().id(100L).name("李世民").suggest(new Completion(new String[]{"李世明"})).build();
+            EsDesigner designer1 = EsDesigner.builder().id(101L).name("Nirvana").suggest(new Completion(new String[]{"Nirvana"})).build();
+            EsDesigner designer2 = EsDesigner.builder().id(102L).name("Nevermind Never").suggest(new Completion(new String[]{"Nevermind Never"})).build();
             List<EsDesigner> designers = new ArrayList<>();
             designers.add(designer);
             designers.add(designer1);

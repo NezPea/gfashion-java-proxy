@@ -12,6 +12,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GfDesigner {
-    private Integer id;
+    private Long id;
+    private Long designerId;
     private String name;
+    private String brief;
+    private Integer majorCategoryId;
+    private String majorCategoryName;
+    private Boolean sale;
 }

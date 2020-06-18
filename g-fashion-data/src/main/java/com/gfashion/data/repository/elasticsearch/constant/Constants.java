@@ -7,8 +7,9 @@ public interface Constants {
 
     String GROUP_DESIGNER = "designer_group";
     String GROUP_CATEGORY = "category_group";
+    String GROUP_TOP_CATEGORY = "top_category_group";
+    String GROUP_SALE = "sale_group";
 
     String SUGGEST_FIELD = "suggest";
     String SUGGEST_NAME = "designer_suggest";
-
 }

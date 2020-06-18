@@ -20,13 +20,17 @@ import java.util.List;
 @AllArgsConstructor
 @Document(indexName = Constants.INDEX_DESIGNER, type = Constants.TYPE)
 public class EsDesigner {
-    @Id
-    private String id;
-    private List<String> cooperatingBrands;
+    @Id @Field(type = FieldType.Long)
+    private Long id;
+    private Long designerId;
     private String name;
+    private String brief;
     private String country;
     private String photoUrl;
     private String language;
+    private Integer majorCategoryId;
+    private Boolean sale;
+    private Long productCount;
 
     @CompletionField
     private Completion suggest;
