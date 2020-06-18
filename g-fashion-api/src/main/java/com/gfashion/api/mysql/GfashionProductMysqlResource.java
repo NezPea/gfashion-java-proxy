@@ -5,7 +5,6 @@ import com.amazonaws.AmazonServiceException;
 import com.gfashion.api.log.annotation.DDBLog;
 import com.gfashion.data.repository.mysql.GfProductMySqlEntity;
 import com.gfashion.data.repository.mysql.GfProductRepository;
-import com.gfashion.restclient.magento.exception.ProductUnknowException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
