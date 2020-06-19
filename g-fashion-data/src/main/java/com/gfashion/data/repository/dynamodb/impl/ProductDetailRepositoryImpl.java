@@ -118,7 +118,7 @@ public class ProductDetailRepositoryImpl implements GfProductDetailRepository {
     public ProductDetail convertDynamodbProductToDetailProduct(Object entity,String locale) {
         if (locale == null || locale.equalsIgnoreCase("en")) {
             return this._mapper.convertDynamodbProductToDetailProductEn((GfProductEntity) entity);
-        }else if (locale.equalsIgnoreCase("cn")) {
+        }else if (locale.equalsIgnoreCase("zh")) {
             return this._mapper.convertDynamodbProductToDetailProductZh((GfProductEntity) entity);
         }
         return null;
