@@ -63,12 +63,12 @@ public class ProductDetail {
 
     private Integer categoryId;
 
-    private Integer[] categories;
+    private List<String> categories;
     //大类
-    private String topCategoryId;
+    private Integer topCategoryId;
 
     //促销
-    private Integer sale;
+    private boolean sale;
 
     private Integer purchaseNumber;
 
