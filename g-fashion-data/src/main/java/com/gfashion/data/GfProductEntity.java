@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -16,29 +17,73 @@ import java.util.List;
 @AllArgsConstructor
 @DynamoDBTable(tableName = "gfProduct")
 public class GfProductEntity {
-    //主键
+    //主键产品id,也可叫做spuID,或者父SkuId，这里1个productId对应多个skuID
     @DynamoDBHashKey(attributeName = "id")
     private String id;
 
-    //产品id,也可叫做spuID,或者父SkuId，这里1个productId对应多个skuID
-    @DynamoDBAttribute(attributeName = "productId")
-    private String productId;
+    //英文名称
+    @DynamoDBAttribute(attributeName = "nameEn")
+    private String nameEn;
+
+    //产品名称
+    @DynamoDBAttribute(attributeName = "nameZh")
+    private String nameZh;
 
     //产品条码
     @DynamoDBAttribute(attributeName = "productCode")
     private String productCode;
 
-    //产品名称
-    @DynamoDBAttribute(attributeName = "productName")
-    private String productName;
+    //原价
+    @DynamoDBAttribute(attributeName = "price")
+    private Integer price;
+
+    //二次折扣价
+    @DynamoDBAttribute(attributeName = "discountPrice")
+    private Integer discountPrice;
+
+    //币种
+    @DynamoDBAttribute(attributeName = "currency")
+    private String currency;
+
+    //是否可以二次打折
+    @DynamoDBAttribute(attributeName = "ifSecondDiscount")
+    private boolean isSecondDiscount;
 
     //语言
-    @DynamoDBAttribute(attributeName = "language")
-    private String language;
+    @DynamoDBAttribute(attributeName = "keyword")
+    private String keyword;
 
-    //三级分类id 此处考虑是否拆分成3个字段，third second first，或者添加一张category表。
-    @DynamoDBAttribute(attributeName = "categoryId")
-    private Integer categoryId;
+    //编辑笔记
+    @DynamoDBAttribute(attributeName = "desEn")
+    private String desEn;
+
+    //编辑笔记
+    @DynamoDBAttribute(attributeName = "desZh")
+    private String desZh;
+
+    //尺码信息
+    @DynamoDBAttribute(attributeName = "specificationEn")
+    private String specificationEn;
+
+    //尺码信息
+    @DynamoDBAttribute(attributeName = "specificationZh")
+    private String specificationZh;
+
+    //细节与养护
+    @DynamoDBAttribute(attributeName = "conservationEn")
+    private String conservationEn;
+
+    //细节与养护
+    @DynamoDBAttribute(attributeName = "conservationZh")
+    private String conservationZh;
+
+    //售后
+    @DynamoDBAttribute(attributeName = "deliveryReturnEn")
+    private String deliveryReturnEn;
+
+    //售后
+    @DynamoDBAttribute(attributeName = "deliveryReturnZh")
+    private String deliveryReturnZh;
 
     //设计师id
     @DynamoDBAttribute(attributeName = "designerId")
@@ -52,65 +97,40 @@ public class GfProductEntity {
     @DynamoDBAttribute(attributeName = "designerLink")
     private String designerLink;
 
+
+    @DynamoDBAttribute(attributeName = "photoUrl")
+    private List<String> photoUrl;
+
+
+    @DynamoDBAttribute(attributeName = "smallPic")
+    private String smallPic;
+
+    @DynamoDBAttribute(attributeName = "categoryId")
+    private Integer categoryId;
+
+    @DynamoDBAttribute(attributeName = "categories")
+    private Integer[] categories;
+
     //大类
-    @DynamoDBAttribute(attributeName = "mainCategory")
-    private String mainCategory;
+    @DynamoDBAttribute(attributeName = "topCategoryId")
+    private String topCategoryId;
 
-    //币种
-    @DynamoDBAttribute(attributeName = "currency")
-    private String currency;
+    //促销
+    @DynamoDBAttribute(attributeName = "sale")
+    private Integer sale;
 
-    //是否第三方发货
-    @DynamoDBAttribute(attributeName = "isDeliveryByThirdParty")
-    private boolean isDeliveryByThirdParty;
-
-    //原价
-    @DynamoDBAttribute(attributeName = "price")
-    private BigDecimal price;
-
-    //gClub会员价
-    @DynamoDBAttribute(attributeName = "gclubMemberPrice")
-    private BigDecimal gclubMemberPrice;
-
-    //二次折扣价
-    @DynamoDBAttribute(attributeName = "discountPrice")
-    private BigDecimal discountPrice;
-
-    //图片地址
-    @DynamoDBAttribute(attributeName = "images")
-    private List<String> images;
-
-    //限购数量
     @DynamoDBAttribute(attributeName = "purchaseNumber")
     private Integer purchaseNumber;
 
     //限购数量 是否可见
-    @DynamoDBAttribute(attributeName = "isPurchaseNumberVisible")
-    private boolean isPurchaseNumberVisible;
+    @DynamoDBAttribute(attributeName = "showLimit")
+    private boolean showLimit;
 
-    //编辑笔记
-    @DynamoDBAttribute(attributeName = "editNotes")
-    private String editNotes;
+    //大类
+    @DynamoDBAttribute(attributeName = "sku")
+    private Map<String,GfSkuEntity> sku;
 
-    //细节与养护
-    @DynamoDBAttribute(attributeName = "conservation")
-    private String conservation;
+    @DynamoDBAttribute(attributeName = "sizeList")
+    private List<String> sizeList;
 
-    //尺码信息
-    @DynamoDBAttribute(attributeName = "specification")
-    private String specification;
-
-    //购买须知
-    @DynamoDBAttribute(attributeName = "postSale")
-    private String postSale;
-
-    //是否可以二次打折
-    @DynamoDBAttribute(attributeName = "isDiscount")
-    private boolean isDiscount;
-
-    @DynamoDBAttribute(attributeName = "isFeatured")
-    private String photoUrl;
-
-    @DynamoDBAttribute(attributeName = "isFeatured")
-    private Boolean isFeatured;
 }

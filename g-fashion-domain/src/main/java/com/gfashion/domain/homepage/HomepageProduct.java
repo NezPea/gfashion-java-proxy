@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class HomepageProduct {
     private String id;
-    private String productName;
+    private String name;
     private String photoUrl;
     private Boolean isFeatured;
 }

@@ -24,7 +24,7 @@ public class GfashionProductDetailDynamodbResource {
     @GetMapping(value = "/detail/products", produces = "application/json;charset=utf-8")
     public ResponseEntity<ProductDetail> getProductDetail(@RequestParam(required = false) String productId, @RequestParam(required = false) String locale) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(gfProductDetailRepository.getDefaultGfProductDetailBatchQuery(productId,locale));
+            return ResponseEntity.status(HttpStatus.OK).body(gfProductDetailRepository.getDefaultProductDetailBatchQuery(productId,locale));
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
         } catch (AmazonClientException e) {

@@ -24,16 +24,29 @@ public interface GfDynamodbConverter {
     HomepageDesigner convertDynamodbDesignerToHomeDesigner(GfDesignerEntity gfDesignerEntity);
 
     @Named("getCooperatingBrandsFromAttribute")
-    public static List<String> getCooperatingBrandsFromAttribute(String cooperatingBrands){
+    public static List<String> getCooperatingBrandsFromAttribute(String cooperatingBrands) {
         Gson gson = new Gson();
         String[] brands = gson.fromJson(cooperatingBrands, String[].class);
         return Arrays.asList(brands);
     }
 
+    @Mapping(source = "nameEn", target = "name")
+    @Mapping(source = "smallPic", target = "photoUrl")
     HomepageProduct convertDynamodbProductToHomeProduct(GfProductEntity gfProductEntity);
 
+    @Mapping(source = "nameEn", target = "name")
+    @Mapping(source = "desEn", target = "des")
+    @Mapping(source = "specificationEn", target = "specification")
+    @Mapping(source = "conservationEn", target = "conservation")
+    @Mapping(source = "deliveryReturnEn", target = "deliveryReturn")
+    ProductDetail convertDynamodbProductToDetailProductEn(GfProductEntity gfProductEntity);
 
-    ProductDetail convertDynamodbProductToDetailProduct(GfProductEntity gfProductEntity);
-    GfProductShort convertDynamodbProductToShortProduct(GfProductEntity gfProductEntity);
-    GfSku convertDynamodbSkuToDetailSku(GfSkuCopyEntity gfSkuEntity);
+    @Mapping(source = "nameZh", target = "name")
+    @Mapping(source = "desZh", target = "des")
+    @Mapping(source = "specificationZh", target = "specification")
+    @Mapping(source = "conservationZh", target = "conservation")
+    @Mapping(source = "deliveryReturnZh", target = "deliveryReturn")
+    ProductDetail convertDynamodbProductToDetailProductZh(GfProductEntity gfProductEntity);
+
+    GfSku convertDynamodbSkuToDetailSku(GfSkuEntity gfSkuEntity);
 }

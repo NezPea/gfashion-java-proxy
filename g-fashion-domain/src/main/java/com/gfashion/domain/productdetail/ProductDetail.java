@@ -16,79 +16,69 @@ import java.util.Map;
 @Builder
 public class ProductDetail {
 
+    //产品id,也可叫做spuID,或者父SkuId，这里1个productId对应多个skuID
     private String id;
 
-    //产品id,也可叫做spuID,或者父SkuId，这里1个productId对应多个skuID
-    private String productId;
+    private String name;
 
     //产品条码
     private String productCode;
 
-    //产品名称
-    private String productName;
+    //原价
+    private Integer price;
 
-    //语言
-    private String language;
+    //二次折扣价
+    private Integer discountPrice;
 
-    //三级分类id 此处考虑是否拆分成3个字段，third second first，或者添加一张category表。
-    private Integer categoryId;
-
-    //设计师id
-    private String designerId;
-
-    //设计师名称
-    private String designerName;
-
-    //设计师链接
-    private String designerLink;
-
-    //大类
-    private String mainCategory;
+    //二次折扣价
+    private Integer gClubMemberPrice;
 
     //币种
     private String currency;
 
-    //是否第三方发货
-    private boolean isDeliveryByThirdParty;
+    //是否可以二次打折
+    private boolean isSecondDiscount;
 
-    //原价
-    private BigDecimal price;
-
-    //gClub会员价
-    private BigDecimal gclubMemberPrice;
-
-    //二次折扣价
-    private BigDecimal discountPrice;
-
-    //图片地址
-    private List<String> images;
-
-    //限购数量
-    private Integer purchaseNumber;
-
-    //限购数量 是否可见
-    private boolean isPurchaseNumberVisible;
+    private String keyword;
 
     //编辑笔记
-    private String editNotes;
-
-    //细节与养护
-    private String conservation;
+    private String des;
 
     //尺码信息
     private String specification;
 
-    //购买须知
-    private String postSale;
+    private String conservation;
 
-    //是否可以二次打折
-    private boolean isDiscount;
+    //售后
+    private String deliveryReturn;
 
-    private String photoUrl;
+    //设计师名称
+    private String designerName;
 
-    private Boolean isFeatured;
-    private List<GfProductShort> brands;
-    private List<GfProductShort> category;
-    private List<GfProductShort> styledWith;
+    private String designerLink;
+
+    private List<String> photoUrl;
+
+    private String smallPic;
+
+    private Integer categoryId;
+
+    private Integer[] categories;
+    //大类
+    private String topCategoryId;
+
+    //促销
+    private Integer sale;
+
+    private Integer purchaseNumber;
+
+    //限购数量 是否可见
+    private boolean showLimit;
+
+    private List<String> sizeList;
+
+    private List<ProductDetail> brands;
+    private List<ProductDetail> category;
+    private List<ProductDetail> styledWith;
     private Map<String,GfSku> sku;
 }

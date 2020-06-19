@@ -8,8 +8,6 @@ public interface GfProductRecRepository {
 
     GfProductRecEntity readGfProductRecEntityById(String GfProductRecEntityId);
 
-    GfProductRecEntity readGfProductRecEntityByProductId(String GfProductEntityId);
-
     GfProductRecEntity updateGfProductRecEntity(GfProductRecEntity GfProductRecEntity);
 
     void deleteGfProductRecEntity(String GfProductRecEntityId);

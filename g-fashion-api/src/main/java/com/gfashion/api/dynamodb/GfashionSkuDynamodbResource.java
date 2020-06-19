@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/gfashion/v1", produces = {MediaType.APPLICATION_JSON_VALUE})
 //@CrossOrigin(origins = "*")
@@ -33,10 +35,10 @@ public class GfashionSkuDynamodbResource {
         }
     }
 
-    @GetMapping(value = "/dynamodb/skus/{skuId}", produces = "application/json;charset=utf-8")
-    public ResponseEntity<GfSkuEntity> getSku(@PathVariable String skuId) {
+    @GetMapping(value = "/dynamodb/skus", produces = "application/json;charset=utf-8")
+    public ResponseEntity<GfSkuEntity> getSku(@RequestParam(required = true) String productId,@RequestParam(required = true)  String skuId) {
         try {
-            GfSkuEntity response = skuRepository.readGfSkuEntityById(skuId);
+            GfSkuEntity response = skuRepository.readGfSkuEntityById(productId,skuId);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
@@ -45,10 +47,35 @@ public class GfashionSkuDynamodbResource {
         }
     }
 
+    @PostMapping(value = "/dynamodb/load/skus", produces = "application/json;charset=utf-8")
+    public ResponseEntity<List<GfSkuEntity>> scanSku(@RequestBody List<GfSkuEntity> skuList) {
+        try {
+            List<GfSkuEntity> response = skuRepository.loadGfSkuEntity(skuList);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (AmazonServiceException e) {
+            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
+        } catch (AmazonClientException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+        }
+    }
+
+    @GetMapping(value = "/dynamodb/scan/skus", produces = "application/json;charset=utf-8")
+    public ResponseEntity<List<GfSkuEntity>> scanSku(@RequestParam(required = true) String color) {
+        try {
+            List<GfSkuEntity> response = skuRepository.scanGfSkuEntityByColor(color);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (AmazonServiceException e) {
+            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
+        } catch (AmazonClientException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+        }
+    }
+
+
     @PutMapping(value = "/dynamodb/skus", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfSkuEntity> updateSku(@RequestBody GfSkuEntity sku) {
         try {
-            if (skuRepository.readGfSkuEntityById(sku.getSkuId()) == null) {
+            if (skuRepository.readGfSkuEntityById(sku.getProductId(),sku.getSkuId()) == null) {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
             }
             GfSkuEntity response = skuRepository.updateGfSkuEntity(sku);
@@ -60,13 +87,13 @@ public class GfashionSkuDynamodbResource {
         }
     }
 
-    @DeleteMapping(value = "/dynamodb/skus/{skuId}", produces = "application/json;charset=utf-8")
-    public ResponseEntity<GfSkuEntity> deleteSku(@PathVariable String skuId) {
+    @DeleteMapping(value = "/dynamodb/skus", produces = "application/json;charset=utf-8")
+    public ResponseEntity<GfSkuEntity> deleteSku(@RequestParam(required = true)  String productId,@RequestParam(required = true)  String skuId) {
         try {
-            if (skuRepository.readGfSkuEntityById(skuId) == null) {
+            if (skuRepository.readGfSkuEntityById(productId,skuId) == null) {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
             }
-            skuRepository.deleteGfSkuEntity(skuId);
+            skuRepository.deleteGfSkuEntity(productId,skuId);
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (AmazonServiceException e) {
             throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);

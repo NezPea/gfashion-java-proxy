@@ -101,8 +101,8 @@ aws:
 
 
 spring.jpa.hibernate.ddl-auto: update
-#spring.datasource.url: jdbc:mysql://database-1.cluster-cakrfwy0qb5b.us-east-1.rds.amazonaws.com:3306/GFashion?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
-spring.datasource.url: jdbc:mysql://127.0.0.1:3336/GFashion?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+spring.datasource.url: jdbc:mysql://database-1.cluster-cakrfwy0qb5b.us-east-1.rds.amazonaws.com:3306/GFashion?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
+#spring.datasource.url: jdbc:mysql://127.0.0.1:3336/GFashion?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
 spring.datasource.username: gadmin
 spring.datasource.password: wMBkmPBPB9N15Nu5fCCa
 
