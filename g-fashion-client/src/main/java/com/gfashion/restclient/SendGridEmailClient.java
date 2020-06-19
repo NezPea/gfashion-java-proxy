@@ -60,7 +60,7 @@ public class SendGridEmailClient {
             throw new CustomerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
 
-        return code;
+        return "We send verification code to " + to;
     }
 
     private Response sendEmail(String from, String to, String subject, Content content) throws IOException {

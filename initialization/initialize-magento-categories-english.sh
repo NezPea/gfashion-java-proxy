@@ -23,7 +23,13 @@ PostCategory () {
       "parent_id": "'$1'",
       "name": "'"$2"'",
       "is_active": true,
-      "include_in_menu": true
+      "include_in_menu": true,
+      "custom_attributes": [
+        {
+            "attribute_code": "description",
+            "value": "'$3'"
+        }
+      ]
     }
   }' | jq -r .id)
 }
