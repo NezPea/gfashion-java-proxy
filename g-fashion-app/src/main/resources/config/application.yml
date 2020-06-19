@@ -187,10 +187,12 @@ aws:
     productsCn: 5b41cc15-9556-4bac-b67a-afb5ff9a4092,df07c02a-774c-4f28-9d30-733fbd4eb84a,3653d7fa-f572-4a48-a9d2-1b2347c90a01,89cdefa1-3548-414e-95d3-dec3a662bd93,2ffdb02c-17e5-4a70-9a7b-1070e59e0929,6b864bcc-ab65-4ec0-a741-6468cb3fd628
 
 spring.jpa.hibernate.ddl-auto: update
+
 spring.datasource.url: jdbc:mysql://database-1.cluster-cakrfwy0qb5b.us-east-1.rds.amazonaws.com:3306/GFashion?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
 #spring.datasource.url: jdbc:mysql://127.0.0.1:3336/GFashion?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
 spring.datasource.username: gadmin
 spring.datasource.password: wMBkmPBPB9N15Nu5fCCa
+
 spring.jpa.properties.hibernate.hbm2ddl.auto: update
 spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
 sendgrid:
