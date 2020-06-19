@@ -58,20 +58,8 @@ PostCategoryWithId () {
   }' | jq -r .id)
 }
 
-
 #Add GFashion Root Level Category
-gf_id=$(PostCategory $root_id "潮流")
+gf_id_en=$(PostCategory $root_id "Test" "description")
+gf_id_cn=$(PostCategoryWithId $storeViewCN $gf_id_en "测试" "描述")
+echo $gf_id_cn
 #echo $gf_id
-
-#Add GFashion First Level Category
-men_id=$(PostCategory $gf_id "男士")
-women_id=$(PostCategory $gf_id "女士")
-others_id=$(PostCategory $gf_id "其他")
-
-# Add Second Level Categories
-men_cloth_id=$(PostCategory $men_id "服装")
-men_accessories_id=$(PostCategory $men_id "配饰")
-women_cloth_id=$(PostCategory $women_id "服装")
-women_accessories_id=$(PostCategory $women_id "配饰")
-others_cloth_id=$(PostCategory $others_id "服装")
-others_accessories_id=$(PostCategory $others_id "配饰")
