@@ -2,19 +2,15 @@ package com.gfashion.data.repository.dynamodb.impl;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
-import com.amazonaws.services.dynamodbv2.model.Condition;
 import com.gfashion.data.*;
 import com.gfashion.data.repository.dynamodb.*;
 import com.gfashion.data.repository.dynamodb.typeconverter.GfDynamodbConverter;
-import com.gfashion.domain.productdetail.GfProductShort;
 import com.gfashion.domain.productdetail.GfSku;
 import com.gfashion.domain.productdetail.ProductDetail;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,7 +118,7 @@ public class ProductDetailRepositoryImpl implements GfProductDetailRepository {
     public ProductDetail convertDynamodbProductToDetailProduct(Object entity,String locale) {
         if (locale == null || locale.equalsIgnoreCase("en")) {
             return this._mapper.convertDynamodbProductToDetailProductEn((GfProductEntity) entity);
-        }else if (locale.equalsIgnoreCase("cn")) {
+        }else if (locale.equalsIgnoreCase("zh")) {
             return this._mapper.convertDynamodbProductToDetailProductZh((GfProductEntity) entity);
         }
         return null;

@@ -87,7 +87,7 @@ public class GfProductEntity {
 
     //设计师id
     @DynamoDBAttribute(attributeName = "designerId")
-    private String designerId;
+    private Integer designerId;
 
     //设计师名称
     @DynamoDBAttribute(attributeName = "designerName")
@@ -109,15 +109,15 @@ public class GfProductEntity {
     private Integer categoryId;
 
     @DynamoDBAttribute(attributeName = "categories")
-    private Integer[] categories;
+    private List<String> categories;
 
     //大类
     @DynamoDBAttribute(attributeName = "topCategoryId")
-    private String topCategoryId;
+    private Integer topCategoryId;
 
     //促销
     @DynamoDBAttribute(attributeName = "sale")
-    private Integer sale;
+    private boolean sale;
 
     @DynamoDBAttribute(attributeName = "purchaseNumber")
     private Integer purchaseNumber;
@@ -127,6 +127,7 @@ public class GfProductEntity {
     private boolean showLimit;
 
     //大类
+
     @DynamoDBAttribute(attributeName = "sku")
     private Map<String,GfSkuEntity> sku;
 

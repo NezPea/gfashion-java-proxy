@@ -4,14 +4,12 @@ import com.gfashion.data.*;
 import com.gfashion.domain.homepage.HomepageBrand;
 import com.gfashion.domain.homepage.HomepageDesigner;
 import com.gfashion.domain.homepage.HomepageProduct;
-import com.gfashion.domain.productdetail.GfProductShort;
 import com.gfashion.domain.productdetail.GfSku;
 import com.gfashion.domain.productdetail.ProductDetail;
 import com.google.gson.Gson;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.mapstruct.ReportingPolicy;
 
 import java.util.Arrays;
 import java.util.List;
