@@ -4,7 +4,7 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.gfashion.api.log.annotation.DDBLog;
 import com.gfashion.data.GfProductEntity;
-import com.gfashion.data.repository.dynamodb.ProductRepository;
+import com.gfashion.data.repository.dynamodb.GfProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 @AllArgsConstructor
 public class GfashionProductDynamodbResource {
 
-    private ProductRepository productRepository;
+    private GfProductRepository productRepository;
 
     @DDBLog(operationType = "custom_operation_type", operationEvent = "custom_operation_event")
     @PostMapping(value = "/dynamodb/products", produces = "application/json;charset=utf-8")

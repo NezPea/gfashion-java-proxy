@@ -17,9 +17,9 @@ public class MagentoShipOrder implements Serializable {
     @NotEmpty
     private List<MagentoShipmentItemCreation> items;
 
-    private boolean notify;
+    private Boolean notify;
 
-    private boolean appendComment;
+    private Boolean appendComment;
 
     private MagentoShipmentCommentCreation comment;
 

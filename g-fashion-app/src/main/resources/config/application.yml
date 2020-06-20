@@ -23,6 +23,7 @@ magento:
   url:
     base: https://magento-dev6.devenv.vogfw.xyz/index.php/rest/V1/
     adminToken: integration/admin/token
+    countries: directory/countries
     customerToken: integration/customer/token
     customers: customers/
     customerMe: customers/me
@@ -34,6 +35,7 @@ magento:
     storeConfigs: store/storeConfigs/
     products: products/
     shipment: shipment/
+    orders: orders/
     order: order/
     stockItems: stockItems/
     categories: categories/
@@ -47,8 +49,8 @@ magento:
       field: searchCriteria[filterGroups][%d][filters][%d][field]=
       value: searchCriteria[filterGroups][%d][filters][%d][value]=
       conditionType: searchCriteria[filterGroups][%d][filters][%d][condition_type]=
-      englishRootCategory: 65
-      chineseRootCategory: 65
+      englishRootCategory: 513
+      chineseRootCategory: 513
       rootCategoryLevel: 1
       supportLanguages: en,cn
       recommendedDesignersParentId: 62 # the category id for designers
@@ -61,6 +63,15 @@ magento:
 test:
   email: customer@test.com
   password: P@ssw0rd
+  GfashionShipmentIT:
+    order_id: 50
+    order_item_id: 101
+    shipment_id: 39
+  GfashionOrderIT:
+    order_id: 67
+    order_item_id: 153
+    customer_id: 1
+
 
 logging:
   level:
@@ -88,6 +99,7 @@ aws:
     designersCn: fd51b2f6-9db4-4e4a-9c34-13b682679d5e,122b9de6-30d0-4091-a2a4-459c992204f8,77ee191a-6e34-45c2-83e1-bbcd8902b898,2269ae53-e187-42fa-bf03-14bff6295636,54dd0b9f-463e-4486-98cf-afd087bd299a,cf9529a4-9ea3-429c-8b11-f2051fda9c81,23e2b020-f38a-4572-87f4-057a69361c19,28c2f2d3-2df6-43fa-b816-de44edef6c53
     productsCn: 5b41cc15-9556-4bac-b67a-afb5ff9a4092,df07c02a-774c-4f28-9d30-733fbd4eb84a,3653d7fa-f572-4a48-a9d2-1b2347c90a01,89cdefa1-3548-414e-95d3-dec3a662bd93,2ffdb02c-17e5-4a70-9a7b-1070e59e0929,6b864bcc-ab65-4ec0-a741-6468cb3fd628
 
+
 sendgrid:
   api:
     key: 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
@@ -95,7 +107,6 @@ sendgrid:
     project: GFashion
     type: Change Email Address
     senderEmail: support@gfashion2020.tk
-
 ---
 spring:
   profiles: qa
@@ -104,8 +115,9 @@ server:
 
 magento:
   url:
-    base: http://magento2.dev3.gfashion2020.tk/index.php/rest/V1/
+    base: https://magento-dev6.devenv.vogfw.xyz/index.php/rest/V1/
     adminToken: integration/admin/token
+    countries: directory/countries
     customerToken: integration/customer/token
     customers: customers/
     customerMe: customers/me
@@ -117,6 +129,7 @@ magento:
     storeConfigs: store/storeConfigs/
     products: products/
     shipment: shipment/
+    orders: orders/
     order: order/
     stockItems: stockItems/
     categories: categories/
@@ -130,8 +143,8 @@ magento:
       field: searchCriteria[filterGroups][%d][filters][%d][field]=
       value: searchCriteria[filterGroups][%d][filters][%d][value]=
       conditionType: searchCriteria[filterGroups][%d][filters][%d][condition_type]=
-      englishRootCategory: 65
-      chineseRootCategory: 65
+      englishRootCategory: 513
+      chineseRootCategory: 513
       rootCategoryLevel: 1
       supportLanguages: en,cn
       recommendedDesignersParentId: 62 # the category id for designers
@@ -164,6 +177,7 @@ aws:
     brandsCn: 17745895-1149-4b09-b85f-59033e0a67a0,2ef28ac3-9513-44f5-88c0-4053d4156f34,6493453d-fc78-4ef6-bb3f-69628f9ca279,a2382cc0-464f-4bcc-8251-8d7bcf9467e0,dd2e8567-d822-488b-bfd0-3a4b0ed80d4e
     designersCn: 3abe5b1b-a546-4fc2-9944-892dd6dd8701,e9fc8d44-b357-40e0-9205-444ad407923a,c07610ae-80a1-492a-bd6a-e9ac9eda19ce,284f5726-a400-4792-b97c-e5a78f7651c6,02fd1437-db98-48bb-a998-926049da7841,8a7e61d6-adb2-42e7-8fe0-d4f2c4b28088,e85ee700-8c47-4f13-85e3-243df5d716f8,5c39ce6d-3a92-4dd5-b08b-844da9079eab
     productsCn: 5b41cc15-9556-4bac-b67a-afb5ff9a4092,df07c02a-774c-4f28-9d30-733fbd4eb84a,3653d7fa-f572-4a48-a9d2-1b2347c90a01,89cdefa1-3548-414e-95d3-dec3a662bd93,2ffdb02c-17e5-4a70-9a7b-1070e59e0929,6b864bcc-ab65-4ec0-a741-6468cb3fd628
+
 
 sendgrid:
   api:

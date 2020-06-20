@@ -8,7 +8,7 @@ import com.gfashion.restclient.magento.MagentoStore;
 import com.gfashion.restclient.magento.MagentoStoreConfig;
 import com.gfashion.restclient.magento.MagentoStoreGroup;
 import com.gfashion.restclient.magento.MagentoWebsite;
-import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
+import com.gfashion.restclient.magento.mapper.GfMagentoStoreConverter;
 import com.google.gson.Gson;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class MagentoStoreClient {
     @Autowired
     private RestClient _restClient;
 
-    private GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
+    private GfMagentoStoreConverter _mapper = Mappers.getMapper(GfMagentoStoreConverter.class);
 
     public GfStore[] getStore() {
         ResponseEntity<String> responseEntityProduct = this._restClient.exchangeGet(storeViewsUrl, String.class, null);

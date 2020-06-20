@@ -3,7 +3,7 @@ package com.gfashion.restclient;
 import com.gfashion.domain.customer.*;
 import com.gfashion.restclient.magento.customer.MagentoCustomer;
 import com.gfashion.restclient.magento.exception.*;
-import com.gfashion.restclient.magento.mapper.GfMagentoConverter;
+import com.gfashion.restclient.magento.mapper.GfMagentoCustomerConverter;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Component
@@ -32,7 +31,7 @@ public class MagentoCustomerClient {
     @Autowired
     private RestClient _restClient;
 
-    private final GfMagentoConverter _mapper = Mappers.getMapper(GfMagentoConverter.class);
+    private final GfMagentoCustomerConverter _mapper = Mappers.getMapper(GfMagentoCustomerConverter.class);
 
     public String customerLogin(GfCustomerLogin customerLogin) throws CustomerException {
         try {
@@ -177,18 +176,10 @@ public class MagentoCustomerClient {
             }
             return res;
         } catch (HttpStatusCodeException e) {
-            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                throw new CustomerException(e.getStatusCode(), e.getMessage());
-            }
-
-            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                throw new CustomerException(e.getStatusCode(), e.getMessage());
-            }
-
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new CustomerException(e.getStatusCode(), e.getMessage());
-            }
-
+            throw new CustomerException(e.getStatusCode(), e.getMessage());
+        } catch (CustomerException e) {
+            throw e;
+        } catch (Exception e) {
             throw new CustomerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
@@ -204,18 +195,8 @@ public class MagentoCustomerClient {
                     this._restClient.exchangePut(customerMeUrl, currentCustomerToMagento, MagentoCustomer.class, tokenHeader).getBody()
             );
         } catch (HttpStatusCodeException e) {
-            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                throw new CustomerException(e.getStatusCode(), e.getMessage());
-            }
-
-            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                throw new CustomerException(e.getStatusCode(), e.getMessage());
-            }
-
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new CustomerException(e.getStatusCode(), e.getMessage());
-            }
-
+            throw new CustomerException(e.getStatusCode(), e.getMessage());
+        } catch (Exception e) {
             throw new CustomerException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
