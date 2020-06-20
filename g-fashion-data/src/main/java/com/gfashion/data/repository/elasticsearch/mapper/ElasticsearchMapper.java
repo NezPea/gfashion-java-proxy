@@ -15,6 +15,5 @@ public interface ElasticsearchMapper {
     ObjectMapper MAPPER = new ObjectMapper();
 
     GfProduct convertProduct(EsProduct product);
-    GfDesigner convertDesigner(EsDesigner designer);
     List<GfProduct> convertProducts(Collection<EsProduct> products);
 }

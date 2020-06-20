@@ -45,6 +45,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
