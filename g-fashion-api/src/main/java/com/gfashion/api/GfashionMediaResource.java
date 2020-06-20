@@ -1,6 +1,5 @@
 package com.gfashion.api;
 
-import com.amazonaws.AmazonClientException;
 import com.gfashion.restclient.AwsS3Client;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +32,6 @@ public class GfashionMediaResource {
         try {
             String fileUrl = awsClient.uploadFile("products/images/", file);
             return new ResponseEntity<>(fileUrl, HttpStatus.OK);
-        } catch (AmazonClientException e) {
-            e.printStackTrace();
-            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
             throw  new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

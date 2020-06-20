@@ -1,6 +1,5 @@
 package com.gfashion.restclient;
 
-import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
@@ -48,7 +47,7 @@ public class AwsS3Client {
                 .build();
     }
 
-    public String uploadFile(String imagePath, String imageName, MultipartFile multipartFile) throws AmazonClientException, IOException {
+    public String uploadFile(String imagePath, String imageName, MultipartFile multipartFile) throws IOException {
         String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
         String originalFilename = imageName + "." + extension;
         Path path = Paths.get(saveLocation + originalFilename);
@@ -68,12 +67,12 @@ public class AwsS3Client {
         return originalFilename;
     }
 
-    public String uploadFile(String imagePath, MultipartFile multipartFile) throws AmazonClientException, IOException {
+    public String uploadFile(String imagePath, MultipartFile multipartFile) throws IOException {
         String baseName = FilenameUtils.getBaseName(multipartFile.getOriginalFilename());
         return uploadFile(imagePath, baseName, multipartFile);
     }
 
-    public String uploadFile(String imagePath, String imageName, String urlStr) throws AmazonClientException, IOException {
+    public String uploadFile(String imagePath, String imageName, String urlStr) throws IOException {
         URL url = new URL(urlStr);
         String fileName = url.getFile();
         File file = new File(saveLocation, fileName);
@@ -92,7 +91,7 @@ public class AwsS3Client {
         return originalFilename;
     }
 
-    public String uploadFile(String imagePath, String urlStr) throws AmazonClientException, IOException {
+    public String uploadFile(String imagePath, String urlStr) throws IOException {
         String baseName = FilenameUtils.getBaseName(urlStr);
         return uploadFile(imagePath, baseName, urlStr);
     }
