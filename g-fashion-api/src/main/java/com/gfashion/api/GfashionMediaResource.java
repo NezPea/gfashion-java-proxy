@@ -28,12 +28,11 @@ public class GfashionMediaResource {
     private final AwsS3Client awsClient;
 
     @PostMapping("/upload")
-    public ResponseEntity uploadToLocalFileSystem(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
         try {
             String fileUrl = awsClient.uploadFile("products/images/", file);
             return new ResponseEntity<>(fileUrl, HttpStatus.OK);
         } catch (IOException e) {
-            e.printStackTrace();
             throw  new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
