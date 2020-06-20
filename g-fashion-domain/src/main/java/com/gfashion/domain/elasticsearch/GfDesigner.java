@@ -14,9 +14,12 @@ import lombok.NoArgsConstructor;
 public class GfDesigner {
     private Long id;
     private Long designerId;
-    private String name;
-    private String brief;
-    private Integer majorCategoryId;
-    private String majorCategoryName;
+    private String nameEn;
+    private String nameZh;
+    private String briefEn;
+    private String briefZh;
+    private String photoUrl;
+    private Long topCategoryId;
+    private String topCategoryName;
     private Boolean sale;
 }

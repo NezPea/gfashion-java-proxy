@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.elasticsearch.annotations.CompletionField;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -22,14 +23,18 @@ import java.util.List;
 public class EsDesigner {
     @Id @Field(type = FieldType.Long)
     private Long id;
+    @Field(type = FieldType.Long)
     private Long designerId;
-    private String name_en;
-    private String name_zh;
-    private String brief_en;
-    private String brief_zh;
+    private String nameEn;
+    private String nameZh;
+    private String briefEn;
+    private String briefZh;
     private String photoUrl;
-    private Integer topCategoryId;
+    @Transient
+    private Long topCategoryId;
+    @Transient
     private Boolean sale;
+    @Transient
     private Long productCount;
 
     @CompletionField

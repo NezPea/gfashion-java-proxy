@@ -7,8 +7,8 @@ import java.util.List;
 
 @Data
 @Builder
-public class GfDesignerSuggestionResponse {
+public class GfProductRecommendationResponse {
     private boolean success = true;
-    private List<GfDesigner> data;
-    private String message;
+    private List<GfProduct> sameCategoryProducts;
+    private List<GfProduct> differentCategoryProducts;
 }

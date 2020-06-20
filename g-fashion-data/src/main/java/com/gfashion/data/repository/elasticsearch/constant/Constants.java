@@ -12,4 +12,7 @@ public interface Constants {
 
     String SUGGEST_FIELD = "suggest";
     String SUGGEST_NAME = "designer_suggest";
+
+    int ROOT_CATEGORY_LEVEL = 1;
+    int TOP_CATEGORY_LEVEL = 2;
 }

@@ -5,18 +5,16 @@ import lombok.Data;
 @Data
 public class GfProduct {
     private String id;
-    private String name;
-    private Integer price;
-    private String brief;
-    private String sku;
-    private String brandName;
-    private String photoUrl;
-    private String brandId;
-    private String vendorId;
+    private String nameEn;
+    private String nameZh;
+    private String price;
+    private String discountPrice;
+    private String desEn;
+    private String desZh;
+    private String smallPic;
     private Long designerId;
-    private String[] categories;
-    private String category;
-    private String gender;
+    private Long categoryId;
+    private String designerName;
     private Integer sale;
-    private String size;
+    private String[] sizeList;
 }

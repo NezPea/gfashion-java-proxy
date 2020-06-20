@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EsDesignerRepository extends ElasticsearchRepository<EsDesigner, String> {
-    Page<EsDesigner> findById(String id, Pageable pageable);
+    Page<EsDesigner> findByDesignerId(String id, Pageable pageable);
 }

@@ -70,7 +70,7 @@ public class GfSearchIT {
     @Test
     public void searchProductByCategory() throws Exception {
         GfProductSearchRequest request = new GfProductSearchRequest();
-        request.setCategoryId("1001");
+        request.setCategoryId(822L);
 
         given().header("Content-Type", ContentType.JSON)
                 .body(gson.toJson(request))
@@ -112,33 +112,31 @@ public class GfSearchIT {
         // Catch exception because there is no permission for refreshing
         try {
             EsProduct product = EsProduct.builder()
-                    .id("1000")
-                    .brandId("100")
+                    .id("100")
                     .price(10000)
-                    .brandName("channel")
-                    .brief("Slim-fit plain-woven stretch wool trousers in black. Low-rise. Five-pocket styling. Belt loops at waistband. Central creases at front and back. Zip-fly. Partially lined.")
-                    .name("Black Wool Herris Trousers")
-                    .categories(new Integer[]{100, 1001})
-                    .majorCategory(1)
+                    .desEn("Slim-fit plain-woven stretch wool trousers in black. Low-rise. Five-pocket styling. Belt loops at waistband. Central creases at front and back. Zip-fly. Partially lined.")
+                    .nameEn("Black Wool Herris Trousers")
+                    .smallPic("https://img.ssensemedia.com/image/upload/b_white/c_scale,h_820/f_auto,dpr_2.0/201020M205048_1.jpg")
+                    .categories(new Long[]{790L, 794L, 819L, 822L})
+                    .categoryId(822L)
+                    .topCategoryId(790L)
                     .sale(1)
-                    .designerId(1003239L)
-                    .size("XXL")
-                    .language("en")
+                    .designerId(101L)
+                    .sizeList(new String[]{"S", "M", "L", "XL", "XXL"})
                     .build();
 
             EsProduct product1 = EsProduct.builder()
-                    .id("1001")
-                    .brandId("101")
+                    .id("101")
                     .price(15000)
-                    .brandName("adidass")
-                    .brief("Relaxed-fit technical twill cargo pants in black. Mid-rise. Four-pocket styling. Belt loops at partially elasticized waistband. Darts at front, back, and legs. Zippered pocket at outseams. Elasticized cuffs. Zip-fly. Tonal hardware.")
-                    .name("Black Dimensional Out Pocket Cargo Pants")
-                    .categories(new Integer[]{101, 1011})
-                    .majorCategory(2)
+                    .desEn("Relaxed-fit technical twill cargo pants in black. Mid-rise. Four-pocket styling. Belt loops at partially elasticized waistband. Darts at front, back, and legs. Zippered pocket at outseams. Elasticized cuffs. Zip-fly. Tonal hardware.")
+                    .nameEn("Black Dimensional Out Pocket Cargo Pants")
+                    .smallPic("https://img.ssensemedia.com/image/upload/b_white/c_scale,h_820/f_auto,dpr_2.0/201020M213021_1.jpg")
+                    .categories(new Long[]{790L, 794L, 819L, 823L})
+                    .categoryId(823L)
+                    .topCategoryId(790L)
                     .sale(0)
-                    .designerId(92L)
-                    .size("36")
-                    .language("cn")
+                    .designerId(102L)
+                    .sizeList(new String[]{"36", "37", "38"})
                     .build();
 
             List<EsProduct> products = new ArrayList<>();
@@ -153,9 +151,9 @@ public class GfSearchIT {
     public void mockDesigner() {
         // Catch exception because there is no permission for refreshing
         try {
-            EsDesigner designer = EsDesigner.builder().id(100L).name_zh("李世民").suggest(new Completion(new String[]{"李世明"})).build();
-            EsDesigner designer1 = EsDesigner.builder().id(101L).name_en("Nirvana").suggest(new Completion(new String[]{"Nirvana"})).build();
-            EsDesigner designer2 = EsDesigner.builder().id(102L).name_en("Nevermind Never").suggest(new Completion(new String[]{"Nevermind Never"})).build();
+            EsDesigner designer = EsDesigner.builder().id(100L).nameZh("李世民").suggest(new Completion(new String[]{"李世明"})).build();
+            EsDesigner designer1 = EsDesigner.builder().id(101L).nameEn("Nirvana").suggest(new Completion(new String[]{"Nirvana"})).build();
+            EsDesigner designer2 = EsDesigner.builder().id(102L).nameEn("Nevermind Never").suggest(new Completion(new String[]{"Nevermind Never"})).build();
             List<EsDesigner> designers = new ArrayList<>();
             designers.add(designer);
             designers.add(designer1);
