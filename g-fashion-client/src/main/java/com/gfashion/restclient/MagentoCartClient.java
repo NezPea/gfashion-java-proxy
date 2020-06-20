@@ -28,6 +28,8 @@ public class MagentoCartClient {
 
     @Value("${magento.url.carts}")
     private String cartsUrl;
+    @Value("${magento.url.adyen}")
+    private String adyen;
 
     @Autowired
     private RestClient restClient;
@@ -162,7 +164,7 @@ public class MagentoCartClient {
         }
     }
 
-    public GfCartShippingInformation setShippingInformation(String customerToken, GfCartAddressInformation addressInformation) throws CustomerException, CartException {
+    public GfCartShippingInfo setShippingInformation(String customerToken, GfCartAddressInformation addressInformation) throws CustomerException, CartException {
         String cartPaymentMethodsUrl = cartsUrl + "shipping-information/";
         try {
             HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
@@ -171,7 +173,7 @@ public class MagentoCartClient {
             ResponseEntity<String> responseEntity = restClient.postForEntity(cartPaymentMethodsUrl, body, String.class, headers);
 
             MagentoCartShippingInformation cartCheckout = gson.fromJson(responseEntity.getBody(), MagentoCartShippingInformation.class);
-            return mapper.convertMagentoCartShippingInformationToGfCartShippingInformation(cartCheckout);
+            return mapper.convertMagentoCartShippingInfoToGfCartShippingInfo(cartCheckout);
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 throw new CustomerException(e.getStatusCode(), e.getMessage());
@@ -205,13 +207,88 @@ public class MagentoCartClient {
         }
     }
 
-    public String createOrder(String customerToken, GfCartPaymentInformation paymentInformation) throws CustomerException, CartException {
+    public List<GfCartAdyenPaymentMethod> getAdyenPaymentMethods(String customerToken, GfCartAdyenPaymentParam adyenPaymentParam) throws CustomerException, CartException {
+        String cartPaymentMethodsUrl = cartsUrl + "retrieve-adyen-payment-methods/";
+        try {
+            HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
+            ResponseEntity<String> responseEntity = restClient.postForEntity(cartPaymentMethodsUrl, adyenPaymentParam, String.class, headers);
+
+            Type listType = new TypeToken<List<MagentoCartAdyenPaymentMethod>>() {}.getType();
+            List<MagentoCartAdyenPaymentMethod> methods = gson.fromJson(responseEntity.getBody(), listType);
+            if (methods == null) {
+                throw new CartException(HttpStatus.NOT_FOUND, "Response is null");
+            }
+            return methods.stream().map(mapper::convertMagentoCartAdyenPaymentMethodToGfCartAdyenPaymentMethod).collect(Collectors.toList());
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new CustomerException(e.getStatusCode(), e.getMessage());
+            }
+            throw new CartException(e.getStatusCode(), e.getMessage());
+        } catch (Exception e) {
+            throw new CartException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    public String createOrder(String customerToken, GfCartPaymentInfo paymentInfo) throws CustomerException, CartException {
         String cartPaymentMethodsUrl = cartsUrl + "payment-information/";
         try {
             HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
-            MagentoCartPaymentInformation information = mapper.convertGfCartPaymentInformationToMagentoCartPaymentInformation(paymentInformation);
+            MagentoCartPaymentInfo information = mapper.convertGfCartPaymentInfoToMagentoCartPaymentInfo(paymentInfo);
             ResponseEntity<String> responseEntity = restClient.postForEntity(cartPaymentMethodsUrl, information, String.class, headers);
             return responseEntity.getBody();
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new CustomerException(e.getStatusCode(), e.getMessage());
+            }
+            throw new CartException(e.getStatusCode(), e.getMessage());
+        } catch (Exception e) {
+            throw new CartException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    public GfCartAdyenOrder createAdyenOrder(String customerToken, GfCartAdyenPaymentInfo paymentInfo) throws CustomerException, CartException {
+        String url = cartsUrl + "payment-information/";
+        try {
+            HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
+            MagentoCartAdyenPaymentInfo info = mapper.convertGfCartAdyenPaymentInfoToMagentoCartAdyenPaymentInfo(paymentInfo);
+            ResponseEntity<String> responseEntity = restClient.postForEntity(url, info, String.class, headers);
+            String orderId = responseEntity.getBody();
+            GfCartAdyenPaymentStatus paymentStatus = getAdyenOrderPaymentStatus(headers, orderId);
+            return new GfCartAdyenOrder(orderId, paymentStatus);
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new CustomerException(e.getStatusCode(), e.getMessage());
+            }
+            throw new CartException(e.getStatusCode(), e.getMessage());
+        } catch (Exception e) {
+            throw new CartException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    private GfCartAdyenPaymentStatus getAdyenOrderPaymentStatus(HttpHeaders headers, String orderId) throws CustomerException, CartException {
+        String url = adyen + "orders/" + orderId + "/payment-status";
+        try {
+            ResponseEntity<MagentoCartAdyenPaymentStatus> responseEntity = restClient.exchangeGet(url, MagentoCartAdyenPaymentStatus.class, headers);
+            return mapper.convertMagentoCartAdyenPaymentStatusToGfCartAdyenPaymentStatus(responseEntity.getBody());
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new CustomerException(e.getStatusCode(), e.getMessage());
+            }
+            throw new CartException(e.getStatusCode(), e.getMessage());
+        } catch (Exception e) {
+            throw new CartException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    public GfCartAdyenPaymentStatus handleAdyenThreeDS2Process(String customerToken, GfCartAdyenThreeDS2Process threeDS2Process) throws CustomerException, CartException {
+        String url = adyen + "threeDS2Process";
+        try {
+            HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
+            MagentoCartAdyenThreeDS2Process process = mapper.convertGfCartAdyenThreeDS2ProcessToMagentoCartAdyenThreeDS2Process(threeDS2Process);
+            Map<String, MagentoCartAdyenThreeDS2Process> params = new HashMap<>();
+            params.put("payload", process);
+            ResponseEntity<MagentoCartAdyenPaymentStatus> responseEntity = restClient.postForEntity(url, params, MagentoCartAdyenPaymentStatus.class, headers);
+            return mapper.convertMagentoCartAdyenPaymentStatusToGfCartAdyenPaymentStatus(responseEntity.getBody());
         } catch (HttpStatusCodeException e) {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 throw new CustomerException(e.getStatusCode(), e.getMessage());

@@ -29,6 +29,7 @@ magento:
     customerMe: customers/me
     customerChangePassword: me/password
     carts: carts/mine/
+    adyen: adyen/
     storeViews: store/storeViews/
     websites: store/websites/
     storeGroups: store/storeGroups/
@@ -123,6 +124,7 @@ magento:
     customerMe: customers/me
     changePassword: customers/me/password
     carts: carts/mine/
+    adyen: adyen/
     storeViews: store/storeViews/
     websites: store/websites/
     storeGroups: store/storeGroups/

@@ -10,8 +10,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MagentoCartItemProductOption {
+public class MagentoCartAdyenThreeDS2ProcessDetails {
 
-    @SerializedName("extension_attributes")
-    private MagentoCartItemProductOptionExtensionAttributes extensionAttributes;
+    @SerializedName("threeds2.fingerprint")
+    private String threeds2Fingerprint;
+    @SerializedName("threeds2.challengeResult")
+    private String threeds2ChallengeResult;
 }

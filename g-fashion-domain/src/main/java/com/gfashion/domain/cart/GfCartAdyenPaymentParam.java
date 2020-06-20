@@ -1,4 +1,4 @@
-package com.gfashion.restclient.magento.cart;
+package com.gfashion.domain.cart;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MagentoCartPaymentMethod {
+public class GfCartAdyenPaymentParam {
 
-    private String code;
-    private String title;
-    private String method;
+    private String cartId;
+    private GfCartAddress shippingAddress;
 }

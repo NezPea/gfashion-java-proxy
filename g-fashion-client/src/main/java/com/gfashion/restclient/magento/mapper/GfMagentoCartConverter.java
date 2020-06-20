@@ -15,7 +15,11 @@ public interface GfMagentoCartConverter {
 
     GfCartPaymentMethod convertMagentoCartPaymentMethodToGfCartPaymentMethod(MagentoCartPaymentMethod paymentMethod);
 
-    GfCartShippingInformation convertMagentoCartShippingInformationToGfCartShippingInformation(MagentoCartShippingInformation shippingInformation);
+    GfCartShippingInfo convertMagentoCartShippingInfoToGfCartShippingInfo(MagentoCartShippingInformation shippingInfo);
+
+    GfCartAdyenPaymentMethod convertMagentoCartAdyenPaymentMethodToGfCartAdyenPaymentMethod(MagentoCartAdyenPaymentMethod paymentMethod);
+
+    GfCartAdyenPaymentStatus convertMagentoCartAdyenPaymentStatusToGfCartAdyenPaymentStatus(MagentoCartAdyenPaymentStatus paymentStatus);
 
     MagentoCartItem convertGfCartItemToMagentoCartItem(GfCartItem cartItem);
 
@@ -23,5 +27,9 @@ public interface GfMagentoCartConverter {
 
     MagentoCartAddressInformation convertGfCartAddressInformationToMagentoCartAddressInformation(GfCartAddressInformation cartAddress);
 
-    MagentoCartPaymentInformation convertGfCartPaymentInformationToMagentoCartPaymentInformation(GfCartPaymentInformation cartAddress);
+    MagentoCartPaymentInfo convertGfCartPaymentInfoToMagentoCartPaymentInfo(GfCartPaymentInfo paymentInfo);
+
+    MagentoCartAdyenPaymentInfo convertGfCartAdyenPaymentInfoToMagentoCartAdyenPaymentInfo(GfCartAdyenPaymentInfo paymentInfo);
+
+    MagentoCartAdyenThreeDS2Process convertGfCartAdyenThreeDS2ProcessToMagentoCartAdyenThreeDS2Process(GfCartAdyenThreeDS2Process threeDS2Process);
 }

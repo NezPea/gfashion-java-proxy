@@ -20,15 +20,14 @@ import java.util.List;
 @AllArgsConstructor
 public class GfashionCartResource {
 
-    private final MagentoCartClient magentoCartClient;
+    private final MagentoCartClient client;
 
     @GetMapping("/carts")
     public ResponseEntity<GfCart> getCart(@RequestHeader(name = "Authorization") String customerToken) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.getCart(customerToken));
-        } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
-        } catch (CartException e) {
+            GfCart cart = client.getCart(customerToken);
+            return ResponseEntity.status(HttpStatus.OK).body(cart);
+        } catch (CustomerException | CartException e) {
             throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
     }
@@ -37,10 +36,9 @@ public class GfashionCartResource {
     public ResponseEntity<List<GfCartItem>> getCartItemList(
             @RequestHeader(name = "Authorization") String customerToken) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.getCartItemList(customerToken));
-        } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
-        } catch (CartException e) {
+            List<GfCartItem> cartItems = client.getCartItemList(customerToken);
+            return ResponseEntity.status(HttpStatus.OK).body(cartItems);
+        } catch (CustomerException | CartException e) {
             throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
     }
@@ -50,10 +48,9 @@ public class GfashionCartResource {
             @RequestHeader(name = "Authorization") String customerToken,
             @RequestBody GfCartItem cartItem) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.addCartItem(customerToken, cartItem));
-        } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
-        } catch (CartException e) {
+            GfCartItem item = client.addCartItem(customerToken, cartItem);
+            return ResponseEntity.status(HttpStatus.OK).body(item);
+        } catch (CustomerException | CartException e) {
             throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
     }
@@ -63,10 +60,9 @@ public class GfashionCartResource {
             @RequestHeader(name = "Authorization") String customerToken,
             @PathVariable Integer cartItemId, @RequestBody GfCartItem cartItem) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.updateCartItem(customerToken, cartItemId, cartItem));
-        } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
-        } catch (CartException e) {
+            GfCartItem item = client.updateCartItem(customerToken, cartItemId, cartItem);
+            return ResponseEntity.status(HttpStatus.OK).body(item);
+        } catch (CustomerException | CartException e) {
             throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
     }
@@ -76,10 +72,9 @@ public class GfashionCartResource {
             @RequestHeader(name = "Authorization") String customerToken,
             @PathVariable Integer cartItemId) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.deleteCartItem(customerToken, cartItemId));
-        } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
-        } catch (CartException e) {
+            Boolean result = client.deleteCartItem(customerToken, cartItemId);
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        } catch (CustomerException | CartException e) {
             throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
     }
@@ -89,23 +84,21 @@ public class GfashionCartResource {
             @RequestHeader(name = "Authorization") String customerToken,
             @RequestBody GfCartAddress address) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.getEstimateShippingMethods(customerToken, address));
-        } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
-        } catch (CartException e) {
+            List<GfCartEstimateShippingMethod> methods = client.getEstimateShippingMethods(customerToken, address);
+            return ResponseEntity.status(HttpStatus.OK).body(methods);
+        } catch (CustomerException | CartException e) {
             throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
     }
 
     @PostMapping("/carts/shipping-information")
-    public ResponseEntity<GfCartShippingInformation> setShippingInformation(
+    public ResponseEntity<GfCartShippingInfo> setShippingInformation(
             @RequestHeader(name = "Authorization") String customerToken,
             @RequestBody GfCartAddressInformation addressInformation) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.setShippingInformation(customerToken, addressInformation));
-        } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
-        } catch (CartException e) {
+            GfCartShippingInfo shippingInfo = client.setShippingInformation(customerToken, addressInformation);
+            return ResponseEntity.status(HttpStatus.OK).body(shippingInfo);
+        } catch (CustomerException | CartException e) {
             throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
     }
@@ -114,10 +107,9 @@ public class GfashionCartResource {
     public ResponseEntity<List<GfCartPaymentMethod>> getPaymentMethods(
             @RequestHeader(name = "Authorization") String customerToken) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.getPaymentMethods(customerToken));
-        } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
-        } catch (CartException e) {
+            List<GfCartPaymentMethod> paymentMethods = client.getPaymentMethods(customerToken);
+            return ResponseEntity.status(HttpStatus.OK).body(paymentMethods);
+        } catch (CustomerException | CartException e) {
             throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
     }
@@ -125,12 +117,47 @@ public class GfashionCartResource {
     @PostMapping("/carts/payment-information")
     public ResponseEntity<String> createOrder(
             @RequestHeader(name = "Authorization") String customerToken,
-            @RequestBody GfCartPaymentInformation paymentInformation) {
+            @RequestBody GfCartPaymentInfo paymentInformation) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.createOrder(customerToken, paymentInformation));
-        } catch (CustomerException e) {
+            String orderId = client.createOrder(customerToken, paymentInformation);
+            return ResponseEntity.status(HttpStatus.OK).body(orderId);
+        } catch (CustomerException | CartException e) {
             throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
-        } catch (CartException e) {
+        }
+    }
+
+    @PostMapping("/carts/retrieve-adyen-payment-methods")
+    public ResponseEntity<List<GfCartAdyenPaymentMethod>> getAdyenPaymentMethods(
+            @RequestHeader(name = "Authorization") String customerToken,
+            @RequestBody GfCartAdyenPaymentParam adyenPaymentParam) {
+        try {
+            List<GfCartAdyenPaymentMethod> methods = client.getAdyenPaymentMethods(customerToken, adyenPaymentParam);
+            return ResponseEntity.status(HttpStatus.OK).body(methods);
+        } catch (CustomerException | CartException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+        }
+    }
+
+    @PostMapping("/carts/adyen-payment-information")
+    public ResponseEntity<GfCartAdyenOrder> createAdyenOrder(
+            @RequestHeader(name = "Authorization") String customerToken,
+            @RequestBody GfCartAdyenPaymentInfo paymentInfo) {
+        try {
+            GfCartAdyenOrder adyenOrder = client.createAdyenOrder(customerToken, paymentInfo);
+            return ResponseEntity.status(HttpStatus.OK).body(adyenOrder);
+        } catch (CustomerException | CartException e) {
+            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+        }
+    }
+
+    @PostMapping("/carts/adyen-threeds2-process")
+    public ResponseEntity<GfCartAdyenPaymentStatus> handleAdyenThreeDS2Process(
+            @RequestHeader(name = "Authorization") String customerToken,
+            @RequestBody GfCartAdyenThreeDS2Process threeDS2Process) {
+        try {
+            GfCartAdyenPaymentStatus paymentStatus = client.handleAdyenThreeDS2Process(customerToken, threeDS2Process);
+            return ResponseEntity.status(HttpStatus.OK).body(paymentStatus);
+        } catch (CustomerException | CartException e) {
             throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
         }
     }

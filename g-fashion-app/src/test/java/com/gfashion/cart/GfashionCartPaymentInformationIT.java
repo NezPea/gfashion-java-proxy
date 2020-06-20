@@ -1,6 +1,6 @@
 package com.gfashion.cart;
 
-import com.gfashion.domain.cart.GfCartPaymentInformation;
+import com.gfashion.domain.cart.GfCartPaymentInfo;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 /**
- * Integration tests for the {@link GfCartPaymentInformation} REST controller.
+ * Integration tests for the {@link GfCartPaymentInfo} REST controller.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -42,7 +42,7 @@ public class GfashionCartPaymentInformationIT extends GfashionCartBaseIT {
 
     @Test
     public void createOrder() throws Exception {
-        GfCartPaymentInformation params = createPaymentInformationParams();
+        GfCartPaymentInfo params = createPaymentInformationParams();
         Response response = given().header("Content-Type", ContentType.JSON)
                 .body(gson.toJson(params))
                 .post("/gfashion/v1/carts/payment-information");
@@ -55,7 +55,7 @@ public class GfashionCartPaymentInformationIT extends GfashionCartBaseIT {
 
     @Test
     public void createOrderWithoutPaymentMethod() throws Exception {
-        GfCartPaymentInformation params = createPaymentInformationParams();
+        GfCartPaymentInfo params = createPaymentInformationParams();
         params.setPaymentMethod(null);
         given().header("Content-Type", ContentType.JSON)
                 .body(gson.toJson(params))
@@ -66,7 +66,7 @@ public class GfashionCartPaymentInformationIT extends GfashionCartBaseIT {
     @Test
     @Ignore
     public void createOrderWithoutBillingAddress() throws Exception {
-        GfCartPaymentInformation params = createPaymentInformationParams();
+        GfCartPaymentInfo params = createPaymentInformationParams();
         params.setBillingAddress(null);
         given().header("Content-Type", ContentType.JSON)
                 .body(gson.toJson(params))

@@ -1,7 +1,7 @@
 package com.gfashion.cart;
 
 import com.gfashion.domain.cart.GfCartAddressInformation;
-import com.gfashion.domain.cart.GfCartShippingInformation;
+import com.gfashion.domain.cart.GfCartShippingInfo;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.any;
 import static org.junit.Assert.assertThat;
 
 /**
- * Integration tests for the {@link GfCartShippingInformation} REST controller.
+ * Integration tests for the {@link GfCartShippingInfo} REST controller.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

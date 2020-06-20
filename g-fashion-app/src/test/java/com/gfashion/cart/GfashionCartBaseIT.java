@@ -96,7 +96,7 @@ public class GfashionCartBaseIT {
     protected GfCartItemProductOption createCartItemProductOption() {
         List<GfCartConfigurableItemOption> options = new ArrayList<>();
         GfCartConfigurableItemOption itemOption = new GfCartConfigurableItemOption();
-        itemOption.setOptionId("145");
+        itemOption.setOptionId("144");
         itemOption.setOptionValue("5595");
         options.add(itemOption);
         itemOption = new GfCartConfigurableItemOption();
@@ -112,7 +112,7 @@ public class GfashionCartBaseIT {
     protected GfCartItemProductOption updateCartItemProductOption() {
         List<GfCartConfigurableItemOption> options = new ArrayList<>();
         GfCartConfigurableItemOption itemOption = new GfCartConfigurableItemOption();
-        itemOption.setOptionId("145");
+        itemOption.setOptionId("144");
         itemOption.setOptionValue("5595");
         options.add(itemOption);
         itemOption = new GfCartConfigurableItemOption();
@@ -125,11 +125,11 @@ public class GfashionCartBaseIT {
         return new GfCartItemProductOption(attributes);
     }
 
-    protected GfCartPaymentInformation createPaymentInformationParams() {
+    protected GfCartPaymentInfo createPaymentInformationParams() {
         GfCartPaymentMethod paymentMethod = new GfCartPaymentMethod();
         paymentMethod.setMethod("checkmo");
 
-        GfCartPaymentInformation params = new GfCartPaymentInformation();
+        GfCartPaymentInfo params = new GfCartPaymentInfo();
         params.setPaymentMethod(paymentMethod);
         params.setBillingAddress(createCartAddress());
         return params;

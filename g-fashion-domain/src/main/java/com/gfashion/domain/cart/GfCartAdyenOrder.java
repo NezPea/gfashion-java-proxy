@@ -5,14 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GfCartShippingInformation {
+public class GfCartAdyenOrder {
 
-    private List<GfCartPaymentMethod> paymentMethods;
-    private GfCartTotals totals;
+    private String orderId;
+    private GfCartAdyenPaymentStatus paymentStatus;
 }

@@ -78,7 +78,7 @@ public class GfashionCartTotalIT extends GfashionCartBaseIT {
                 .post("/gfashion/v1/carts/shipping-information");
 
         json = response.getBody().asString();
-        GfCartShippingInformation shippingInfo = gson.fromJson(json, GfCartShippingInformation.class);
+        GfCartShippingInfo shippingInfo = gson.fromJson(json, GfCartShippingInfo.class);
         GfCartTotals totals = shippingInfo.getTotals();
 
         GfCartTotalItem item1 = totals.getItems().get(0);

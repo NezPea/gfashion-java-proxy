@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MagentoCartPaymentMethod {
+public class MagentoCartAdyenThreeDS2Process {
 
-    private String code;
-    private String title;
-    private String method;
+    private MagentoCartAdyenThreeDS2ProcessDetails details;
+    private String paymentData;
 }
