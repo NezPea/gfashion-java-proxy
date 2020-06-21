@@ -1,6 +1,9 @@
 package com.gfashion.data.repository.dynamodb.typeconverter;
 
-import com.gfashion.data.*;
+import com.gfashion.data.repository.dynamodb.entity.GfBrandEntity;
+import com.gfashion.data.repository.dynamodb.entity.GfDesignerEntity;
+import com.gfashion.data.repository.dynamodb.entity.GfProductEntity;
+import com.gfashion.data.repository.dynamodb.entity.GfSkuEntity;
 import com.gfashion.domain.homepage.HomepageBrand;
 import com.gfashion.domain.homepage.HomepageDesigner;
 import com.gfashion.domain.homepage.HomepageProduct;

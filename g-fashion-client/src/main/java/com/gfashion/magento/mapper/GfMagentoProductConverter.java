@@ -1,0 +1,32 @@
+package com.gfashion.magento.mapper;
+
+import com.gfashion.domain.product.*;
+import com.gfashion.magento.entity.product.*;
+import org.mapstruct.Mapper;
+
+@Mapper
+public interface GfMagentoProductConverter {
+
+    GfProduct convertMagentoProductToGfProduct(MagentoProduct magentoProduct);
+
+    GfStockItem convertMagentoStockItemToGfStockItem(MagentoStockItem magentoStockItem);
+
+    GfConfigurableProductOption convertMagentoConfigurableProductOptionToGfConfigurableProductOption(MagentoConfigurableProductOption magentoConfigurableProductOption);
+
+    GfConfigurableProductOptionValue convertMagentoConfigurableProductOptionValueToGfConfigurableProductOptionValue(MagentoConfigurableProductOptionValue magentoConfigurableProductOptionValue);
+
+    GfProductCategory convertMagentoProductCategoryToGfProductCategory(MagentoProductCategory magentoProductCategory);
+
+    GfEvaAttribute convertMagentoEvaAttributeToGfEvaAttribute(MagentoEvaAttribute magentoEvaAttribute);
+
+    GfProductLink convertMagentoProductLinkToGfProductLink(MagentoProductLink magentoProductLink);
+
+    GfProductCustomAttribute convertMagentoProductCustomAttributeToGfProductCustomAttribute(MagentoProductCustomAttribute magentoProductCustomAttribute);
+
+    GfExtensionAttribute convertMagentoExtensionAttributeToGfExtensionAttribute(MagentoExtensionAttribute magentoExtensionAttribute);
+
+    GfMediaGalleryEntry convertMagentoMediaGalleryEntryToGfMediaGalleryEntry(MagentoMediaGalleryEntry magentoMediaGalleryEntry);
+
+    GfProductSearchResponse convertMagentoProductSearchToGfProductSearch(MagentoProductSearchResponse magentoProductSearchResponse);
+
+}
