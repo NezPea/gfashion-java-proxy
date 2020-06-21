@@ -29,7 +29,7 @@ PostCategory () {
       "custom_attributes": [
         {
             "attribute_code": "description",
-            "value": "'"$3"'"
+            "value": "'"${3:-Please add Description}"'"
         }
       ]
     }
@@ -51,7 +51,7 @@ PostCategoryWithId () {
       "custom_attributes": [
         {
             "attribute_code": "description",
-            "value": "'"$4"'"
+            "value": "'"${4:-Please add Description}"'"
         }
       ]
     }
@@ -59,7 +59,7 @@ PostCategoryWithId () {
 }
 
 #Add GFashion Root Level Category
-gf_id_en=$(PostCategory $root_id "Test" "description")
-gf_id_cn=$(PostCategoryWithId $storeViewCN $gf_id_en "测试" "描述")
+gf_id_en=$(PostCategory $root_id "Test")
+gf_id_cn=$(PostCategoryWithId $storeViewCN $gf_id_en "测试")
 echo $gf_id_cn
 #echo $gf_id
