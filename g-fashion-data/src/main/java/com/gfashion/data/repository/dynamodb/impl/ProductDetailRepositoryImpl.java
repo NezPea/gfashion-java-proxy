@@ -2,10 +2,10 @@ package com.gfashion.data.repository.dynamodb.impl;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.gfashion.data.repository.dynamodb.Interface.GfProductDetailRepository;
-import com.gfashion.data.repository.dynamodb.Interface.GfProductRecRepository;
-import com.gfashion.data.repository.dynamodb.Interface.GfProductRepository;
-import com.gfashion.data.repository.dynamodb.Interface.GfSkuRepository;
+import com.gfashion.data.repository.dynamodb.interfaces.GfProductDetailRepository;
+import com.gfashion.data.repository.dynamodb.interfaces.GfProductRecRepository;
+import com.gfashion.data.repository.dynamodb.interfaces.GfProductRepository;
+import com.gfashion.data.repository.dynamodb.interfaces.GfSkuRepository;
 import com.gfashion.data.repository.dynamodb.entity.GfProductEntity;
 import com.gfashion.data.repository.dynamodb.entity.GfProductRecEntity;
 import com.gfashion.data.repository.dynamodb.entity.GfSkuEntity;

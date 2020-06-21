@@ -4,7 +4,7 @@ import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.gfashion.api.log.annotation.DDBLog;
 import com.gfashion.data.repository.dynamodb.entity.LogEntity;
-import com.gfashion.data.repository.dynamodb.Interface.DDBLogRepository;
+import com.gfashion.data.repository.dynamodb.interfaces.DDBLogRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

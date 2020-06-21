@@ -1,4 +1,4 @@
-package com.gfashion.data.repository.dynamodb.Interface;
+package com.gfashion.data.repository.dynamodb.interfaces;
 
 import com.gfashion.domain.productdetail.ProductDetail;
 import org.springframework.stereotype.Repository;

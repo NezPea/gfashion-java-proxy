@@ -7,7 +7,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
-import com.gfashion.data.repository.dynamodb.Interface.GfHomepageRepository;
+import com.gfashion.data.repository.dynamodb.interfaces.GfHomepageRepository;
 import com.gfashion.data.repository.dynamodb.entity.GfDesignerEntity;
 import com.gfashion.data.repository.dynamodb.entity.GfProductEntity;
 import com.gfashion.data.repository.dynamodb.typeconverter.GfDynamodbConverter;

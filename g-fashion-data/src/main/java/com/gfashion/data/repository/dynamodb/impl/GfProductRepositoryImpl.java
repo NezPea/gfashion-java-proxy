@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.TransactionLoadRequest;
 import com.amazonaws.services.dynamodbv2.datamodeling.TransactionWriteRequest;
-import com.gfashion.data.repository.dynamodb.Interface.GfProductRepository;
+import com.gfashion.data.repository.dynamodb.interfaces.GfProductRepository;
 import com.gfashion.data.repository.dynamodb.entity.GfProductEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

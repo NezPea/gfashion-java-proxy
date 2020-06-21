@@ -1,4 +1,4 @@
-package com.gfashion.data.repository.dynamodb.Interface;
+package com.gfashion.data.repository.dynamodb.interfaces;
 
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 
