@@ -2,8 +2,8 @@ package com.gfashion.api.dynamodb;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
-import com.gfashion.data.GfDesignerEntity;
-import com.gfashion.data.repository.dynamodb.GfDesignerRepository;
+import com.gfashion.data.repository.dynamodb.entity.GfDesignerEntity;
+import com.gfashion.data.repository.dynamodb.Interface.GfDesignerRepository;
 import com.gfashion.domain.designer.GfDesignerSearchAttributeValueMappings;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

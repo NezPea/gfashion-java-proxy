@@ -2,7 +2,7 @@ package com.gfashion.data.repository.dynamodb.impl;
 
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
-import com.gfashion.data.repository.dynamodb.DynamodbRepository;
+import com.gfashion.data.repository.dynamodb.Interface.DynamodbRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
