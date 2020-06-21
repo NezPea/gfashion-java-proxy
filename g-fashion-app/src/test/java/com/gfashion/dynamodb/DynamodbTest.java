@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
 import com.amazonaws.services.dynamodbv2.model.*;
-import com.gfashion.data.repository.dynamodb.Interface.DynamodbRepository;
+import com.gfashion.data.repository.dynamodb.interfaces.DynamodbRepository;
 import com.gfashion.data.repository.dynamodb.typeconverter.DimensionTypeConverter;
 import com.gfashion.data.repository.dynamodb.typeconverter.ProductDimensionType;
 import org.junit.Assert;

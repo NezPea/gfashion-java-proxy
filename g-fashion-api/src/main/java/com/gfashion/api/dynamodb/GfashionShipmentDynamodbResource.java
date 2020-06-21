@@ -3,7 +3,7 @@ package com.gfashion.api.dynamodb;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.gfashion.data.repository.dynamodb.entity.GfShipmentEntity;
-import com.gfashion.data.repository.dynamodb.Interface.GfShipmentRepository;
+import com.gfashion.data.repository.dynamodb.interfaces.GfShipmentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
