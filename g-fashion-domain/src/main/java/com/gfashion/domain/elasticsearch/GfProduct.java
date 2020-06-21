@@ -12,6 +12,7 @@ public class GfProduct {
     private String nameZh;
     private Integer price;
     private Integer discountPrice;
+    private String currency;
     private String desEn;
     private String desZh;
     private String smallPic;

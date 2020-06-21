@@ -134,9 +134,9 @@ public class SearchService {
         if (!isEmpty(request.getKeyword())) {
             String[] fields;
             if (Language.zh.toString().equals(request.getLanguage())) {
-                fields = new String[]{"keyword", "nameEn", "desEn"};
-            } else {
                 fields = new String[]{"keyword", "nameZh", "desZh"};
+            } else {
+                fields = new String[]{"keyword", "nameEn", "desEn"};
             }
             queryBuilder.should(multiMatchQuery(request.getKeyword(), fields));
         }
