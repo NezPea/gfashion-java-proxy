@@ -19,22 +19,23 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 public class EsProduct {
     @Id
     private String id;
-    private String name;
+    private String nameEn;
+    private String nameZh;
     private Integer price;
+    private Integer discountPrice;
+    private String currency;
     private String keyword;
-    private String brief;
-    private String sku;
-    private String brandName;
-    private Integer isFeatured;
-    private String photoUrl;
-    private String language;
-    private String brandId;
-    private String vendorId;
-    @Field(type = FieldType.Text, fielddata = true)
-    private Integer designerId;
-    private Integer[] categories;
-    private Integer category;
-    private String gender;
+    private String desEn;
+    private String desZh;
+    private String smallPic;
+    @Field(type = FieldType.Long, fielddata = true)
+    private Long designerId;
+    private Long[] categories;
+    @Field(type = FieldType.Long, fielddata = true)
+    private Long categoryId;
+    @Field(type = FieldType.Long)
+    private Long topCategoryId;
+    @Field(type = FieldType.Integer)
     private Integer sale;
-    private String size;
+    private String[] sizeList;
 }
