@@ -1,5 +1,6 @@
 package com.gfashion.api;
 
+import com.amazonaws.AmazonClientException;
 import com.gfashion.restclient.AwsS3Client;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +31,10 @@ public class GfashionMediaResource {
     @PostMapping("/upload")
     public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
         try {
-            String fileUrl = awsClient.uploadFile("products/images/", file);
+            String fileUrl = awsClient.uploadFile(file, "products/images/");
             return new ResponseEntity<>(fileUrl, HttpStatus.OK);
-        } catch (IOException e) {
-            throw  new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        } catch (AmazonClientException | IOException e) {
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 }

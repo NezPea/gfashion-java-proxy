@@ -1,5 +1,6 @@
 package com.gfashion.restclient;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
@@ -47,7 +48,7 @@ public class AwsS3Client {
                 .build();
     }
 
-    public String uploadFile(String imagePath, String imageName, MultipartFile multipartFile) throws IOException {
+    public String uploadFile(MultipartFile multipartFile, String imagePath, String imageName) throws AmazonClientException, IOException {
         String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
         String originalFilename = imageName + "." + extension;
         Path path = Paths.get(saveLocation + originalFilename);
@@ -67,17 +68,16 @@ public class AwsS3Client {
         return originalFilename;
     }
 
-    public String uploadFile(String imagePath, MultipartFile multipartFile) throws IOException {
+    public String uploadFile(MultipartFile multipartFile, String imagePath) throws AmazonClientException, IOException {
         String baseName = FilenameUtils.getBaseName(multipartFile.getOriginalFilename());
-        return uploadFile(imagePath, baseName, multipartFile);
+        return uploadFile(multipartFile, imagePath, baseName);
     }
 
-    public String uploadFile(String imagePath, String imageName, String urlStr) throws IOException {
-        URL url = new URL(urlStr);
+    public String uploadFile(String imageUrl, String imagePath, String imageName) throws AmazonClientException, IOException {
+        URL url = new URL(imageUrl);
         String fileName = url.getFile();
         File file = new File(saveLocation, fileName);
         FileUtils.copyURLToFile(url, file);
-
 
         String extension = FilenameUtils.getExtension(fileName);
         String originalFilename = imageName + "." + extension;
@@ -91,12 +91,12 @@ public class AwsS3Client {
         return originalFilename;
     }
 
-    public String uploadFile(String imagePath, String urlStr) throws IOException {
-        String baseName = FilenameUtils.getBaseName(urlStr);
-        return uploadFile(imagePath, baseName, urlStr);
+    public String uploadFile(String imageUrl, String imagePath) throws AmazonClientException, IOException {
+        String baseName = FilenameUtils.getBaseName(imageUrl);
+        return uploadFile(imageUrl, imagePath, baseName);
     }
 
-    private void uploadFileToS3bucket(String fileName, File file) {
+    private void uploadFileToS3bucket(String fileName, File file) throws AmazonClientException {
         s3Client.putObject(bucketName, fileName, file);
     }
 }
