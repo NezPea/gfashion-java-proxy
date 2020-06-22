@@ -53,6 +53,7 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
 
         }
 
+        message.setTtl(ts / 1000 + GfMessageConstants.TTL_PERSONAL_BROADCAST);
         message.setId(msgId);
         message.setSender(sender);
         message.setTitle(msg.getTitle());
@@ -169,6 +170,7 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
                 msgStatus = new GfMsgBroadcastStatusEntity();
                 msgStatus.setId(msg.getId());
                 msgStatus.setReceiver(receiver);
+                msgStatus.setTtl(ts / 1000 + GfMessageConstants.TTL_PERSONAL_BROADCAST);
             }
 
             msgStatus.setOpened(true);
@@ -193,6 +195,9 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
 
             // ok, this is a broadcast message, mark it as delete in the status table.
             GfMsgBroadcastStatusEntity msgStatus = new GfMsgBroadcastStatusEntity();
+            final Instant now = Instant.now();
+            final Long ts = now.toEpochMilli();
+            msgStatus.setTtl(ts / 1000 + GfMessageConstants.TTL_PERSONAL_BROADCAST);
             msgStatus.setId(msgId);
             msgStatus.setReceiver(receiver);
             msgStatus.setTimeSent(msg.getTimeSent());

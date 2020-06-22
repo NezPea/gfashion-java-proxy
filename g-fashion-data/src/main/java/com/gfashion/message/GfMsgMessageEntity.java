@@ -42,4 +42,6 @@ public class GfMsgMessageEntity {
   private String contract;
 
   private String data;
+
+  private Long ttl;
 }
