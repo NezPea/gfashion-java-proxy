@@ -50,6 +50,14 @@ public class GfashionSearchResource {
         return searchService.generateDesignerSuggestion();
     }
 
+    @GetMapping("/load_categories")
+    public Map<String, Integer> loadCategories() {
+        searchService.initCategoryTree();
+        Map<String, Integer> map = new HashMap<>();
+        map.put("status", 0);
+        return map;
+    }
+
     @GetMapping("/mock_product")
     public Map<String, Integer> mock() {
         try {

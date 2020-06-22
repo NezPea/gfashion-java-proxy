@@ -1,13 +1,16 @@
 package com.gfashion.data.repository.elasticsearch.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.gfashion.data.GfDesignerEntity;
-import com.gfashion.data.repository.dynamodb.GfDesignerRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.gfashion.data.repository.dynamodb.entity.GfDesignerEntity;
+import com.gfashion.data.repository.dynamodb.interfaces.GfDesignerRepository;
 import com.gfashion.data.repository.elasticsearch.constant.Constants;
 import com.gfashion.data.repository.elasticsearch.enums.Language;
 import com.gfashion.data.repository.elasticsearch.mapper.ElasticsearchMapper;
+import com.gfashion.data.repository.elasticsearch.model.EsCategory;
 import com.gfashion.data.repository.elasticsearch.model.EsDesigner;
 import com.gfashion.data.repository.elasticsearch.model.EsProduct;
+import com.gfashion.data.repository.elasticsearch.repostory.EsCategoryRepository;
 import com.gfashion.data.repository.elasticsearch.repostory.EsDesignerRepository;
 import com.gfashion.data.repository.elasticsearch.repostory.EsProductRepository;
 import com.gfashion.domain.elasticsearch.*;
@@ -38,6 +41,7 @@ import org.springframework.data.elasticsearch.core.facet.result.Term;
 import org.springframework.data.elasticsearch.core.facet.result.TermResult;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -45,8 +49,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -73,6 +75,9 @@ public class SearchService {
     private EsDesignerRepository designerRepository;
 
     @Resource
+    private EsCategoryRepository categoryRepository;
+
+    @Resource
     private ElasticsearchRestTemplate elasticsearchTemplate;
 
     @Resource
@@ -86,7 +91,7 @@ public class SearchService {
 
     @PostConstruct
     public void initialize() {
-        getCategoryTree();
+        loadCategoriesFromEs();
         generateDesignerSuggestion();
     }
 
@@ -96,10 +101,10 @@ public class SearchService {
         switch (lang) {
             case zh:
                 // TODO return chinese name if it has
-                name = TOP_CATEGORIES.get(id).getName();
+                name = TOP_CATEGORIES.get(id).getNameZh();
                 break;
             default:
-                name = TOP_CATEGORIES.get(id).getName();
+                name = TOP_CATEGORIES.get(id).getNameEn();
                 break;
         }
         return name;
@@ -107,7 +112,7 @@ public class SearchService {
 
     public Set<GfCategory> getSubCategories(@NotNull Long categoryId) {
         Set<GfCategory> subcategories = new HashSet<>();
-        GfCategory gfCategory = CATEGORIES.get(categoryId);
+        GfCategory gfCategory = getCategoryFromCache(categoryId);
         while (true) {
             if (gfCategory == null) {
                 break;
@@ -117,7 +122,7 @@ public class SearchService {
                 subcategories.add(gfCategory);
                 break;
             }
-            for (GfCategory category: CATEGORIES.values()) {
+            for (GfCategory category : CATEGORIES.values()) {
                 if (gfCategory.getId().equals(category.getId())) {
                     LOGGER.info("category id={}, {}, parentId={}", gfCategory.getId(), category.getId(), category.getParentId());
                     subcategories.add(category);
@@ -220,7 +225,7 @@ public class SearchService {
                         GfDesigner.GfDesignerBuilder builder = GfDesigner.builder().id(Long.valueOf(id));
 
                         // TODO add cache for designers
-                        GfDesignerEntity entity =  gfDesignerRepository.readGfDesignerEntity(id);
+                        GfDesignerEntity entity = gfDesignerRepository.readGfDesignerEntity(id);
                         if (entity != null) {
                             // TODO show name by language
                             builder.nameEn(entity.getName()).nameZh(entity.getName());
@@ -312,18 +317,18 @@ public class SearchService {
     private GfCategory toTree(Set<GfCategory> categories) {
         GfCategory root = null;
 
-        for (GfCategory category: categories) {
+        for (GfCategory category : categories) {
             if (category.getLevel() == Constants.ROOT_CATEGORY_LEVEL) {
                 root = category;
             }
 
-            for (GfCategory cat: categories) {
+            for (GfCategory cat : categories) {
                 if (cat.getParentId() != null && cat.getParentId().equals(category.getId())) {
-                    if (category.getChildren() == null) {
-                        category.setChildren(new HashSet<>());
+                    if (category.getChildrenData() == null) {
+                        category.setChildrenData(new HashSet<>());
                     }
                     if (!containsChild(category, cat)) {
-                        category.getChildren().add(cat);
+                        category.getChildrenData().add(cat);
                     }
                 }
             }
@@ -332,11 +337,11 @@ public class SearchService {
     }
 
     private boolean containsChild(GfCategory category, GfCategory child) {
-        if (category == null || category.getChildren() == null || category.getChildren().isEmpty() || child == null) {
+        if (category == null || category.getChildrenData() == null || category.getChildrenData().isEmpty() || child == null) {
             return false;
         }
 
-        for (GfCategory cat : category.getChildren()) {
+        for (GfCategory cat : category.getChildrenData()) {
             if (cat.getId().equals(child.getId())) {
                 return true;
             }
@@ -384,7 +389,7 @@ public class SearchService {
                         LOGGER.debug("designerId={}, categoryId={}, sale={}, count={}", designerId, categoryId, sale, count);
                         designers.add(EsDesigner.builder().designerId(Long.valueOf(designerId))
                                 .nameEn(designerNameEn).nameZh(designerNameZh)
-                                .topCategoryId(categoryId).sale(sale==1).productCount(count).build());
+                                .topCategoryId(categoryId).sale(sale == 1).productCount(count).build());
                     }
                 }
             }
@@ -401,7 +406,7 @@ public class SearchService {
                     Set<String> suggest = new HashSet<>();
                     if (!isEmpty(designer.getNameEn())) {
                         String[] names = designer.getNameEn().split(" ");
-                        for (String name: names) {
+                        for (String name : names) {
                             suggest.add(name);
                         }
                     }
@@ -419,7 +424,11 @@ public class SearchService {
                 }
             }
 
-            designerRepository.saveAll(summary.values());
+            try {
+                designerRepository.saveAll(summary.values());
+            } catch (Exception e) {
+                LOGGER.error("Refresh elasticsearch index(designer) error", e);
+            }
 
             suggestTime = System.currentTimeMillis();
 
@@ -433,10 +442,45 @@ public class SearchService {
     /**
      * Get category tree from Magento
      */
-    private void getCategoryTree() {
+    public void initCategoryTree() {
         LOGGER.info("Start to load categories from magento");
-        ResponseEntity<GfCategory> response = magentoClient.exchangeGet(categoryUrl, GfCategory.class, null);
+
+        CATEGORIES.clear();
+        TOP_CATEGORIES.clear();
+        try {
+            categoryRepository.deleteAll();
+        } catch (Exception e) {
+            LOGGER.error("Clear category index error", e);
+        }
+
+        HttpHeaders headers = magentoClient.getHeaders(null);
+
+        ResponseEntity<GfCategory> response = magentoClient.exchangeGet(categoryUrl, GfCategory.class, headers);
         cacheCategories(response.getBody());
+
+        Set<EsCategory> categories = new HashSet<>();
+        int i = 0;
+        for (GfCategory gfCategory : CATEGORIES.values()) {
+            EsCategory esCategory = mapper.convertGfCategory(gfCategory);
+
+            // Load english brief
+            ResponseEntity<String> detail = magentoClient.exchangeGet(categoryUrl + gfCategory.getId(), String.class, headers);
+            extractCategoryDetail(detail.getBody(), esCategory, Language.en);
+
+            // Load chinese brief
+            detail = magentoClient.exchangeGet(categoryUrl + gfCategory.getId() + "?storeId=3", String.class, headers);
+            extractCategoryDetail(detail.getBody(), esCategory, Language.zh);
+
+            categories.add(esCategory);
+
+            LOGGER.info("Loading the {}, categoryId={}", i++, gfCategory.getId());
+        }
+
+        try {
+            categoryRepository.saveAll(categories);
+        } catch (Exception e) {
+            LOGGER.error("Refresh elasticsearch index(category) error", e);
+        }
         LOGGER.info("Load categories over");
     }
 
@@ -451,15 +495,92 @@ public class SearchService {
             TOP_CATEGORIES.put(category.getId(), category);
         }
 
-        if (category.getChildren() == null || category.getChildren().isEmpty()) {
+        if (category.getChildrenData() == null || category.getChildrenData().isEmpty()) {
             return;
         }
 
-        for (GfCategory cat : category.getChildren()) {
+        for (GfCategory cat : category.getChildrenData()) {
             cacheCategories(cat);
         }
 
-        category.setChildren(null);
+        category.setChildrenData(null);
+    }
+
+    private EsCategory extractCategoryDetail(String detail, EsCategory category, Language lang) {
+        try {
+            JsonNode root = mapper.MAPPER.readTree(detail);
+
+            String brief = null;
+            JsonNode attrs = root.get("custom_attributes");
+            if (attrs.isArray()) {
+                Iterator<JsonNode> iterator = attrs.iterator();
+                while (iterator.hasNext()) {
+                    JsonNode attr = iterator.next();
+                    if (Constants.CATEGORY_DES.equals(attr.get("attribute_code").asText())) {
+                        brief = attr.get("value").asText();
+                    }
+                }
+            }
+
+            if (Language.zh == lang) {
+                category.setNameZh(root.get("name").asText());
+                category.setBriefZh(brief);
+            } else {
+                category.setParentId(root.get("parent_id").asLong());
+                category.setChildren(root.get("children").asText());
+                category.setNameEn(root.get("name").asText());
+                category.setIsActive(root.get("is_active").asBoolean());
+                category.setPosition(root.get("position").asInt());
+                category.setLevel(root.get("level").asInt());
+                category.setBriefEn(brief);
+                category.setPath(root.get("path").asText());
+            }
+        } catch (JsonProcessingException e) {
+            LOGGER.error("Extract category detail error", e);
+        }
+
+        return category;
+    }
+
+    private synchronized EsCategory getCategoryFromMagento(Long id) {
+        EsCategory category = EsCategory.builder().id(id).build();
+
+        HttpHeaders headers = magentoClient.getHeaders(null);
+
+        // Load english brief
+        ResponseEntity<String> detail = magentoClient.exchangeGet(categoryUrl + id, String.class, headers);
+        extractCategoryDetail(detail.getBody(), category, Language.en);
+
+        // Load chinese brief
+        detail = magentoClient.exchangeGet(categoryUrl + id + "?storeId=3", String.class, headers);
+        extractCategoryDetail(detail.getBody(), category, Language.zh);
+
+        return category;
+    }
+
+    private synchronized EsCategory getCategoryFromEs(Long id) {
+        return categoryRepository.findById(id).orElseGet(() -> {
+            EsCategory category = getCategoryFromMagento(id);
+            try {
+                categoryRepository.save(category);
+            } catch (Exception e) {
+                LOGGER.error("Refresh elasticsearch index(category) error", e);
+            }
+            return category;
+        });
+    }
+
+    private GfCategory getCategoryFromCache(Long id) {
+        return Optional.ofNullable(CATEGORIES.get(id)).orElseGet(() -> {
+            GfCategory category = mapper.convertEsCatetory(getCategoryFromEs(id));
+            CATEGORIES.put(id, category);
+            return category;
+        });
+    }
+
+    private void loadCategoriesFromEs() {
+        categoryRepository.findAll().forEach(category -> CATEGORIES.put(category.getId(), mapper.convertEsCatetory(category)));
+        categoryRepository.findByLevel(Constants.TOP_CATEGORY_LEVEL).forEach(category -> TOP_CATEGORIES.put(category.getId(), mapper.convertEsCatetory(category)));
     }
 
     private boolean isEmpty(String txt) {
@@ -467,8 +588,9 @@ public class SearchService {
     }
 
 
-
-    /** ------------- methods down below for mocking data ------------------- */
+    /**
+     * ------------- methods down below for mocking data -------------------
+     */
 
     public void mockProduct() {
         EsProduct product = EsProduct.builder()
@@ -477,8 +599,8 @@ public class SearchService {
                 .desEn("Slim-fit plain-woven stretch wool trousers in black. Low-rise. Five-pocket styling. Belt loops at waistband. Central creases at front and back. Zip-fly. Partially lined.")
                 .nameEn("Black Wool Herris Trousers")
                 .smallPic("https://img.ssensemedia.com/image/upload/b_white/c_scale,h_820/f_auto,dpr_2.0/201020M205048_1.jpg")
-                .categories(new Long[]{789L, 1070L, 1074L, 1081L})
-                .categoryId(1081L)
+                .categories(new Long[]{1L, 789L, 2216L, 2220L, 2235L, 2236L})
+                .categoryId(2236L)
                 .topCategoryId(789L)
                 .sale(1)
                 .designerId(101L)
@@ -491,8 +613,8 @@ public class SearchService {
                 .desEn("Relaxed-fit technical twill cargo pants in black. Mid-rise. Four-pocket styling. Belt loops at partially elasticized waistband. Darts at front, back, and legs. Zippered pocket at outseams. Elasticized cuffs. Zip-fly. Tonal hardware.")
                 .nameEn("Black Dimensional Out Pocket Cargo Pants")
                 .smallPic("https://img.ssensemedia.com/image/upload/b_white/c_scale,h_820/f_auto,dpr_2.0/201020M213021_1.jpg")
-                .categories(new Long[]{789L, 1070L, 1074L, 1082L})
-                .categoryId(1082L)
+                .categories(new Long[]{1L, 789L, 2216L, 2220L, 2235L, 2237L})
+                .categoryId(2237L)
                 .topCategoryId(789L)
                 .sale(0)
                 .designerId(102L)
