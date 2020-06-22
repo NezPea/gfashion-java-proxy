@@ -14,8 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.any;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Integration tests for the {@link GfCartEstimateShippingMethod} REST controller.
@@ -47,7 +46,7 @@ public class GfashionCartEstimateShippingMethodIT extends GfashionCartBaseIT {
                 .post("/gfashion/v1/carts/estimate-shipping")
                 .then().assertThat()
                 .statusCode(HttpStatus.OK.value())
-                .body("size()", is(2));
+                .body("size()", greaterThan(0));
     }
 
     @Test
@@ -75,7 +74,7 @@ public class GfashionCartEstimateShippingMethodIT extends GfashionCartBaseIT {
                 .post("/gfashion/v1/carts/estimate-shipping")
                 .then().assertThat()
                 .statusCode(HttpStatus.OK.value())
-                .body("size()", is(2));
+                .body("size()", greaterThan(0));
     }
 
     @Test
