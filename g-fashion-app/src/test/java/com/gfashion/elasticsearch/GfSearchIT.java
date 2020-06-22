@@ -70,7 +70,7 @@ public class GfSearchIT {
     @Test
     public void searchProductByCategory() throws Exception {
         GfProductSearchRequest request = new GfProductSearchRequest();
-        request.setCategoryId(1081L);
+        request.setCategoryId(2236L);
 
         given().header("Content-Type", ContentType.JSON)
                 .body(gson.toJson(request))
@@ -117,8 +117,8 @@ public class GfSearchIT {
                     .desEn("Slim-fit plain-woven stretch wool trousers in black. Low-rise. Five-pocket styling. Belt loops at waistband. Central creases at front and back. Zip-fly. Partially lined.")
                     .nameEn("Black Wool Herris Trousers")
                     .smallPic("https://img.ssensemedia.com/image/upload/b_white/c_scale,h_820/f_auto,dpr_2.0/201020M205048_1.jpg")
-                    .categories(new Long[]{789L, 1070L, 1074L, 1081L})
-                    .categoryId(1081L)
+                    .categories(new Long[]{1L, 789L, 2216L, 2220L, 2235L, 2236L})
+                    .categoryId(2236L)
                     .topCategoryId(789L)
                     .sale(1)
                     .designerId(101L)
@@ -131,8 +131,8 @@ public class GfSearchIT {
                     .desEn("Relaxed-fit technical twill cargo pants in black. Mid-rise. Four-pocket styling. Belt loops at partially elasticized waistband. Darts at front, back, and legs. Zippered pocket at outseams. Elasticized cuffs. Zip-fly. Tonal hardware.")
                     .nameEn("Black Dimensional Out Pocket Cargo Pants")
                     .smallPic("https://img.ssensemedia.com/image/upload/b_white/c_scale,h_820/f_auto,dpr_2.0/201020M213021_1.jpg")
-                    .categories(new Long[]{789L, 1070L, 1074L, 1082L})
-                    .categoryId(1082L)
+                    .categories(new Long[]{1L, 789L, 2216L, 2220L, 2235L, 2237L})
+                    .categoryId(2237L)
                     .topCategoryId(789L)
                     .sale(0)
                     .designerId(102L)

@@ -3,6 +3,7 @@ package com.gfashion.data.repository.elasticsearch.constant;
 public interface Constants {
     String INDEX_PRODUCT = "product";
     String INDEX_DESIGNER = "designer";
+    String INDEX_CATEGORY = "category";
     String TYPE = "doc";
 
     String GROUP_DESIGNER = "designer_group";
@@ -15,4 +16,6 @@ public interface Constants {
 
     int ROOT_CATEGORY_LEVEL = 1;
     int TOP_CATEGORY_LEVEL = 2;
+
+    String CATEGORY_DES = "description";
 }
