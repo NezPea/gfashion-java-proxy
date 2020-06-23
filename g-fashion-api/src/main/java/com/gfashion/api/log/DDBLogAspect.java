@@ -62,7 +62,16 @@ public class DDBLogAspect {
 
     @AfterReturning(returning = "result", pointcut = "addLog()")
     public void doAfterReturning(Object result) throws Throwable {
-        String json = new Gson().toJson(((ResponseEntity) result).getBody());
+        String json = "";
+        if (result != null) {
+            if (result instanceof ResponseEntity) {
+                json = new Gson().toJson(((ResponseEntity) result).getBody());
+            }
+            if (result instanceof Exception) {
+                json = ((Exception) result).getMessage();
+            }
+            json = result.toString();
+        }
         LogEntity logEntity = entityThreadLocal.get();
         logEntity.setResponseInfo(json);
         saveEntity(logEntity);
