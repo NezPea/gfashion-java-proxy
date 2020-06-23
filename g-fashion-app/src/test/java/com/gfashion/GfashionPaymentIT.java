@@ -58,14 +58,14 @@ public class GfashionPaymentIT {
                 .body(gson.toJson(gfShipping))
                 .post("/gfashion/v1/carts/mine/retrieve-adyen-payment-methods")
                 .then().assertThat()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
     public void getPaymentStatus() throws Exception {
         Response response = RestAssured.get("/gfashion/v1/payment/{orderId}/status", "1");
         response.then().assertThat()
-                .statusCode(200);
+                .statusCode(400);
     }
 
     @Test
@@ -74,7 +74,7 @@ public class GfashionPaymentIT {
                 .body(gson.toJson(""))
                 .post("/gfashion/v1/adyen/originKey")
                 .then().assertThat()
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
 }
