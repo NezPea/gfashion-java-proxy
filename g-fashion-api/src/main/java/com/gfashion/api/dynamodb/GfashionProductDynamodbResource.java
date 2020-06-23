@@ -84,4 +84,4 @@ public class GfashionProductDynamodbResource {
         log.info("this is testwebHook:>>>>>>>>"+product);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
-}w
+}
