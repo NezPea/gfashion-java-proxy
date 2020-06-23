@@ -9,8 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EsProductRepository extends ElasticsearchRepository<EsProduct, String> {
-    Page<EsProduct> findByNameOrBrief(String name, String brief, Pageable pageable);
+    Page<EsProduct> findByCategoryIdAndIdNot(Long categoryId, String id, Pageable pageable);
 
-    @Query("{\"bool\": {\"should\": [{\"match\": {\"name\": \"?0\"}}, {\"match\": {\"brief\": \"?0\"}}]}}")
-    Page<EsProduct> findByNameOrBriefUsingCustomQuery(String keyword, Pageable pageable);
+    Page<EsProduct> findByCategoryIdNot(Long categoryId, Pageable pageable);
 }

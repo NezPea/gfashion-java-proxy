@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 @Builder
 public class GfDesignerSuggestionResponse {
-    private boolean success = false;
+    private boolean success = true;
     private List<GfDesigner> data;
     private String message;
 }

@@ -3,6 +3,7 @@ package com.gfashion.api.log.filter;
 import com.gfashion.api.log.servletwrapper.CachedBodyHttpServletRequest;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,7 +21,12 @@ public class ContentCachingFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        CachedBodyHttpServletRequest cachedBodyHttpServletRequest = new CachedBodyHttpServletRequest(request);
-        filterChain.doFilter(cachedBodyHttpServletRequest, response);
+
+        if ((request.getContentType() != null) && request.getContentType().startsWith(MediaType.MULTIPART_FORM_DATA_VALUE)) {
+            filterChain.doFilter(request, response);
+        } else {
+            CachedBodyHttpServletRequest cachedBodyHttpServletRequest = new CachedBodyHttpServletRequest(request);
+            filterChain.doFilter(cachedBodyHttpServletRequest, response);
+        }
     }
 }

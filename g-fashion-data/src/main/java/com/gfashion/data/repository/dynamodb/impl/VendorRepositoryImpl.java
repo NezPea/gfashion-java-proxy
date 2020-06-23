@@ -5,8 +5,8 @@ import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBSaveExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ExpectedAttributeValue;
-import com.gfashion.data.GfVendorEntity;
-import com.gfashion.data.repository.dynamodb.VendorRepository;
+import com.gfashion.data.repository.dynamodb.interfaces.VendorRepository;
+import com.gfashion.data.repository.dynamodb.entity.GfVendorEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -4,12 +4,12 @@ import lombok.Data;
 
 @Data
 public class GfProductSearchRequest {
-    private String language;
+    private String language = "en";
     private String keyword;
-    private String gender;
+    private Long designerId;
+    private Long topCategoryId;
+    private Long categoryId;
     private Integer sale = 0;
-    private String designerId;
-    private String categoryId;
     private String size;
     private String sorting;
     private String order;

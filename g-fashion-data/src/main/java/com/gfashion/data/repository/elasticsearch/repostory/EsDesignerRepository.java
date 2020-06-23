@@ -7,6 +7,6 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface EsDesignerRepository extends ElasticsearchRepository<EsDesigner, String> {
-    Page<EsDesigner> findByName(String keyword, Pageable pageable);
+public interface EsDesignerRepository extends ElasticsearchRepository<EsDesigner, Long> {
+    Page<EsDesigner> findByDesignerId(String id, Pageable pageable);
 }

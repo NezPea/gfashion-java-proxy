@@ -1,15 +1,14 @@
 package com.gfashion.api.elasticsearch;
 
+import com.gfashion.data.repository.elasticsearch.model.EsDesigner;
 import com.gfashion.data.repository.elasticsearch.service.SearchService;
-import com.gfashion.domain.elasticsearch.GfDesignerSuggestionRequest;
-import com.gfashion.domain.elasticsearch.GfDesignerSuggestionResponse;
-import com.gfashion.domain.elasticsearch.GfProductSearchRequest;
-import com.gfashion.domain.elasticsearch.GfProductSearchResponse;
+import com.gfashion.domain.elasticsearch.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,9 +32,30 @@ public class GfashionSearchResource {
     @PostMapping("/designer")
     public GfDesignerSuggestionResponse designer(@RequestBody GfDesignerSuggestionRequest request) {
         LOGGER.info("Designer suggestion request:{}", request);
-        GfDesignerSuggestionResponse response = searchService.designerSuggestion(request.getKeyword());
+        GfDesignerSuggestionResponse response = searchService.designerSuggestion(request);
         LOGGER.info("Designer suggestion response:{}", response);
         return response;
+    }
+
+    @PostMapping("/recommend")
+    public GfProductRecommendationResponse recommend(@RequestBody GfProductRecommendationRequest request) {
+        LOGGER.info("Product Recommendation request:{}", request);
+        GfProductRecommendationResponse response = searchService.recommend(request);
+        LOGGER.info("Product Recommendation response:{}, {}", response);
+        return response;
+    }
+
+    @GetMapping("/suggest")
+    public Collection<EsDesigner> suggest() {
+        return searchService.generateDesignerSuggestion();
+    }
+
+    @GetMapping("/load_categories")
+    public Map<String, Integer> loadCategories() {
+        searchService.initCategoryTree();
+        Map<String, Integer> map = new HashMap<>();
+        map.put("status", 0);
+        return map;
     }
 
     @GetMapping("/mock_product")

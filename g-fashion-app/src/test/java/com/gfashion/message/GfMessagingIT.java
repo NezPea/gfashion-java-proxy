@@ -76,8 +76,8 @@ public class GfMessagingIT {
         _msgService.deleteMessage(receiver, msgId);
 
         // try receive again.
-        msgs = _msgService.getMessages(receiver, (long) 1000, "zh_CN", 10);
-        assertFalse(msgs.size() > 0);
+        msgs = _msgService.getMessages(receiver, (long) 1, "zh_CN", 10);
+        assertFalse(null == msgs);
     }
 
     @Test
@@ -100,7 +100,7 @@ public class GfMessagingIT {
 
         // try receive again.
         msgs = _msgService.getMessages(receiver, (long) 1, "zh_CN", 10);
-        assertFalse(msgs.size() > 0);
+        assertFalse(null == msgs);
     }
 
     @Test

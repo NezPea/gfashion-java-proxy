@@ -1,7 +1,7 @@
 package com.gfashion.api.log;
 
 import com.gfashion.api.log.annotation.DDBLog;
-import com.gfashion.data.LogEntity;
+import com.gfashion.data.repository.dynamodb.entity.LogEntity;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;

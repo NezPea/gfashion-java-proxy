@@ -7,9 +7,9 @@ const sharp = require('sharp');
 const s3 = new AWS.S3();
 const {TARGET_BUCKET_NAME} = process.env;
 
-const ORIGIN_PATH = 'origin/';
-const SMALL_PATH = 'small/';
-const THUMBNAIL_PATH = 'thumbnail/';
+const LARGE_PATH = 'large';
+const SMALL_PATH = 'small';
+const THUMBNAIL_PATH = 'thumbnail';
 
 const SMALL_WIDTH = 480;
 const THUMBNAIL_WIDTH = 200;
@@ -22,9 +22,9 @@ exports.handler = async (event) => {
     // Object key may have spaces or unicode non-ASCII characters.
     const srcKey = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " "));
 
-    const originKey = ORIGIN_PATH + srcKey;
-    const smallKey = SMALL_PATH + srcKey;
-    const thumbnailKey = THUMBNAIL_PATH + srcKey;
+    const largeKey = getScaleKey(srcKey, LARGE_PATH);
+    const smallKey = getScaleKey(srcKey, SMALL_PATH);
+    const thumbnailKey = getScaleKey(srcKey, THUMBNAIL_PATH);
 
     // Infer the image type from the file suffix.
     const typeMatch = srcKey.match(/\.([^.]*)$/);
@@ -35,28 +35,30 @@ exports.handler = async (event) => {
 
     // Check that the image type is supported  
     const imageType = typeMatch[1].toLowerCase();
-    if (imageType != "jpg" && imageType != "png") {
+    if (imageType !== "jpg" && imageType !== "png") {
         console.log(`Unsupported image type: ${imageType}`);
         return;
     }
 
     // Download the image from the S3 source bucket. 
 
+    let largeImage;
     try {
         const params = {
             Bucket: srcBucket,
             Key: srcKey
         };
-        var originImage = await s3.getObject(params).promise();
+        largeImage = await s3.getObject(params).promise();
     } catch (error) {
         console.log(error);
         return;
     }  
 
     // Use the Sharp module to resize the image and save in a buffer.
+    let smallBuffer, thumbnailBuffer;
     try { 
-        var smallBuffer = await sharp(originImage.Body).resize(SMALL_WIDTH).toBuffer();
-        var thumbnailBuffer = await sharp(originImage.Body).resize(THUMBNAIL_WIDTH).toBuffer();
+        smallBuffer = await sharp(largeImage.Body).resize(SMALL_WIDTH).toBuffer();
+        thumbnailBuffer = await sharp(largeImage.Body).resize(THUMBNAIL_WIDTH).toBuffer();
     } catch (error) {
         console.log(error);
         return;
@@ -64,30 +66,30 @@ exports.handler = async (event) => {
 
     // Upload the thumbnail image to the destination bucket
     try {
-        let destparams = {
+        let destParams = {
             Bucket: TARGET_BUCKET_NAME,
             Key: smallKey,
             Body: smallBuffer,
             ContentType: "image"
         };
-        let putResult = await s3.putObject(destparams).promise();
+        let putResult = await s3.putObject(destParams).promise();
         console.log(`The result of upload ${smallKey} to ${TARGET_BUCKET_NAME} is: ${JSON.stringify(putResult)}`); 
 
-        destparams = {
-            ...destparams,
+        destParams = {
+            ...destParams,
             Key: thumbnailKey,
             Body: thumbnailBuffer,
         };
-        putResult = await s3.putObject(destparams).promise();
+        putResult = await s3.putObject(destParams).promise();
         console.log(`The result of upload ${thumbnailKey} to ${TARGET_BUCKET_NAME} is: ${JSON.stringify(putResult)}`); 
 
-        const copyparams = {
+        const copyParams = {
             Bucket: TARGET_BUCKET_NAME,
             CopySource: `${srcBucket}/${srcKey}`,
-            Key: originKey,
+            Key: largeKey,
         };
-        putResult = await s3.copyObject(copyparams).promise();
-        console.log(`The result of copy ${originKey} to ${TARGET_BUCKET_NAME} is: ${JSON.stringify(putResult)}`); 
+        putResult = await s3.copyObject(copyParams).promise();
+        console.log(`The result of copy ${largeKey} to ${TARGET_BUCKET_NAME} is: ${JSON.stringify(putResult)}`);
 
         const params = {
             Bucket: srcBucket,
@@ -102,3 +104,11 @@ exports.handler = async (event) => {
 
     console.log(`Successfully resized ${srcBucket}/${srcKey} and uploaded to ${TARGET_BUCKET_NAME}`); 
 };
+
+function getScaleKey(key, scalePath) {
+    const arr = key.split('/');
+    const fileName = arr.pop();
+    arr.push(scalePath);
+    arr.push(fileName);
+    return  arr.join('/');
+}
