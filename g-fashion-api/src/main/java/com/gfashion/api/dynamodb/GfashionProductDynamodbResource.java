@@ -6,6 +6,7 @@ import com.gfashion.api.log.annotation.DDBLog;
 import com.gfashion.data.repository.dynamodb.entity.GfProductEntity;
 import com.gfashion.data.repository.dynamodb.interfaces.GfProductRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping(path = "/gfashion/v1", produces = {MediaType.APPLICATION_JSON_VALUE})
 //@CrossOrigin(origins = "*")
 @AllArgsConstructor
+@Slf4j
 public class GfashionProductDynamodbResource {
 
     private GfProductRepository productRepository;
@@ -79,6 +81,7 @@ public class GfashionProductDynamodbResource {
     @PostMapping(value = "/dynamodb/testWebHook", produces = "application/json;charset=utf-8")
     public ResponseEntity<String> testWebHook(@RequestBody String product) {
         System.out.println(product);
+        log.info("this is testwebHook:>>>>>>>>"+product);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
-}
+}w
