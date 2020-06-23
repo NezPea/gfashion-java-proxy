@@ -74,4 +74,11 @@ public class GfashionProductDynamodbResource {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
     }
+
+    @DDBLog(operationType = "custom_operation_type", operationEvent = "custom_operation_event")
+    @PostMapping(value = "/dynamodb/testWebHook", produces = "application/json;charset=utf-8")
+    public ResponseEntity<String> testWebHook(@RequestBody String product) {
+        System.out.println(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body(product);
+    }
 }
