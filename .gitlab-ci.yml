@@ -8,7 +8,7 @@ build:
   image: maven:ibmjava-alpine
   stage: build
   script:
-  - mvn clean install -Dmaven.test.skip=true
+  - mvn clean install
   artifacts:
     paths:
     - g-fashion-app/target
@@ -19,7 +19,7 @@ test:
   image: maven:ibmjava-alpine
   stage: test
   script:
-  - mvn test
+  - mvn integration-test -P integration
   artifacts:
     paths:
     - g-fashion-app/target
@@ -50,7 +50,7 @@ regversion:
   script: /regversion
   variables:
     REPO_NAME: 'gfashion-java-proxy'
-    ENDPOINT: 'http://api.chatops.dev2.gfashion2020.tk/version/record/add'
+    ENDPOINT: 'https://chatops.devenv.vogfw.xyz/version/record/add'
     TOKEN: 'aWTUTKfApdKiU4d'
   tags:
   - docker
@@ -63,8 +63,8 @@ deploy:
   image: curlimages/curl
   stage: deploy
   script:
-  - curl remotecall.dev2.gfashion2020.tk/upgrade_java_proxy/${CI_COMMIT_SHORT_SHA} -X POST -H TOKEN:aWTUTKfApdKiU4d -v
-  - curl -H TOKEN:aWTUTKfApdKiU4d http://api.chatops.dev2.gfashion2020.tk/msg/hook/707658190426341438 -d "----> New version deployed on dev2 project name ${CI_PROJECT_NAME} ${CI_BUILD_REF_NAME}:${CI_COMMIT_SHORT_SHA} thank you ${GITLAB_USER_LOGIN} <----" -v
+  - curl -fSsL https://remotecall-dev6.devenv.vogfw.xyz/upgrade_java_proxy/${CI_COMMIT_SHORT_SHA} -X POST -H TOKEN:aWTUTKfApdKiU4d -v
+  - curl -H TOKEN:aWTUTKfApdKiU4d -fSsL https://chatops.devenv.vogfw.xyz/msg/hook/709674010639728641 -d "----> New version deployed on dev6 project name ${CI_PROJECT_NAME} ${CI_BUILD_REF_NAME}:${CI_COMMIT_SHORT_SHA} thank you ${GITLAB_USER_LOGIN} <----" -v
   only:
   - develop
   tags: 

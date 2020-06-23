@@ -7,13 +7,11 @@ import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
-import com.gfashion.data.GfBrandEntity;
 import com.gfashion.data.GfDesignerEntity;
 import com.gfashion.data.GfProductEntity;
 import com.gfashion.data.repository.dynamodb.GfHomepageRepository;
 import com.gfashion.data.repository.dynamodb.typeconverter.GfDynamodbConverter;
 import com.gfashion.domain.homepage.CustomizedHomepage;
-import com.gfashion.domain.homepage.HomepageBrand;
 import com.gfashion.domain.homepage.HomepageDesigner;
 import com.gfashion.domain.homepage.HomepageProduct;
 import org.mapstruct.factory.Mappers;
@@ -33,8 +31,8 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
     @Autowired
     public DynamoDBMapper dynamoDBMapper;
 
-    @Value("${aws.samples.brands}")
-    private String brands;
+    /*@Value("${aws.samples.brands}")
+    private String brands;*/
 
     @Value("${aws.samples.designers}")
     private String designers;
@@ -42,8 +40,8 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
     @Value("${aws.samples.products}")
     private String products;
 
-    @Value("${aws.samples.brandsCn}")
-    private String brandsCn;
+    /*@Value("${aws.samples.brandsCn}")
+    private String brandsCn;*/
 
     @Value("${aws.samples.designersCn}")
     private String designersCn;
@@ -59,14 +57,14 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
         // Construct the batch query
         Map<Class<?>, String[]> keyMap = new HashMap<>();
         if (locale == null || locale.equalsIgnoreCase("en")) {
-            keyMap.put(GfBrandEntity.class, brands.split(","));
+            //keyMap.put(GfBrandEntity.class, brands.split(","));
             keyMap.put(GfDesignerEntity.class, designers.split(","));
-            keyMap.put(GfProductEntity.class, products.split(","));
+            //keyMap.put(GfProductEntity.class, products.split(","));
         } else if (locale.equalsIgnoreCase("cn")) {
             // Batch load the corresponding records in Chinese
-            keyMap.put(GfBrandEntity.class, brandsCn.split(","));
+            //keyMap.put(GfBrandEntity.class, brandsCn.split(","));
             keyMap.put(GfDesignerEntity.class, designersCn.split(","));
-            keyMap.put(GfProductEntity.class, productsCn.split(","));
+            //keyMap.put(GfProductEntity.class, productsCn.split(","));
         }
 
         Map<Class<?>, List<KeyPair>> keyPairForTable = new HashMap<>();
@@ -85,11 +83,11 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
         Map<String, List<Object>> batchResults = dynamoDBMapper.batchLoad(keyPairForTable);
 
         // Convert the results
-        List<HomepageBrand> recommendedBrands = new ArrayList<>();
+        /*List<HomepageBrand> recommendedBrands = new ArrayList<>();
         for (Object entity : batchResults.get("gfBrand")) {
             recommendedBrands.add(this._mapper.convertDynamodbBrandToHomeBrand((GfBrandEntity) entity));
         }
-        customizedHomepage.setRecommendedBrands(recommendedBrands);
+        customizedHomepage.setRecommendedBrands(recommendedBrands);*/
 
         List<HomepageDesigner> recommendedDesigners = new ArrayList<>();
         for (Object entity : batchResults.get("gfDesigner")) {
@@ -97,13 +95,13 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
         }
         customizedHomepage.setRecommendedDesigners(recommendedDesigners);
 
-        List<HomepageProduct> recommendedProducts = new ArrayList<>();
+        /*List<HomepageProduct> recommendedProducts = new ArrayList<>();
         for (Object entity : batchResults.get("gfProduct")) {
             recommendedProducts.add(this._mapper.convertDynamodbProductToHomeProduct((GfProductEntity) entity));
         }
-        customizedHomepage.setRecommendedProducts(recommendedProducts);
+        customizedHomepage.setRecommendedProducts(recommendedProducts);*/
 
-        customizedHomepage.setFollowingBrands(recommendedBrands.subList(0, 1));
+        //customizedHomepage.setFollowingBrands(recommendedBrands.subList(0, 1));
         customizedHomepage.setFollowingDesigners(recommendedDesigners.subList(0, 3));
 
         return customizedHomepage;
@@ -113,10 +111,10 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
         locale = locale == null ? "en" : locale;
 
         // get recommended brands
-        List<HomepageBrand> recommendedBrands = new ArrayList<>();
+        /*List<HomepageBrand> recommendedBrands = new ArrayList<>();
         getResults(HomepageBrand.class, GfBrandEntity.class, 5, locale)
                 .parallelStream().forEach(b ->
-                recommendedBrands.add(this._mapper.convertDynamodbBrandToHomeBrand((GfBrandEntity) b)));
+                recommendedBrands.add(this._mapper.convertDynamodbBrandToHomeBrand((GfBrandEntity) b)));*/
 
         // get recommended designers
         List<HomepageDesigner> recommendedDesigners = new ArrayList<>();
@@ -132,10 +130,10 @@ public class HomepageRepositoryImpl implements GfHomepageRepository {
                 recommendedProducts.add(this._mapper.convertDynamodbProductToHomeProduct((GfProductEntity) p)));
 
         return CustomizedHomepage.builder()
-                .recommendedBrands(recommendedBrands)
+                //.recommendedBrands(recommendedBrands)
                 .recommendedDesigners(recommendedDesigners)
                 .recommendedProducts(recommendedProducts)
-                .followingBrands(recommendedBrands.subList(0, Math.min(1, recommendedBrands.size())))
+                //.followingBrands(recommendedBrands.subList(0, Math.min(1, recommendedBrands.size())))
                 .followingDesigners(recommendedDesigners.subList(0, Math.min(3, recommendedDesigners.size())))
                 .build();
     }

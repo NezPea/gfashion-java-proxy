@@ -1,0 +1,25 @@
+package com.gfashion.domain.elasticsearch;
+
+import lombok.Data;
+
+@Data
+public class GfProductSearchRequest {
+    private String language;
+    private String keyword;
+    private String gender;
+    private Integer sale = 0;
+    private String designerId;
+    private String categoryId;
+    private String size;
+    private String sorting;
+    private String order;
+    private int pageSize = 20;
+    private int pageNo = 1;
+
+    public int getPage() {
+        if (pageNo < 1) {
+            return 0;
+        }
+        return pageNo - 1;
+    }
+}

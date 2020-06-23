@@ -3,6 +3,7 @@ package com.gfashion.config;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
@@ -25,11 +26,14 @@ public class DynamoDBConfig {
     @Value("${aws.dynamodb.region}")
     private String region;
 
+    @Value("${aws.dynamodb.endpoint}")
+    private String endpoint;
+
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
         AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accesskey, secretkey)))
-                .withRegion(region)
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, region))
                 .build();
         return client;
     }
