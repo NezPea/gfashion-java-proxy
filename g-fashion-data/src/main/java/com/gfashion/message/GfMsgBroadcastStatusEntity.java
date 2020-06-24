@@ -36,4 +36,6 @@ public class GfMsgBroadcastStatusEntity {
     private Long timeOpened;
 
     private Long timeUpdated;
+
+    private Long ttl;
 }

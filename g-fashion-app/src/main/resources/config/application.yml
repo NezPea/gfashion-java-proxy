@@ -113,6 +113,12 @@ aws:
     cdnUrl: https://d1pcrro0smuvz9.cloudfront.net/
     saveLocation: /tmp/
 
+# TTL for messages in seconds.
+message:
+  ttl:
+    system_broadcast: 2592000
+    personal_broadcast: 15552000
+    customer_service:
 
 sendgrid:
   api:

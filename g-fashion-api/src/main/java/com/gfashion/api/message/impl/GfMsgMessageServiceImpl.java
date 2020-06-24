@@ -12,6 +12,7 @@ import com.gfashion.message.constant.GfMessageConstants;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -27,6 +28,15 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
 
     @Autowired
     GfMsgBroadcastStatusRepository _broadcastMsgStatusRepository;
+
+    @Value("${message.ttl.personal_broadcast}")
+    private Long ttlPersonalBroadcast = (long)60 * 60 * 24 * 30 * 6; // default half a year.
+
+    @Value("${message.ttl.system_broadcast}")
+    private Long ttlSystemBroadcast = (long)60 * 60 * 24 * 30; // default one month.
+
+    @Value("${message.ttl.customer_service}")
+    private Long ttlCustomerService = null; // default infinite.
 
     @Override
     public String saveMessage(String sender, MessageRequest msg, MessageType type) {
@@ -53,6 +63,7 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
 
         }
 
+        message.setTtl(ts / 1000 + ttlPersonalBroadcast);
         message.setId(msgId);
         message.setSender(sender);
         message.setTitle(msg.getTitle());
@@ -169,6 +180,7 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
                 msgStatus = new GfMsgBroadcastStatusEntity();
                 msgStatus.setId(msg.getId());
                 msgStatus.setReceiver(receiver);
+                msgStatus.setTtl(ts / 1000 + ttlPersonalBroadcast);
             }
 
             msgStatus.setOpened(true);
@@ -193,6 +205,9 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
 
             // ok, this is a broadcast message, mark it as delete in the status table.
             GfMsgBroadcastStatusEntity msgStatus = new GfMsgBroadcastStatusEntity();
+            final Instant now = Instant.now();
+            final Long ts = now.toEpochMilli();
+            msgStatus.setTtl(ts / 1000 + ttlPersonalBroadcast);
             msgStatus.setId(msgId);
             msgStatus.setReceiver(receiver);
             msgStatus.setTimeSent(msg.getTimeSent());
