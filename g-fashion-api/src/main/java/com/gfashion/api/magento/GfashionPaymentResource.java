@@ -13,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 
 @RestController
-@RequestMapping(path = "/gfashion/v1/payment", produces = {"application/json"})
+@RequestMapping(path = "/gfashion/v1", produces = {"application/json"})
 @AllArgsConstructor
 public class GfashionPaymentResource {
     private final MagentoPaymentClient magentoPaymentClient;
@@ -24,7 +24,7 @@ public class GfashionPaymentResource {
      * @param
      * @return
      */
-    @PostMapping("/list")
+    @PostMapping("/payment/list")
     public ResponseEntity<String> getPaymentMethods(@RequestBody GfShipping gfShipping) {
         try {
             String paymentMethods = magentoPaymentClient.getPaymentMethods(gfShipping);
@@ -40,7 +40,7 @@ public class GfashionPaymentResource {
      * @param customerToken
      * @return
      */
-    @GetMapping("/getOriginKey")
+    @GetMapping("/payment/getOriginKey")
     public ResponseEntity<String> getOriginKey(@RequestParam String customerToken) {
         try {
             String originKey = magentoPaymentClient.getOriginKey(customerToken);
@@ -55,7 +55,7 @@ public class GfashionPaymentResource {
      *
      * @return
      */
-    @PostMapping("/information")
+    @PostMapping("/payment/information")
     public ResponseEntity<String> paymentInformation(@RequestParam String encryptionData, @RequestParam String customerToken) {
         try {
             String orderId = magentoPaymentClient.createPayment(encryptionData, customerToken);
@@ -68,7 +68,7 @@ public class GfashionPaymentResource {
     /**
      * 查询支付订单状态
      */
-    @GetMapping("/{orderId}/status")
+    @GetMapping("/payment/{orderId}/status")
     public ResponseEntity<String> getPaymentStatus(@PathVariable String orderId, @RequestParam String customerToken) {
         try {
             String status = magentoPaymentClient.getPaymentStatus(orderId, customerToken);
