@@ -1,9 +1,8 @@
-package com.gfashion.restclient;
+package com.gfashion.magento.client;
 
 import com.gfashion.domain.payment.GfShipping;
-import com.gfashion.restclient.magento.exception.CustomerException;
-import com.gfashion.restclient.magento.exception.PaymentNotFoundException;
-import com.gfashion.restclient.magento.exception.PaymentUnknowException;
+import com.gfashion.magento.exception.CustomerException;
+import com.gfashion.magento.exception.PaymentException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +37,7 @@ public class MagentoPaymentClient {
     @Autowired
     private RestClient restClient;
 
-    public String getPaymentMethods(GfShipping gfShipping) throws CustomerException, PaymentNotFoundException, PaymentUnknowException {
+    public String getPaymentMethods(GfShipping gfShipping) throws CustomerException, PaymentException {
         try {
             HttpHeaders headers = restClient.getCustomerHeaders(gfShipping.getCustomerToken());
             headers.set("Authorization", "Bearer " + gfShipping.getCustomerToken());
@@ -53,14 +52,11 @@ public class MagentoPaymentClient {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 throw new CustomerException(e.getStatusCode(), e.getMessage());
             }
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new PaymentNotFoundException(e.getMessage());
-            }
-            throw new PaymentUnknowException(e.getMessage());
+            throw new PaymentException(e.getStatusCode(), e.getMessage());
         }
     }
 
-    public String getOriginKey(String customerToken)  throws CustomerException, PaymentNotFoundException, PaymentUnknowException{
+    public String getOriginKey(String customerToken) throws CustomerException, PaymentException {
         try {
             HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
             headers.set("Authorization", "Bearer " + customerToken);
@@ -71,15 +67,12 @@ public class MagentoPaymentClient {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 throw new CustomerException(e.getStatusCode(), e.getMessage());
             }
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new PaymentNotFoundException(e.getMessage());
-            }
-            throw new PaymentUnknowException(e.getMessage());
+            throw new PaymentException(e.getStatusCode(), e.getMessage());
         }
 
     }
 
-    public String createPayment(String encryptionData, String customerToken) throws CustomerException, PaymentNotFoundException, PaymentUnknowException{
+    public String createPayment(String encryptionData, String customerToken) throws CustomerException, PaymentException {
         try {
             HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
             headers.set("Authorization", "Bearer " + customerToken);
@@ -90,14 +83,11 @@ public class MagentoPaymentClient {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 throw new CustomerException(e.getStatusCode(), e.getMessage());
             }
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new PaymentNotFoundException(e.getMessage());
-            }
-            throw new PaymentUnknowException(e.getMessage());
+            throw new PaymentException(e.getStatusCode(), e.getMessage());
         }
     }
 
-    public String getPaymentStatus(String orderId, String customerToken) throws CustomerException, PaymentNotFoundException, PaymentUnknowException {
+    public String getPaymentStatus(String orderId, String customerToken) throws CustomerException, PaymentException {
         try {
             String url = String.format(paymentStatusUrl, orderId);
             HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
@@ -106,14 +96,11 @@ public class MagentoPaymentClient {
             log.info(responseEntity.getBody());
             return responseEntity.getBody();
         } catch (HttpStatusCodeException e) {
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new PaymentNotFoundException(e.getMessage());
-            }
-            throw new PaymentUnknowException(e.getMessage());
+            throw new PaymentException(e.getStatusCode(), e.getMessage());
         }
     }
 
-    public String verificationFingerprint(String fingerprintData, String customerToken) throws CustomerException, PaymentNotFoundException, PaymentUnknowException {
+    public String verificationFingerprint(String fingerprintData, String customerToken) throws CustomerException, PaymentException {
         try {
             HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
             headers.set("Authorization", "Bearer " + customerToken);
@@ -124,10 +111,7 @@ public class MagentoPaymentClient {
             if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 throw new CustomerException(e.getStatusCode(), e.getMessage());
             }
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                throw new PaymentNotFoundException(e.getMessage());
-            }
-            throw new PaymentUnknowException(e.getMessage());
+            throw new PaymentException(e.getStatusCode(), e.getMessage());
         }
     }
 
