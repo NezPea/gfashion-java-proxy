@@ -1,4 +1,4 @@
-package com.gfashion;
+package com.gfashion.payment;
 
 import com.gfashion.domain.payment.GfShipping;
 import com.gfashion.domain.payment.ShippingAddress;
