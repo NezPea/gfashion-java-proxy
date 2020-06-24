@@ -1,5 +1,6 @@
 package com.gfashion.api.magento;
 
+import com.gfashion.api.utility.ExceptionStringFactory;
 import com.gfashion.domain.customer.GfCustomer;
 import com.gfashion.domain.customer.GfCustomerAddress;
 import com.gfashion.domain.customer.GfCustomerNewPassword;
@@ -27,12 +28,15 @@ public class GfashionCustomerResource {
 
     private SendGridEmailClient sendGridEmailClient;
 
+    private ExceptionStringFactory exceptionStringFactory;
+
     @PostMapping("/customers")
     public ResponseEntity<GfCustomer> creatCustomer(@RequestBody GfCustomerRegistration gfCustomer, @RequestHeader(name = "Authorization") String token) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(magentoCustomerClient.createCustomer(gfCustomer, token));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         }
     }
 
@@ -41,7 +45,8 @@ public class GfashionCustomerResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.getCustomerById(customerId, token));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         }
     }
 
@@ -50,7 +55,8 @@ public class GfashionCustomerResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.updateCustomerById(gfCustomer, customerId, token));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         }
     }
 
@@ -60,7 +66,8 @@ public class GfashionCustomerResource {
             magentoCustomerClient.deleteCustomerById(customerId, token);
             return ResponseEntity.status(HttpStatus.OK).body("The Customer " + customerId + " has been deleted.");
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         }
     }
 
@@ -69,7 +76,8 @@ public class GfashionCustomerResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.changePassword(newPassword, token));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         }
     }
 
@@ -78,7 +86,8 @@ public class GfashionCustomerResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.addAddress(newAddress, customerId, token));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         }
     }
 
@@ -87,7 +96,8 @@ public class GfashionCustomerResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.changeAddress(newAddress, customerId, token));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         }
     }
 
@@ -96,7 +106,8 @@ public class GfashionCustomerResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.deleteAddress(customerId, addressId, token));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         }
     }
 
@@ -106,9 +117,8 @@ public class GfashionCustomerResource {
             magentoCustomerClient.verifyCustomerToken(customerId, token);
             return ResponseEntity.status(HttpStatus.OK).body(sendGridEmailClient.sendVerificationCode(email));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         }
-
     }
-
 }

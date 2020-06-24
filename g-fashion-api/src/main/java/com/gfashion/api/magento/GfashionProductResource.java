@@ -1,5 +1,6 @@
 package com.gfashion.api.magento;
 
+import com.gfashion.api.utility.ExceptionStringFactory;
 import com.gfashion.domain.product.GfProduct;
 import com.gfashion.domain.product.GfProductSearchResponse;
 import com.gfashion.domain.product.GfProductSearchResponseFix;
@@ -26,7 +27,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @AllArgsConstructor
 @Slf4j
 public class GfashionProductResource {
+
     private MagentoProductClient magentoProductClient;
+
+    private ExceptionStringFactory exceptionStringFactory;
 
 
     @GetMapping("/products/{skuId}")
@@ -34,7 +38,8 @@ public class GfashionProductResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoProductClient.getProductBySku(skuId));
         } catch (ProductException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "product"));
         }
     }
 
@@ -123,7 +128,8 @@ public class GfashionProductResource {
             return ResponseEntity.status(HttpStatus.OK).body(magentoProductClient.searchProducts(resultUrl, categoryId.intValue()));
 
         } catch (ProductException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "product"));
         }
     }
 }

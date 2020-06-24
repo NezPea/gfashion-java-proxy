@@ -1,5 +1,6 @@
 package com.gfashion.api.magento;
 
+import com.gfashion.api.utility.ExceptionStringFactory;
 import com.gfashion.domain.sales.GfShipment;
 import com.gfashion.domain.sales.response.GfShipmentResp;
 import com.gfashion.magento.client.MagentoShipmentClient;
@@ -16,7 +17,10 @@ import org.springframework.web.server.ResponseStatusException;
 //@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class GfashionShipmentResource {
+
     private MagentoShipmentClient magentoShipmentClient;
+
+    private ExceptionStringFactory exceptionStringFactory;
 
     @PostMapping("/shipment")
     public ResponseEntity<GfShipment> updateShipment(@RequestBody @Validated GfShipment gfShipment) {
@@ -24,7 +28,8 @@ public class GfashionShipmentResource {
             gfShipment = magentoShipmentClient.updateShipment(gfShipment);
             return ResponseEntity.status(HttpStatus.OK).body(gfShipment);
         } catch (ShipmentException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "shipment"));
         }
     }
 
@@ -33,7 +38,8 @@ public class GfashionShipmentResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoShipmentClient.getShipmentById(shipmentId));
         } catch (ShipmentException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "shipment"));
         }
     }
 
@@ -42,8 +48,8 @@ public class GfashionShipmentResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoShipmentClient.queryShipments(searchCriteria, fields));
         } catch (ShipmentException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "shipment"));
         }
     }
-
 }

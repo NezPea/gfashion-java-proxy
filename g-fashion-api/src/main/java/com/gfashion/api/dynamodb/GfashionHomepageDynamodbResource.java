@@ -2,6 +2,7 @@ package com.gfashion.api.dynamodb;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
+import com.gfashion.api.utility.ExceptionStringFactory;
 import com.gfashion.data.repository.dynamodb.interfaces.GfHomepageRepository;
 import com.gfashion.domain.homepage.CustomizedHomepage;
 import lombok.AllArgsConstructor;
@@ -21,14 +22,18 @@ public class GfashionHomepageDynamodbResource {
 
     private GfHomepageRepository gfHomepageRepository;
 
+    private ExceptionStringFactory exceptionStringFactory;
+
     @GetMapping(value = "/dynamodb/homepage", produces = "application/json;charset=utf-8")
     public ResponseEntity<CustomizedHomepage> getDefaultCustomizedHomepage(@RequestParam(required = false) String locale) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(gfHomepageRepository.getDefaultCustomizedHomepageBatchQuery(locale));
         } catch (AmazonServiceException e) {
-            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()),
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.valueOf(e.getStatusCode())));
         } catch (AmazonClientException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 }
