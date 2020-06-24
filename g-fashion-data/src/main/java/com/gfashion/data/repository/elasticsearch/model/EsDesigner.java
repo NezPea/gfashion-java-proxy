@@ -13,8 +13,6 @@ import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.core.completion.Completion;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor

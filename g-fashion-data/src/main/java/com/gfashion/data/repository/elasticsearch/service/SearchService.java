@@ -50,6 +50,7 @@ import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -57,11 +58,9 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class SearchService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SearchService.class);
 
-    private static final Map<Long, GfCategory> CATEGORIES = new HashMap<>();
+    private static final Map<Long, MagentoCategory> CATEGORIES = new HashMap<>();
 
-    private static final Map<Long, GfCategory> TOP_CATEGORIES = new HashMap<>();
-
-    private static final Map<Long, String> DESIGNERS = new HashMap<>();
+    private static final Map<Long, MagentoCategory> TOP_CATEGORIES = new HashMap<>();
 
     private static Long suggestTime = System.currentTimeMillis();
 
@@ -92,7 +91,7 @@ public class SearchService {
     @PostConstruct
     public void initialize() {
         loadCategoriesFromEs();
-        generateDesignerSuggestion();
+//        generateDesignerSuggestion();
     }
 
     public String getTopCategoryName(@NotNull Long id, @NotBlank String language) {
@@ -110,28 +109,59 @@ public class SearchService {
         return name;
     }
 
-    public Set<GfCategory> getSubCategories(@NotNull Long categoryId) {
+    public Set<GfCategory> getSubCategories(@NotNull Long categoryId, Language lang) {
         Set<GfCategory> subcategories = new HashSet<>();
-        GfCategory gfCategory = getCategoryFromCache(categoryId);
+        MagentoCategory mCategory = getCategoryFromCache(categoryId);
         while (true) {
-            if (gfCategory == null) {
+            if (mCategory == null) {
                 break;
             }
-            LOGGER.info("category level={}", gfCategory.getLevel());
-            if (gfCategory.getLevel() == Constants.ROOT_CATEGORY_LEVEL) {
-                subcategories.add(gfCategory);
+            LOGGER.info("category level={}", mCategory.getLevel());
+            if (mCategory.getLevel() == Constants.ROOT_CATEGORY_LEVEL) {
+
+                subcategories.add(convertCategoryWithLanguage(mCategory, lang));
                 break;
             }
-            for (GfCategory category : CATEGORIES.values()) {
-                if (gfCategory.getId().equals(category.getId())) {
-                    LOGGER.info("category id={}, {}, parentId={}", gfCategory.getId(), category.getId(), category.getParentId());
-                    subcategories.add(category);
-                    gfCategory = CATEGORIES.get(category.getParentId());
+            for (MagentoCategory category : CATEGORIES.values()) {
+                if (mCategory.getId().equals(category.getId())) {
+                    LOGGER.info("category id={}, {}, parentId={}", mCategory.getId(), category.getId(), category.getParentId());
+                    subcategories.add(convertCategoryWithLanguage(category, lang));
+                    mCategory = CATEGORIES.get(category.getParentId());
                     break;
                 }
             }
         }
         return subcategories;
+    }
+
+    private GfCategory convertCategoryWithLanguage(MagentoCategory mCategory, Language lang) {
+        GfCategory gfCategory = mapper.convertCategoryFromMagentoToGf(mCategory);
+        if (Language.zh == lang) {
+            gfCategory.setName(mCategory.getNameZh());
+            gfCategory.setBrief(mCategory.getBriefZh());
+        } else {
+            gfCategory.setName(mCategory.getNameEn());
+            gfCategory.setBrief(mCategory.getBriefEn());
+        }
+        return gfCategory;
+    }
+
+    private List<GfProduct> convertProductWithLanguage(List<EsProduct> products, Language language) {
+        if (products == null) {
+            return Collections.EMPTY_LIST;
+        }
+
+        return products.stream().map(esProduct -> {
+            GfProduct product = mapper.convertProduct(esProduct);
+            if (Language.zh == language) {
+                product.setName(esProduct.getNameZh());
+                product.setDes(esProduct.getDesZh());
+            } else {
+                product.setName(esProduct.getNameEn());
+                product.setDes(esProduct.getDesEn());
+            }
+            return product;
+        }).collect(Collectors.toList());
     }
 
     private BoolQueryBuilder buildQueryBuilder(@NotNull GfProductSearchRequest request) {
@@ -192,11 +222,61 @@ public class SearchService {
                 .pageSize(products.getSize())
                 .total(products.getTotalElements())
                 .totalPage(products.getTotalPages())
-                .items(mapper.convertProducts(products.getContent()))
+                .items(convertProductWithLanguage(products.getContent(), Language.valueOf(request.getLanguage())))
                 .build();
     }
 
     public GfProductSearchResponse searchWithCategories(@NotNull GfProductSearchRequest request) {
+        try {
+            NativeSearchQueryBuilder nativeBuilder = new NativeSearchQueryBuilder();
+            nativeBuilder.withIndices(Constants.INDEX_PRODUCT).withTypes(Constants.TYPE).withQuery(buildQueryBuilder(request));
+
+            nativeBuilder.addAggregation(AggregationBuilders.terms(Constants.GROUP_CATEGORY).field("categoryId"));
+
+            // Page starts from 0 in elasticsearch
+            nativeBuilder.withPageable(PageRequest.of(request.getPage(), request.getPageSize()));
+
+            SearchQuery searchQuery = nativeBuilder.build();
+
+            // Search for products
+            AggregatedPage<EsProduct> products = elasticsearchTemplate.queryForPage(searchQuery, EsProduct.class);
+
+            Set<GfCategory> categories = new HashSet<>();
+            GfCategory categoryTree = null;
+            for (FacetResult result : products.getFacets()) {
+                TermResult termResult = (TermResult) result;
+
+                // find out categories
+                if (Constants.GROUP_CATEGORY.equals(result.getName())) {
+
+                    for (Term term : termResult.getTerms()) {
+                        Long categoryId = Long.valueOf(term.getTerm());
+                        Set<GfCategory> subcategories = getSubCategories(categoryId, Language.valueOf(request.getLanguage()));
+                        categories.addAll(subcategories);
+                    }
+
+                    categoryTree = toTree(categories);
+                }
+            }
+
+            // assemble product page
+            GfProductPage page = GfProductPage.builder()
+                    .pageNo(products.getNumber() + 1)
+                    .pageSize(products.getSize())
+                    .total(products.getTotalElements())
+                    .totalPage(products.getTotalPages())
+                    .items(convertProductWithLanguage(products.getContent(), Language.valueOf(request.getLanguage())))
+                    .build();
+
+            // assemble search response
+            return GfProductSearchResponse.builder().success(true).products(page).categories(categoryTree).build();
+        } catch (Exception e) {
+            LOGGER.error("Search product error", e);
+            return GfProductSearchResponse.builder().success(false).build();
+        }
+    }
+
+    public GfProductSearchResponse searchWithCategoriesAndDesigners(@NotNull GfProductSearchRequest request) {
         try {
             NativeSearchQueryBuilder nativeBuilder = new NativeSearchQueryBuilder();
             nativeBuilder.withIndices(Constants.INDEX_PRODUCT).withTypes(Constants.TYPE).withQuery(buildQueryBuilder(request));
@@ -241,7 +321,7 @@ public class SearchService {
 
                     for (Term term : termResult.getTerms()) {
                         Long categoryId = Long.valueOf(term.getTerm());
-                        Set<GfCategory> subcategories = getSubCategories(categoryId);
+                        Set<GfCategory> subcategories = getSubCategories(categoryId, Language.valueOf(request.getLanguage()));
                         categories.addAll(subcategories);
                     }
 
@@ -255,7 +335,7 @@ public class SearchService {
                     .pageSize(products.getSize())
                     .total(products.getTotalElements())
                     .totalPage(products.getTotalPages())
-                    .items(mapper.convertProducts(products.getContent()))
+                    .items(convertProductWithLanguage(products.getContent(), Language.valueOf(request.getLanguage())))
                     .build();
 
             // assemble search response
@@ -305,8 +385,10 @@ public class SearchService {
                     PageRequest.of(0, request.getQuantity()));
 
             return GfProductRecommendationResponse.builder().success(true)
-                    .sameCategoryProducts(mapper.convertProducts(sameCategoryProducts.getContent()))
-                    .differentCategoryProducts(mapper.convertProducts(differentCategoryProducts.getContent()))
+                    .sameCategoryProducts(convertProductWithLanguage(sameCategoryProducts.getContent(),
+                            Language.valueOf(request.getLanguage())))
+                    .differentCategoryProducts(convertProductWithLanguage(differentCategoryProducts.getContent(),
+                            Language.valueOf(request.getLanguage())))
                     .build();
         } catch (Exception e) {
             LOGGER.error("Get recommendation error", e);
@@ -455,25 +537,25 @@ public class SearchService {
 
         HttpHeaders headers = magentoClient.getHeaders(null);
 
-        ResponseEntity<GfCategory> response = magentoClient.exchangeGet(categoryUrl, GfCategory.class, headers);
+        ResponseEntity<MagentoCategory> response = magentoClient.exchangeGet(categoryUrl, MagentoCategory.class, headers);
         cacheCategories(response.getBody());
 
         Set<EsCategory> categories = new HashSet<>();
         int i = 0;
-        for (GfCategory gfCategory : CATEGORIES.values()) {
-            EsCategory esCategory = mapper.convertGfCategory(gfCategory);
+        for (MagentoCategory magentoCategory : CATEGORIES.values()) {
+            EsCategory esCategory = mapper.convertCategoryFromMagentoToEs(magentoCategory);
 
             // Load english brief
-            ResponseEntity<String> detail = magentoClient.exchangeGet(categoryUrl + gfCategory.getId(), String.class, headers);
+            ResponseEntity<String> detail = magentoClient.exchangeGet(categoryUrl + magentoCategory.getId(), String.class, headers);
             extractCategoryDetail(detail.getBody(), esCategory, Language.en);
 
             // Load chinese brief
-            detail = magentoClient.exchangeGet(categoryUrl + gfCategory.getId() + "?storeId=3", String.class, headers);
+            detail = magentoClient.exchangeGet(categoryUrl + magentoCategory.getId() + "?storeId=3", String.class, headers);
             extractCategoryDetail(detail.getBody(), esCategory, Language.zh);
 
             categories.add(esCategory);
 
-            LOGGER.info("Loading the {}, categoryId={}", i++, gfCategory.getId());
+            LOGGER.info("Loading the {}, categoryId={}", i++, magentoCategory.getId());
         }
 
         try {
@@ -484,7 +566,7 @@ public class SearchService {
         LOGGER.info("Load categories over");
     }
 
-    private void cacheCategories(GfCategory category) {
+    private void cacheCategories(MagentoCategory category) {
         if (category == null) {
             return;
         }
@@ -499,7 +581,7 @@ public class SearchService {
             return;
         }
 
-        for (GfCategory cat : category.getChildrenData()) {
+        for (MagentoCategory cat : category.getChildrenData()) {
             cacheCategories(cat);
         }
 
@@ -570,17 +652,17 @@ public class SearchService {
         });
     }
 
-    private GfCategory getCategoryFromCache(Long id) {
+    private MagentoCategory getCategoryFromCache(Long id) {
         return Optional.ofNullable(CATEGORIES.get(id)).orElseGet(() -> {
-            GfCategory category = mapper.convertEsCatetory(getCategoryFromEs(id));
+            MagentoCategory category = mapper.convertCategoryFromEsToMagento((getCategoryFromEs(id)));
             CATEGORIES.put(id, category);
             return category;
         });
     }
 
     private void loadCategoriesFromEs() {
-        categoryRepository.findAll().forEach(category -> CATEGORIES.put(category.getId(), mapper.convertEsCatetory(category)));
-        categoryRepository.findByLevel(Constants.TOP_CATEGORY_LEVEL).forEach(category -> TOP_CATEGORIES.put(category.getId(), mapper.convertEsCatetory(category)));
+        categoryRepository.findAll().forEach(category -> CATEGORIES.put(category.getId(), mapper.convertCategoryFromEsToMagento((category))));
+        categoryRepository.findByLevel(Constants.TOP_CATEGORY_LEVEL).forEach(category -> TOP_CATEGORIES.put(category.getId(), mapper.convertCategoryFromEsToMagento(category)));
     }
 
     private boolean isEmpty(String txt) {

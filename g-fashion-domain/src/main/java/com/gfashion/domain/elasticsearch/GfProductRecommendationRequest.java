@@ -12,4 +12,6 @@ public class GfProductRecommendationRequest {
     private String productId;
     @NotNull
     private Integer quantity;
+    @NotNull
+    private String language = "en";
 }
