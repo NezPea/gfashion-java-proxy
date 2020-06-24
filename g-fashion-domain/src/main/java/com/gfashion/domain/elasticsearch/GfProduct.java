@@ -8,13 +8,11 @@ import java.math.RoundingMode;
 @Data
 public class GfProduct {
     private String id;
-    private String nameEn;
-    private String nameZh;
+    private String name;
     private Integer price;
     private Integer discountPrice;
     private String currency;
-    private String desEn;
-    private String desZh;
+    private String des;
     private String smallPic;
     private Long designerId;
     private Long categoryId;

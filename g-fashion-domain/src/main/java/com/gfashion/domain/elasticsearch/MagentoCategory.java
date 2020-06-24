@@ -12,15 +12,15 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GfCategory {
-    @JsonProperty(value = "id")
+public class MagentoCategory {
     private Long id;
     @JsonProperty(value = "parent_id")
     private Long parentId;
     @JsonProperty(value = "name")
-    private String name;
-    @JsonProperty(value = "brief")
-    private String brief;
+    private String nameEn;
+    private String nameZh;
+    private String briefEn;
+    private String briefZh;
     @JsonProperty(value = "is_active")
     private Boolean isActive;
     private Integer position;
@@ -28,5 +28,5 @@ public class GfCategory {
     @JsonProperty(value = "product_count")
     private Long productCount;
     @JsonProperty(value = "children_data")
-    private Set<GfCategory> childrenData;
+    private Set<MagentoCategory> childrenData;
 }
