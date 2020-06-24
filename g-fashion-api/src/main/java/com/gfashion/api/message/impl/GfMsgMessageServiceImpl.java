@@ -30,10 +30,10 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
     GfMsgBroadcastStatusRepository _broadcastMsgStatusRepository;
 
     @Value("${message.ttl.personal_broadcast}")
-    private Long ttlPersonalBroadcast = (long) 15552000; // default half a year.
+    private Long ttlPersonalBroadcast = (long)60 * 60 * 24 * 30 * 6; // default half a year.
 
     @Value("${message.ttl.system_broadcast}")
-    private Long ttlSystemBroadcast = (long) 2592000; // default one month.
+    private Long ttlSystemBroadcast = (long)60 * 60 * 24 * 30; // default one month.
 
     @Value("${message.ttl.customer_service}")
     private Long ttlCustomerService = null; // default infinite.
