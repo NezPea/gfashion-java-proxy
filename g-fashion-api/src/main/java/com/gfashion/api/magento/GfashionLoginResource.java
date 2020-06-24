@@ -1,5 +1,6 @@
 package com.gfashion.api.magento;
 
+import com.gfashion.api.utility.ExceptionStringFactory;
 import com.gfashion.domain.customer.GfCustomerLogin;
 import com.gfashion.magento.client.MagentoCustomerClient;
 import com.gfashion.magento.exception.CustomerException;
@@ -20,14 +21,18 @@ import org.springframework.web.server.ResponseStatusException;
 //@CrossOrigin(origins = "*")
 @AllArgsConstructor
 public class GfashionLoginResource {
+
     private final MagentoCustomerClient magentoCustomerClient;
+
+    private ExceptionStringFactory exceptionStringFactory;
 
     @PostMapping("/login")
     public ResponseEntity<String> creatCustomer(@RequestBody GfCustomerLogin customerLogin) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCustomerClient.customerLogin(customerLogin));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         }
     }
 }

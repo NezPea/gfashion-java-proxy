@@ -3,6 +3,7 @@ package com.gfashion.api.log;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.gfashion.api.log.annotation.DDBLog;
+import com.gfashion.api.utility.ExceptionStringFactory;
 import com.gfashion.data.repository.dynamodb.entity.LogEntity;
 import com.gfashion.data.repository.dynamodb.interfaces.DDBLogRepository;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,8 @@ public class GfashionDDBLogResource {
 
     private DDBLogRepository ddbLogRepository;
 
+    private ExceptionStringFactory exceptionStringFactory;
+
     @DDBLog(operationType = "DDB_Post", operationEvent = "POST_EVENT")
 //    @PostMapping(value = "/dynamodb/log", produces = "application/json;charset=utf-8")
     public ResponseEntity<LogEntity> createLog(@RequestBody LogEntity log) {
@@ -27,9 +30,11 @@ public class GfashionDDBLogResource {
             LogEntity response = ddbLogRepository.createGfLogEntity(log);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (AmazonServiceException e) {
-            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()),
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.valueOf(e.getStatusCode())));
         } catch (AmazonClientException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 
@@ -39,9 +44,11 @@ public class GfashionDDBLogResource {
             LogEntity response = ddbLogRepository.readGfLogEntityById(logId);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
-            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()),
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.valueOf(e.getStatusCode())));
         } catch (AmazonClientException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 
@@ -54,9 +61,11 @@ public class GfashionDDBLogResource {
             ddbLogRepository.deleteGfLogEntity(logId);
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (AmazonServiceException e) {
-            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()),
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.valueOf(e.getStatusCode())));
         } catch (AmazonClientException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 }

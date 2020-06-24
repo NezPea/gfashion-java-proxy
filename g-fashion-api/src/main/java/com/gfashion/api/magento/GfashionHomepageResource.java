@@ -1,5 +1,6 @@
 package com.gfashion.api.magento;
 
+import com.gfashion.api.utility.ExceptionStringFactory;
 import com.gfashion.domain.homepage.CustomizedHomepage;
 import com.gfashion.domain.homepage.GfCategory;
 import com.gfashion.domain.homepage.GfCountry;
@@ -29,6 +30,8 @@ public class GfashionHomepageResource {
 
     private MagentoHomepageClient magentoHomepageClient;
 
+    private ExceptionStringFactory exceptionStringFactory;
+
     @GetMapping(value = "/homepage", produces = "application/json;charset=utf-8")
     public ResponseEntity<CustomizedHomepage> getDefaultCustomizedHomepage() {
         return ResponseEntity.status(HttpStatus.OK).body(magentoMockDataClient.getDefaultCustomizedHomepage());
@@ -40,7 +43,8 @@ public class GfashionHomepageResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoHomepageClient.getCategoriesUnderParentId(categoryId));
         } catch (HomepageException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus()));
         }
     }
 
@@ -50,9 +54,11 @@ public class GfashionHomepageResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoHomepageClient.getCategories(fromLevel, toLevel, locale));
         } catch (HomepageException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus()));
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.BAD_REQUEST));
         }
     }
 
@@ -62,9 +68,11 @@ public class GfashionHomepageResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoHomepageClient.getCountries());
         } catch (HomepageException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus()));
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.BAD_REQUEST));
         }
     }
 }

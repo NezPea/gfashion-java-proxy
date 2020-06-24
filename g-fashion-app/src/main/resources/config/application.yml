@@ -18,6 +18,8 @@ spring:
   profiles: dev
 server:
   port: 8080
+  error:
+    include-stacktrace: never # ensure exception does not return implementation stack details
 
 magento:
   url:
@@ -122,8 +124,11 @@ sendgrid:
 ---
 spring:
   profiles: qa
+
 server:
   port: 8080
+  error:
+    include-stacktrace: never # ensure exception does not return implementation stack details
 
 magento:
   url:

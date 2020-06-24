@@ -3,6 +3,7 @@ package com.gfashion.api.dynamodb;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
 import com.gfashion.api.log.annotation.DDBLog;
+import com.gfashion.api.utility.ExceptionStringFactory;
 import com.gfashion.data.repository.dynamodb.entity.GfProductRecEntity;
 import com.gfashion.data.repository.dynamodb.interfaces.GfProductRecRepository;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,8 @@ public class GfashionProductRecDynamodbResource {
 
     private GfProductRecRepository productRecRepository;
 
+    private ExceptionStringFactory exceptionStringFactory;
+
     @DDBLog(operationType = "custom_operation_type", operationEvent = "custom_operation_event")
     @PostMapping(value = "/dynamodb/productRecs", produces = "application/json;charset=utf-8")
     public ResponseEntity<GfProductRecEntity> createProductRec(@RequestBody GfProductRecEntity productRec) {
@@ -27,9 +30,11 @@ public class GfashionProductRecDynamodbResource {
             GfProductRecEntity response = productRecRepository.createGfProductRecEntity(productRec);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (AmazonServiceException e) {
-            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()),
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.valueOf(e.getStatusCode())));
         } catch (AmazonClientException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 
@@ -39,9 +44,11 @@ public class GfashionProductRecDynamodbResource {
             GfProductRecEntity response = productRecRepository.readGfProductRecEntityById(productRecId);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
-            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()),
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.valueOf(e.getStatusCode())));
         } catch (AmazonClientException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 
@@ -54,9 +61,11 @@ public class GfashionProductRecDynamodbResource {
             GfProductRecEntity response = productRecRepository.updateGfProductRecEntity(productRec);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (AmazonServiceException e) {
-            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()),
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.valueOf(e.getStatusCode())));
         } catch (AmazonClientException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 
@@ -69,9 +78,11 @@ public class GfashionProductRecDynamodbResource {
             productRecRepository.deleteGfProductRecEntity(productRecId);
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (AmazonServiceException e) {
-            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()), e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.valueOf(e.getStatusCode()),
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.valueOf(e.getStatusCode())));
         } catch (AmazonClientException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    exceptionStringFactory.getExceptionStringForStatusCode(HttpStatus.INTERNAL_SERVER_ERROR));
         }
     }
 }

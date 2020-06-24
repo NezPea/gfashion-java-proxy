@@ -1,5 +1,7 @@
 package com.gfashion.api.magento;
 
+import com.gfashion.api.utility.ExceptionStringFactory;
+import com.gfashion.data.repository.dynamodb.interfaces.GfBrandRepository;
 import com.gfashion.domain.cart.*;
 import com.gfashion.magento.client.MagentoCartClient;
 import com.gfashion.magento.exception.CartException;
@@ -23,14 +25,18 @@ public class GfashionCartResource {
 
     private final MagentoCartClient magentoCartClient;
 
+    private ExceptionStringFactory exceptionStringFactory;
+
     @GetMapping("/carts")
     public ResponseEntity<GfCart> getCart(@RequestHeader(name = "Authorization") String customerToken) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.getCart(customerToken));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         } catch (CartException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "cart"));
         }
     }
 
@@ -40,9 +46,11 @@ public class GfashionCartResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.getCartItemList(customerToken));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         } catch (CartException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "cart"));
         }
     }
 
@@ -53,9 +61,11 @@ public class GfashionCartResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.addCartItem(customerToken, cartItem));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         } catch (CartException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "cart"));
         }
     }
 
@@ -66,9 +76,11 @@ public class GfashionCartResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.updateCartItem(customerToken, cartItemId, cartItem));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         } catch (CartException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "cart"));
         }
     }
 
@@ -79,9 +91,11 @@ public class GfashionCartResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.deleteCartItem(customerToken, cartItemId));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         } catch (CartException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "cart"));
         }
     }
 
@@ -92,9 +106,11 @@ public class GfashionCartResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.getEstimateShippingMethods(customerToken, address));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         } catch (CartException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "cart"));
         }
     }
 
@@ -105,9 +121,11 @@ public class GfashionCartResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.setShippingInformation(customerToken, addressInformation));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         } catch (CartException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "cart"));
         }
     }
 
@@ -117,9 +135,11 @@ public class GfashionCartResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.getPaymentMethods(customerToken));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         } catch (CartException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "cart"));
         }
     }
 
@@ -130,9 +150,11 @@ public class GfashionCartResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.createOrder(customerToken, paymentInformation));
         } catch (CustomerException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
         } catch (CartException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "cart"));
         }
     }
 }

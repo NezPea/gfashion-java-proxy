@@ -1,5 +1,6 @@
 package com.gfashion.api.magento;
 
+import com.gfashion.api.utility.ExceptionStringFactory;
 import com.gfashion.domain.order.GfOrder;
 import com.gfashion.domain.sales.GfShipOrder;
 import com.gfashion.domain.sales.GfShipment;
@@ -25,8 +26,12 @@ import java.util.List;
 @RequestMapping(path = "/gfashion/v1/orders", produces = {"application/json"})
 @AllArgsConstructor
 public class GfashionOrderResource {
+
     private MagentoOrderClient magentoOrderClient;
+
     private MagentoShipmentClient magentoShipmentClient;
+
+    private ExceptionStringFactory exceptionStringFactory;
 
     @PostMapping(value = "/{orderId}/ship")
     public ResponseEntity<GfShipment> shipOrder(@PathVariable Integer orderId, @RequestBody GfShipOrder gfShipOrder) {
@@ -34,7 +39,8 @@ public class GfashionOrderResource {
             String shipmentId = magentoOrderClient.shipOrder(orderId, gfShipOrder);//返回的结果是\"79\"，需要删除前后双引号
             return ResponseEntity.status(HttpStatus.OK).body(GfShipment.builder().entityId(Integer.parseInt(shipmentId)).build());
         } catch (OrderException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "order"));
         }
     }
 
@@ -60,7 +66,8 @@ public class GfashionOrderResource {
             }
             return ResponseEntity.status(HttpStatus.OK).body(tracks);
         } catch (ShipmentException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "shipment"));
         }
     }
 
@@ -73,7 +80,8 @@ public class GfashionOrderResource {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(magentoOrderClient.queryOrders(customerId));
         } catch (OrderException e) {
-            throw new ResponseStatusException(e.getStatus(), e.getErrorMessage());
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "order"));
         }
     }
 
