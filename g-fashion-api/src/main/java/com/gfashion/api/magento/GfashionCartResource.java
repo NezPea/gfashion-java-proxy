@@ -27,6 +27,19 @@ public class GfashionCartResource {
 
     private ExceptionStringFactory exceptionStringFactory;
 
+    @PostMapping("/carts")
+    public ResponseEntity<Integer> addCart(@RequestHeader(name = "Authorization") String customerToken) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(magentoCartClient.addCart(customerToken));
+        } catch (CustomerException e) {
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "customer"));
+        } catch (CartException e) {
+            throw new ResponseStatusException(e.getStatus(),
+                    exceptionStringFactory.getExceptionStringForStatusCode(e.getStatus(), "cart"));
+        }
+    }
+
     @GetMapping("/carts")
     public ResponseEntity<GfCart> getCart(@RequestHeader(name = "Authorization") String customerToken) {
         try {
