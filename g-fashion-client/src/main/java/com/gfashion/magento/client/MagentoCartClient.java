@@ -32,6 +32,7 @@ public class MagentoCartClient {
 
     @Autowired
     private RestClient restClient;
+
     @Autowired
     private Gson gson;
 
@@ -40,10 +41,9 @@ public class MagentoCartClient {
     public GfCart getCart(String customerToken) throws CustomerException, CartException {
         try {
             HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
-            restClient.postForEntity(cartsUrl, null, Integer.class, headers);
 
-            ResponseEntity<String> responseEntity = restClient.exchangeGet(cartsUrl, String.class, headers);
-            GfCart gfCart = mapper.convertMagentoCartToGfCart(gson.fromJson(responseEntity.getBody(), MagentoCart.class));
+            GfCart gfCart = mapper.convertMagentoCartToGfCart(
+                    restClient.exchangeGet(cartsUrl, MagentoCart.class, headers).getBody());
             gfCart.setItems(getCartItemList(customerToken));
             return gfCart;
         } catch (HttpStatusCodeException e) {
