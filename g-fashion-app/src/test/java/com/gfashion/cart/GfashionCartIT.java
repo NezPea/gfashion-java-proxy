@@ -41,12 +41,11 @@ public class GfashionCartIT extends GfashionCartBaseIT {
 
     @Test
     public void getCartReturnCart() throws Exception {
+        post("/gfashion/v1/carts/");
         get("/gfashion/v1/carts/").then().assertThat()
                 .statusCode(HttpStatus.OK.value())
                 .body("id", any(Integer.class))
-                .body("items", any(List.class))
-                .body("itemsCount", any(Integer.class))
-                .body("itemsQty", any(Integer.class));
+                .body("items", any(List.class));
     }
 
     @Test
@@ -67,15 +66,15 @@ public class GfashionCartIT extends GfashionCartBaseIT {
         response.then().assertThat()
                 .statusCode(HttpStatus.OK.value())
                 .body("itemId", any(Integer.class))
-                .body("sku", startsWith("WT08"))
+                .body("sku", startsWith("sweats886"))
                 .body("qty", any(Integer.class))
                 .body("name", any(String.class))
                 .body("price", any(Integer.class))
                 .body("productType", any(String.class))
                 .body("quoteId", equalTo(cartId));
 
-        List<Object> list = response.jsonPath().getList("productOption.extensionAttributes.configurableItemOptions");
-        assertThat(list.size(), is(2));
+        //List<Object> list = response.jsonPath().getList("productOption.extensionAttributes.configurableItemOptions");
+        //assertThat(list.size(), is(2));
 
         cartItemId = response.jsonPath().getInt("itemId");
     }
@@ -96,7 +95,7 @@ public class GfashionCartIT extends GfashionCartBaseIT {
     @Test
     public void addCartItemWithoutCartId() throws Exception {
         GfCartItem cartItem = new GfCartItem();
-        cartItem.setSku("WT08");
+        cartItem.setSku("sweats886");
         cartItem.setQty(1);
         cartItem.setProductOption(createCartItemProductOption());
 
@@ -129,7 +128,7 @@ public class GfashionCartIT extends GfashionCartBaseIT {
         cartItemId = addCartItem(cartId);
 
         GfCartItem cartItem = new GfCartItem();
-        cartItem.setSku("WT08");
+        cartItem.setSku("sweats886");
         cartItem.setQty(2);
         cartItem.setQuoteId(cartId);
         cartItem.setProductOption(updateCartItemProductOption());
@@ -140,15 +139,15 @@ public class GfashionCartIT extends GfashionCartBaseIT {
         response.then().assertThat()
                 .statusCode(HttpStatus.OK.value())
                 .body("itemId", any(Integer.class))
-                .body("sku", startsWith("WT08"))
+                .body("sku", startsWith("sweats886"))
                 .body("qty", any(Integer.class))
                 .body("name", any(String.class))
                 .body("price", any(Integer.class))
                 .body("productType", any(String.class))
                 .body("quoteId", equalTo(cartId));
 
-        List<Object> list = response.jsonPath().getList("productOption.extensionAttributes.configurableItemOptions");
-        assertThat(list.size(), is(2));
+        //List<Object> list = response.jsonPath().getList("productOption.extensionAttributes.configurableItemOptions");
+        //assertThat(list.size(), is(2));
 
         cartItemId = response.jsonPath().getInt("itemId");
     }
@@ -158,7 +157,7 @@ public class GfashionCartIT extends GfashionCartBaseIT {
         int cartId = getCartId();
 
         GfCartItem cartItem = new GfCartItem();
-        cartItem.setSku("WT08");
+        cartItem.setSku("sweats886");
         cartItem.setQty(2);
         cartItem.setQuoteId(cartId);
         cartItem.setProductOption(updateCartItemProductOption());

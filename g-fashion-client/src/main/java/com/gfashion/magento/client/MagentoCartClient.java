@@ -38,6 +38,20 @@ public class MagentoCartClient {
 
     private final GfMagentoCartConverter mapper = Mappers.getMapper(GfMagentoCartConverter.class);
 
+    public Integer addCart(String customerToken) throws CustomerException, CartException {
+        try {
+            HttpHeaders headers = restClient.getCustomerHeaders(customerToken);
+            return restClient.postForEntity(cartsUrl, null, Integer.class, headers).getBody();
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new CustomerException(e.getStatusCode(), e.getMessage());
+            }
+            throw new CartException(e.getStatusCode(), e.getMessage());
+        } catch (Exception e) {
+            throw new CartException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     public GfCart getCart(String customerToken) throws CustomerException, CartException {
         try {
             HttpHeaders headers = restClient.getCustomerHeaders(customerToken);

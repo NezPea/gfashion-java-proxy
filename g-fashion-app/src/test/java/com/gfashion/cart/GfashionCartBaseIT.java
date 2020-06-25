@@ -21,6 +21,7 @@ public class GfashionCartBaseIT {
 
     @Value("${test.email}")
     private String email;
+
     @Value("${test.password}")
     private String password;
 
@@ -36,6 +37,7 @@ public class GfashionCartBaseIT {
 
     protected int getCartId() {
         // Get cart id
+        post("/gfashion/v1/carts/");
         Response response = get("/gfashion/v1/carts/");
         return response.jsonPath().getInt("id");
     }
@@ -81,7 +83,7 @@ public class GfashionCartBaseIT {
     }
 
     protected GfCartItem createCartItemParams(int cartId) {
-        return createCartItemParams(cartId, "WT08", 1);
+        return createCartItemParams(cartId, "sweats886", 1);
     }
 
     protected GfCartItem createCartItemParams(int cartId, String sku, int qty) {

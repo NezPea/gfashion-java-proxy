@@ -7,6 +7,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,7 +43,7 @@ public class GfashionCartTotalIT extends GfashionCartBaseIT {
         cartItemIds = new ArrayList<>();
 
         int cartId = getCartId();
-        GfCartItem cartItem = createCartItemParams(cartId, "WT08", 3);
+        GfCartItem cartItem = createCartItemParams(cartId, "sweats886", 3);
         Integer cartItemId = addCartItem(cartItem);
         cartItemIds.add(cartItemId);
 
@@ -52,6 +53,7 @@ public class GfashionCartTotalIT extends GfashionCartBaseIT {
     }
 
     @Test
+    @Ignore
     public void calculateCartTotal() throws Exception {
         String carrierCode = "flatrate";
         String methodCode = "flatrate";
