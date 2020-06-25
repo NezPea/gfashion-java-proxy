@@ -117,9 +117,6 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
             return message;
         }).collect(Collectors.toList());
 
-        // filter out messages that has been marked as deleted.
-        // TODO:
-
         // update the status of the broadcast messages.
         List<GfMsgBroadcastStatusEntity> msgStatuses = _broadcastMsgStatusRepository.findAll(receiver, secondsAgo, countLimit);
         if (null != msgStatuses || 0 < msgStatuses.size()) {
@@ -147,7 +144,7 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
             });
         }
 
-        return updatedMessages;
+        return updatedMessages.size() > countLimit ? updatedMessages.subList(0, countLimit) : updatedMessages;
     }
 
     @Override

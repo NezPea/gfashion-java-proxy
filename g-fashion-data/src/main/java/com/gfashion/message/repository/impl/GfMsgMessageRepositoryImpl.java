@@ -65,6 +65,8 @@ public class GfMsgMessageRepositoryImpl implements GfMsgMessageRepository {
             .withLimit(countLimit)
             .withExpressionAttributeValues(queryValues);
 
+    queryExpr.setScanIndexForward(false);
+
     // use queryPage for limiting the number of results.
     QueryResultPage<GfMsgMessageEntity> result = _dynamoDbMapper.queryPage(GfMsgMessageEntity.class, queryExpr);
 
