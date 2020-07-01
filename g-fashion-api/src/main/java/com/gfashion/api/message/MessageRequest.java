@@ -1,12 +1,11 @@
 package com.gfashion.api.message;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gfashion.api.message.validator.MessageConstrain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 
 /**
@@ -20,10 +19,10 @@ public class MessageRequest {
     @NotBlank(message = "Receiver field is required.")
     private String receiver;
 
-    @NotNull
+    @MessageConstrain(message = "English version title is required.")
     private HashMap<String, String> title;
 
-    @NotNull
+    @MessageConstrain(message = "English version content is required.")
     private HashMap<String, String> content;
 
     private String picture = "";
