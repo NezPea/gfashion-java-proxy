@@ -164,61 +164,67 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
     public void markRead(String receiver, String msgId) {
         GfMsgMessageEntity msg = _msgRepository.findById(receiver, msgId);
 
+        if (null == msg) {
+            if (!receiver.equals(GfMessageConstants.BROADCAST_RECEIVER)) {
+                msg = _msgRepository.findById(GfMessageConstants.BROADCAST_RECEIVER, msgId);
+            }
+
+            if (null == msg) {
+                throw new AmazonServiceException("Message " + msgId + " for " + receiver + " doesn't exist.");
+            }
+        }
+
         final Instant now = Instant.now();
         final Long ts = now.toEpochMilli();
-        if (null != msg) {
 
-            msg.setOpened(true);
-            msg.setTimeUpdated(ts);
-            msg.setTimeOpened(ts);
-
-            _msgRepository.add(msg);
-        } else {
-            // check if this is a broadcast message.
-            msg = _msgRepository.findById(GfMessageConstants.BROADCAST_RECEIVER, msgId);
-            if (null == msg) {
-                throw new AmazonServiceException("Message " + msgId + " doesn't exist.");
-            }
+        if (GfMessageConstants.BROADCAST_RECEIVER.equals(msg.getReceiver())) {
             GfMsgBroadcastStatusEntity msgStatus = _broadcastMsgStatusRepository.findById(receiver, msgId);
-
             if (null == msgStatus) {
                 msgStatus = new GfMsgBroadcastStatusEntity();
                 msgStatus.setId(msg.getId());
-                msgStatus.setReceiver(receiver);
+                msgStatus.setReceiver(receiver); // the actual user who marks the message as read.
                 msgStatus.setTtl(ts / 1000 + ttlPersonalBroadcast);
             }
-
             msgStatus.setOpened(true);
             msgStatus.setTimeSent(msg.getTimeSent());
             msgStatus.setTimeUpdated(ts);
             msgStatus.setTimeOpened(ts);
-
             _broadcastMsgStatusRepository.add(msgStatus);
+        } else {
+            if (null != msg) {
+                msg.setOpened(true);
+                msg.setTimeUpdated(ts);
+                msg.setTimeOpened(ts);
+                _msgRepository.add(msg);
+            }
         }
     }
 
     @Override
     public void deleteMessage(String receiver, String msgId) {
         GfMsgMessageEntity msg = _msgRepository.findById(receiver, msgId);
-        if (null != msg) {
-            _msgRepository.receiverDelete(receiver, msgId);
-        } else {
-            msg = _msgRepository.findById(GfMessageConstants.BROADCAST_RECEIVER, msgId);
-            if (null == msg) {
-                throw new AmazonServiceException("Message " + msgId + " doesn't exist.");
+        final Instant now = Instant.now();
+        final Long ts = now.toEpochMilli();
+
+        if (null == msg) {
+            if (!receiver.equals(GfMessageConstants.BROADCAST_RECEIVER)) {
+                msg = _msgRepository.findById(GfMessageConstants.BROADCAST_RECEIVER, msgId);
             }
 
-            // ok, this is a broadcast message, mark it as delete in the status table.
+            if (null == msg) {
+                throw new AmazonServiceException("Message " + msgId + " for " + receiver + " doesn't exist.");
+            }
+        }
+        if (GfMessageConstants.BROADCAST_RECEIVER.equals(msg.getReceiver())) {
             GfMsgBroadcastStatusEntity msgStatus = new GfMsgBroadcastStatusEntity();
-            final Instant now = Instant.now();
-            final Long ts = now.toEpochMilli();
-            msgStatus.setTtl(ts / 1000 + ttlPersonalBroadcast);
+            msgStatus.setTtl(null); // for the status table, we don't want to expire the message.
             msgStatus.setId(msgId);
             msgStatus.setReceiver(receiver);
             msgStatus.setTimeSent(msg.getTimeSent());
             msgStatus.setDeleted(true);
-
             _broadcastMsgStatusRepository.add(msgStatus);
+        } else {
+            _msgRepository.receiverDelete(receiver, msgId);
         }
     }
 

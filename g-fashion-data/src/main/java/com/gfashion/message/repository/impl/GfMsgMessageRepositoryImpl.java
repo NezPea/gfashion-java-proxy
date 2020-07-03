@@ -88,7 +88,7 @@ public class GfMsgMessageRepositoryImpl implements GfMsgMessageRepository {
 
     // order by time sent desc.
     Collections.sort(allMessages, (m1, m2) -> {
-      return (int) (m2.getTimeUpdated() - m1.getTimeUpdated());
+      return (int) (m2.getTimeSent() - m1.getTimeSent());
     });
 
     return allMessages;
