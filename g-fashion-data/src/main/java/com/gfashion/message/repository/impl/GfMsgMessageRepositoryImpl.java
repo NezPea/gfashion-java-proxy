@@ -62,7 +62,7 @@ public class GfMsgMessageRepositoryImpl implements GfMsgMessageRepository {
 
     DynamoDBQueryExpression<GfMsgMessageEntity> queryExpr = new DynamoDBQueryExpression<GfMsgMessageEntity>()
             .withKeyConditionExpression("receiver = :receiver and timeSent between :queryStart and :queryEnd")
-            .withLimit(countLimit)
+//            .withLimit(countLimit)
             .withExpressionAttributeValues(queryValues);
 
     queryExpr.setScanIndexForward(false);
@@ -81,6 +81,10 @@ public class GfMsgMessageRepositoryImpl implements GfMsgMessageRepository {
     List<GfMsgMessageEntity> broadcastMessages = result.getResults();
 
     List<GfMsgMessageEntity> allMessages = ListUtils.union(messages, broadcastMessages);
+    List<GfMsgMessageEntity> r1 = _dynamoDbMapper.query(GfMsgMessageEntity.class, queryExpr);
+
+    final int cnt = result.getCount();
+    final int scannedCnt = result.getScannedCount();
 
     // order by time sent desc.
     Collections.sort(allMessages, (m1, m2) -> {
@@ -96,7 +100,7 @@ public class GfMsgMessageRepositoryImpl implements GfMsgMessageRepository {
     if (null == e) {
       throw new AmazonServiceException(GfMessageConstants.MESSAGE_NOT_EXIST_ERROR);
     }
-    if (GfMessageConstants.BROADCAST_RECEIVER == e.getReceiver()) {
+    if (GfMessageConstants.BROADCAST_RECEIVER.equals(e.getReceiver())) {
       throw new AmazonServiceException("Can't delete broadcast message.");
     }
     _dynamoDbMapper.delete(e);

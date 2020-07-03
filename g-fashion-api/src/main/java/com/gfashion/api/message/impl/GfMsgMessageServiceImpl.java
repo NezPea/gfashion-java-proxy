@@ -49,7 +49,7 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
         final String msgId = UUID.nameUUIDFromBytes(uuidSeed.getBytes()).toString();
 
         GfMsgMessageEntity message = new GfMsgMessageEntity();
-        if (MessageType.CONVERSATION == type) {
+        if (MessageType.CONVERSATION.equals(type)) {
 
             message.setReceiver(msg.getReceiver());
             // TODO: make sure the receiver exists, otherwise throw ReceiverNotExistError.
@@ -119,32 +119,40 @@ public class GfMsgMessageServiceImpl implements GfMsgMessageService {
 
         // update the status of the broadcast messages.
         List<GfMsgBroadcastStatusEntity> msgStatuses = _broadcastMsgStatusRepository.findAll(receiver, secondsAgo, countLimit);
-        if (null != msgStatuses || 0 < msgStatuses.size()) {
+        if (null != msgStatuses && 0 < msgStatuses.size()) {
 
-            updatedMessages.forEach(message -> {
+            messages = updatedMessages.stream().filter(message -> {
                 GfMsgBroadcastStatusEntity msgStatus;
-                if (GfMessageConstants.BROADCAST_RECEIVER == message.getReceiver()) {
+                if (GfMessageConstants.BROADCAST_RECEIVER.equals(message.getReceiver())) {
                     msgStatus = IterableUtils.find(msgStatuses,
                         new Predicate<GfMsgBroadcastStatusEntity>() {
                             @Override
                             public boolean evaluate(GfMsgBroadcastStatusEntity status) {
-                                return status.getId() == message.getId();
+                                return status.getId().equals(message.getId());
                             }
                         });
                     if (null != msgStatus) {
                         if (msgStatus.getDeleted()) {
-                            updatedMessages.remove(message);
+                            return false;
                         } else {
                             message.setOpened(msgStatus.getOpened());
                             message.setTimeOpened(msgStatus.getTimeOpened());
                             message.setTimeUpdated(msgStatus.getTimeUpdated());
+                            return true;
                         }
+                    } else {
+                        return true;
                     }
+                } else {
+                    return true;
                 }
-            });
+            }).collect(Collectors.toList());
+        } else {
+            messages = updatedMessages;
         }
+        System.out.println(messages.size());
 
-        return updatedMessages.size() > countLimit ? updatedMessages.subList(0, countLimit) : updatedMessages;
+        return messages.size() > countLimit ? messages.subList(0, countLimit) : messages;
     }
 
     @Override
