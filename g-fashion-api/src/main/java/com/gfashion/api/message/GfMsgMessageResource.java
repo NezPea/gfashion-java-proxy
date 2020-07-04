@@ -21,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/message/v1", produces = {"application/json;charset=UTF-8"})
+@CrossOrigin(origins = "*")
 @Validated
 @AllArgsConstructor
 public class GfMsgMessageResource {
@@ -28,6 +29,8 @@ public class GfMsgMessageResource {
     private GfMsgMessageService _msgService;
 
     private ExceptionStringFactory exceptionStringFactory;
+
+    private final String COOKIE_SESSION_KEY = "SID";
 
     // TODO: SSO integration to get the sender id.
     private final String sender = "sender1";
@@ -38,7 +41,7 @@ public class GfMsgMessageResource {
 
     @PutMapping("/send")
     public ResponseEntity<MessageResponse> sendMessage(
-            @RequestHeader(name = "Authorization") String token,
+            @CookieValue(value = COOKIE_SESSION_KEY) String session,
             @Valid @RequestBody MessageRequest msg) {
         try {
             MessageResponse response = new MessageResponse();
@@ -56,7 +59,7 @@ public class GfMsgMessageResource {
 
     @PutMapping("/broadcast")
     public ResponseEntity<MessageResponse> broadcastMessage(
-            @RequestHeader(name = "Authorization") String token,
+            @CookieValue(value = COOKIE_SESSION_KEY) String session,
             @Valid @RequestBody MessageRequest msg) {
         try {
             MessageResponse response = new MessageResponse();
@@ -74,7 +77,7 @@ public class GfMsgMessageResource {
 
     @GetMapping("/receive")
     public ResponseEntity<List<GfMsgMessageEntity>> receiveMessage(
-            @RequestHeader(name = "Authorization") String token,
+            @CookieValue(value = COOKIE_SESSION_KEY) String session,
             @RequestHeader(name = "lang") String language,
             @RequestParam(value = "secondsAgo", required = true) @Min(1) Long secondsAgo,
             @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit) {
@@ -92,7 +95,7 @@ public class GfMsgMessageResource {
 
     @DeleteMapping("/delete")
     public ResponseEntity<MessageResponse> deleteMessage(
-            @RequestHeader(name = "Authorization") String token,
+            @CookieValue(value = COOKIE_SESSION_KEY) String session,
             @Valid @RequestBody MessageIdRequest msg) {
         try {
             _msgService.deleteMessage(receiver, msg.getId());
@@ -110,7 +113,7 @@ public class GfMsgMessageResource {
 
     @PostMapping("/markRead")
     public ResponseEntity<MessageResponse> markRead(
-            @RequestHeader(name = "Authorization") String token,
+            @CookieValue(value = COOKIE_SESSION_KEY) String session,
             @Valid @RequestBody MessageIdRequest msg) {
         try {
             _msgService.markRead(receiver, msg.getId());
